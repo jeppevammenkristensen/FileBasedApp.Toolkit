@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Package 'Microsoft.IO.Redist' 6.0.0 has a known high severity vulnerability -->
+        <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-hq7w-xv5x-g34j" />
+        <!-- Package 'System.Text.Json' 8.0.0 has a known high severity vulnerability -->
+        <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-8g4q-xg66-9fp4" />
+        <!-- Package 'System.Text.Json' 8.0.0 has a known high severity vulnerability -->
+        <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-hh2w-p6rv-4g7w" />
+        <!-- Package 'Microsoft.Build.Tasks.Core' 17.7.2 has a known high severity vulnerability -->
+        <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-h4j7-5rxr-p4wc" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\FileBasedApp.Toolkit\FileBasedApp.Toolkit.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Build" Version="18.0.2" ExcludeAssets="runtime" />
+      <PackageReference Include="Microsoft.Build.Locator" Version="1.7.8" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.0.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.0.0" />      
+      <PackageReference Include="Roslynator.CSharp.Workspaces" Version="4.15.0" />      
+      <PackageReference Include="Testably.Abstractions.FileSystem.Interface" Version="10.0.0" />      
+      <PackageReference Include="TextCopy" Version="6.2.1" />   
+    </ItemGroup>
+
+</Project>

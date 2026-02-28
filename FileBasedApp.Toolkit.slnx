@@ -1,0 +1,12 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="ConsoleApp1/ConsoleApp1.csproj" />
+  
+  <Project Path="FileBasedApp.Toolkit.Tests/FileBasedApp.Toolkit.Tests.csproj" />
+  <Project Path="FileBasedApp.Toolkit/FileBasedApp.Toolkit.csproj" />
+  <Project Path="GetFileSystemSourceAndParse/GetFileSystemSourceAndParse.csproj" />
+</Solution>

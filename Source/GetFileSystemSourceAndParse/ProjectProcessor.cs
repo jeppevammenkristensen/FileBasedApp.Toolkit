@@ -98,7 +98,7 @@ public partial class ProjectProcessor
 
         await TextCopy.ClipboardService.SetTextAsync(removeDuplicatesRewriter.Visit(result).ToFullString(), cancellationToken);
         AnsiConsole.MarkupLineInterpolated(
-            $"[green]Outputted text for [bold]{typeByMetadataName.ToDisplayString()}[/][/]");
+            $"[green]Copied extension method abstraction for [bold]{typeByMetadataName.ToDisplayString()}[/] into Clipboard[/]");
     }
 
     private static async Task AnalyzeAndBuildMethod(IMethodSymbol method, Compilation compilation,

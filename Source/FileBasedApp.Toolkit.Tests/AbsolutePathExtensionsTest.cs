@@ -8,10 +8,11 @@ using Xunit;
 
 namespace FileBasedApp.Toolkit.Tests;
 
-[TestSubject(typeof(AbsolutePathExtensions))]
+[TestSubject(typeof(IO))]
 public class AbsolutePathExtensionsTest
 {
     [Fact]
+    
     public void GetAncestors_ShouldGenerateExpectedResult()
     {
         // check is runtime is windows

@@ -3,6 +3,10 @@ using TruePath;
 
 namespace FileBasedApp.Toolkit.Abstractions;
 
+/// <summary>
+/// Provides extension methods for the <see cref="IDirectoryInfoFactory"/> type to create
+/// <see cref="IDirectoryInfo"/> instances using an <see cref="AbsolutePath"/> parameter.
+/// </summary>
 public static class DirectoryInfoFactoryExtensions
 {
     /// <summary>

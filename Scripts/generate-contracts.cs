@@ -1,26 +1,73 @@
-#:package TestableIO.System.IO.Abstractions@*
+#:package FileBasedApp.Toolkit@*
 
+using FileBasedApp.Toolkit;
+using FileBasedApp.Toolkit.Abstractions;
+using Spectre.Console;
 using System.IO.Abstractions;
-using System.Text;
+using System.Text.RegularExpressions;
+using TruePath;
 
-var stringType = typeof(string);
+var currentPath = PathUtil.GetCurrentWorkingFolder();
+var fileSystem = new FileSystem();
 
-var builder = new StringBuilder();
+var codePath = PathUtil.GetExecutionFolder();
 
-foreach (var item in typeof(IDirectory).GetMethods())
+var root = codePath / "..";
+var artifact = codePath / "TempArtifact";
+
+AbsolutePath solutionFile = fileSystem.Directory.GetFiles(root, "*.slnx", SearchOption.AllDirectories).First();
+
+await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", "Debug","-o", artifact.Value]);
+
+var items = await Methods.GetNugetSources();
+
+// Prompt the use to select source
+var source = AnsiConsole.Prompt(new SelectionPrompt<string>()
+	.Title("Select source")
+	.AddChoices(items));
+
+// Enumerate all the generated nuget packages and publish them to the source
+foreach (var element in fileSystem.Directory.GetFiles(artifact, "*.nup*"))
 {
-	builder.Append("public static ");
-	
-	if (item.ReturnType == typeof(string))
+	AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
+	await SimpleExec.Command.RunAsync("dotnet", ["nuget", "push", element.Value, "--source", source]);
+}
+
+AnsiConsole.MarkupLineInterpolated($"[green]Remove temp artifact [bold]{artifact}[/][/]");
+fileSystem.Directory.Delete(artifact, true);
+
+
+public class Methods 
+{
+	public static async Task<List<string>> GetNugetSources()
 	{
-		builder.Append("AbsolutePath");
-	}
-	else if (item.ReturnType == typeof(IEnumerable<string>))
-	{
-		builder.Append("IEnumerable<string>");
-	}
-	else if (item.ReturnType == typeof(string[]))
-	{
-		builder.Append("AbsolutePath[]");
+		Regex regex = new(@"(?<test>\S+) \[Enabled\]");
+
+		var result = await SimpleExec.Command.ReadAsync("dotnet", ["nuget", "list", "source"]);
+
+		Console.WriteLine(result.StandardOutput);
+
+		var stringReader = new StringReader(result.StandardOutput);
+		var items = new List<string>();
+
+		while (stringReader.Peek() >= 0)
+		{
+			var current = await stringReader.ReadLineAsync();
+			if (current is { } && regex.Match(current) is { Success: true } match)
+			{
+				items.Add(match.Groups["test"].Value);
+			}
+		}
+
+		return items;
 	}
 }
+
+
+
+
+
+
+
+
+

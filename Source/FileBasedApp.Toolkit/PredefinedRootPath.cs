@@ -1,5 +1,8 @@
 ﻿namespace FileBasedApp.Toolkit;
 
+/// <summary>
+/// Specifies predefined root paths that can be used as base directories for file or directory operations.
+/// </summary>
 public enum PredefinedRootPath
 {
     /// <summary>

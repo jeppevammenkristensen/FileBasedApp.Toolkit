@@ -1,13 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <DebugType>embedded</DebugType>
+  <PropertyGroup>    
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <VersionPrefix>0.9.0.11</VersionPrefix>    
+    <VersionPrefix>0.10.2</VersionPrefix>    
     <Title>Opiniated helpers for FileBasedApps</Title>
-    <Description>Opiniated helpers for a FileBaseApp. Based on TruePath and Spectre.Console.Cli</Description>    
+    <Description>Opiniated helpers for a FileBaseApp. Based on TruePath and Spectre.Console.Cli</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <!-- Ensure PDBs are produced and carried along for local debug deploy/publish -->
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <VersionSuffix>dev</VersionSuffix>
+    <!-- “Summary” (XML docs) output next to the assembly -->    
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,16 +23,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" Version="1.1.2" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
-    <PackageReference Include="NETStandard.Library" Version="2.0.3" />
+<!--    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />-->
+<!--    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" Version="1.1.2" />-->
+<!--    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />-->
+<!--    <PackageReference Include="NETStandard.Library" Version="2.0.3" />-->
     <PackageReference Include="SimpleExec" Version="13.0.0" />
     <PackageReference Include="Spectre.Console.Cli" Version="0.53.1" />
     <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="22.1.0" />
     <PackageReference Include="TruePath" Version="1.11.0" />
   </ItemGroup>
 
+  <!-- This is related to importing the Directory.Build.props from the root of the repo, which defines some properties based on the TargetFramework. We need to redefine them here to ensure they are available for conditional compilation in this project. -->
   <PropertyGroup>
     <IS_NET21_OR_HIGHER Condition="'$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0' OR '$(TargetFramework)' == 'net10.0' OR '$(TargetFramework)' == 'netstandard2.1'">1</IS_NET21_OR_HIGHER>
     <IS_NET6_OR_HIGHER Condition="'$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0' OR '$(TargetFramework)' == 'net10.0'">1</IS_NET6_OR_HIGHER>

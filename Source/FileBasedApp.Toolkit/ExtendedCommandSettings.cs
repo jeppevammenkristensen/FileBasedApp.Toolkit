@@ -13,6 +13,11 @@ namespace FileBasedApp.Toolkit;
 /// </summary>
 public abstract class ExtendedCommandSettings : CommandSettings
 {
+    /// <summary>
+    /// Validates the current settings instance using custom validation logic.
+    /// If an exception is thrown during validation, its message will be used as the error description in the result.
+    /// </summary>
+    /// <returns>A <see cref="ValidationResult"/> object indicating whether the validation succeeded or failed.</returns>
     public sealed override ValidationResult Validate()
     {
         try
@@ -35,9 +40,6 @@ public abstract class ExtendedCommandSettings : CommandSettings
     {
         return ValidationResult.Success();
     }
-    
-    protected virtual void CustomValidation() {}
-    
 
     /// <summary>
     /// Tries to get a directory from a string
@@ -53,7 +55,17 @@ public abstract class ExtendedCommandSettings : CommandSettings
         return result.GetPath(shouldExist, allowEmpty);
     }
 
-    protected AbsolutePath TryGetFile(string candidatePath, PredefinedRootPath root, bool shouldExist, [CallerArgumentExpression(nameof(candidatePath))] string? paramName = null)
+    /// <summary>
+    /// Attempts to resolve a file path based on the specified candidate path, predefined root, and existence requirements.
+    /// </summary>
+    /// <param name="candidatePath">The candidate file path provided by the user. It must not be null, empty, or whitespace.</param>
+    /// <param name="root">The predefined root path that provides the folder context for resolving the candidate path.</param>
+    /// <param name="shouldExist">Indicates whether the specified file must exist. If true, an exception will be thrown if the file does not exist.</param>
+    /// <param name="paramName">The name of the parameter corresponding to <paramref name="candidatePath"/>. This is automatically supplied by the compiler via the <see cref="CallerArgumentExpressionAttribute"/>.</param>
+    /// <returns>An <see cref="AbsolutePath"/> representing the resolved file path.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if <paramref name="candidatePath"/> is null, empty, whitespace, or cannot be resolved to a valid file path.</exception>
+    protected AbsolutePath TryGetFile(string candidatePath, PredefinedRootPath root, bool shouldExist,
+        [CallerArgumentExpression(nameof(candidatePath))] string? paramName = null)
     {
         if (string.IsNullOrWhiteSpace(candidatePath))
         {

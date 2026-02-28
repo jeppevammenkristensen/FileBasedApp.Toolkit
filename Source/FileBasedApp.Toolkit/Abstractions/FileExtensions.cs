@@ -7,8 +7,9 @@ using TruePath;
 
 namespace FileBasedApp.Toolkit.Abstractions;
 
-
-
+/// <summary>
+/// Provides a collection of extension methods for performing common file operations on an instance of <see cref="IFile"/>.
+/// </summary>
 public static class FileExtensions
 {
 #if FEATURE_FILE_SPAN

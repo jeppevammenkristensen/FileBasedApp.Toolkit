@@ -3,6 +3,11 @@ using TruePath;
 
 namespace FileBasedApp.Toolkit.Abstractions;
 
+/// <summary>
+/// Provides extension methods for creating <see cref="FileSystemStream"/> instances
+/// using the <see cref="IFileStreamFactory"/> interface with the help of
+/// <see cref="AbsolutePath"/> objects.
+/// </summary>
 public static class FileStreamFactoryExtensions
 {
     /// <inheritdoc cref="FileStream(string, FileMode)" />

@@ -4,6 +4,9 @@ using IPath = System.IO.Abstractions.IPath;
 
 namespace FileBasedApp.Toolkit.Abstractions;
 
+/// <summary>
+/// Provides a set of extension methods for working with file and directory paths using the <see cref="System.IO.Abstractions.IPath"/> abstraction.
+/// </summary>
 public static class PathExtensions
 {
     /// <inheritdoc cref = "Path.ChangeExtension(string, string)"/>
@@ -138,7 +141,6 @@ public static class PathExtensions
         return AbsolutePath.Create(result);
     }
 #endif
-    /// <inheritdoc cref = "Path.GetTempFileName()"/>
     
 #if !NETSTANDARD2_0
 #endif

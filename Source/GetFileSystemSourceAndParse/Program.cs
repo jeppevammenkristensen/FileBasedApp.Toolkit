@@ -2,7 +2,9 @@
 
 using Spectre.Console.Cli;
 
-
-CommandApp<RunCommand> app = new();
-app.Configure(cfg => { cfg.PropagateExceptions(); });
+CommandApp<GenerateIOAbstractionsCommand> app = new();
+app.Configure(cfg =>
+{
+    cfg.PropagateExceptions();
+});
 await app.RunAsync(args);

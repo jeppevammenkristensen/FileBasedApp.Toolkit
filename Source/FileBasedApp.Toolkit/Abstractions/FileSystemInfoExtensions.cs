@@ -3,6 +3,9 @@ using TruePath;
 
 namespace FileBasedApp.Toolkit.Abstractions;
 
+/// <summary>
+/// Provides extension methods for <see cref="IFileSystemInfo"/> to extend its functionality.
+/// </summary>
 public static class FileSystemInfoExtensions
 {
 #if FEATURE_FILESYSTEM_LINK

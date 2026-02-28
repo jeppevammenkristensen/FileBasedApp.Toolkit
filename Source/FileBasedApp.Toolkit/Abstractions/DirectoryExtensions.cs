@@ -4,7 +4,11 @@ using TruePath;
 
 namespace FileBasedApp.Toolkit.Abstractions;
 
+
+
 // ReSharper disable UnusedMember.Global
+/// Provides extension methods for operations on directories <see cref="IDirectory"/>, including creation, deletion, traversal,
+/// and retrieving directory-related information.
 public static class DirectoryExtensions
 {
     /// <inheritdoc cref="Directory.CreateDirectory(string)" />

@@ -3,7 +3,6 @@
   <PropertyGroup>    
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <VersionPrefix>0.10.4</VersionPrefix>    
     <Title>Opiniated helpers for FileBasedApps</Title>
     <Description>Opiniated helpers for a FileBaseApp. Based on TruePath and Spectre.Console.Cli</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -15,7 +14,6 @@
     <!-- Ensure PDBs are produced and carried along for local debug deploy/publish -->
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <VersionSuffix>dev</VersionSuffix>
     <!-- “Summary” (XML docs) output next to the assembly -->    
   </PropertyGroup>
 

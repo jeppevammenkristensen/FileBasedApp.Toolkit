@@ -6,8 +6,6 @@
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         
-        <VersionPrefix>0.0.2.0</VersionPrefix>
-
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IsRoslynComponent>true</IsRoslynComponent>
 

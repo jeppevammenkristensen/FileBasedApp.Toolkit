@@ -1,15 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.IO.Abstractions;
 using TruePath;
-
-namespace FileBasedApp.Toolkit.Abstractions;
-
-
+// ReSharper disable CheckNamespace
+namespace System.IO.Abstractions;
 
 // ReSharper disable UnusedMember.Global
 /// Provides extension methods for operations on directories <see cref="IDirectory"/>, including creation, deletion, traversal,
 /// and retrieving directory-related information.
-public static class DirectoryExtensions
+public static partial class DirectoryExtensions
 {
     /// <inheritdoc cref="Directory.CreateDirectory(string)" />
     public static IDirectoryInfo CreateDirectory(this IDirectory directory, AbsolutePath path)
@@ -17,7 +14,6 @@ public static class DirectoryExtensions
         var result = directory.CreateDirectory(path.Value);
         return result;
     }
-
 
 #if FEATURE_FILESYSTEM_UNIXFILEMODE
     /// <inheritdoc cref="Directory.CreateDirectory(string, UnixFileMode)" />
@@ -167,6 +163,13 @@ public static class DirectoryExtensions
 
 
     /// <inheritdoc cref="Directory.Exists(string)" />
+    public static bool Exists(this IDirectory directory, [NotNullWhen(true)] AbsolutePath path)
+    {
+        var result = directory.Exists(path.Value);
+        return result;
+    }
+    
+    /// <inheritdoc cref="Directory.Exists(string)" />
     public static bool Exists(this IDirectory directory, [NotNullWhen(true)] AbsolutePath? path)
     {
         var result = directory.Exists(path?.Value);
@@ -191,7 +194,7 @@ public static class DirectoryExtensions
 
 
     /// <inheritdoc cref="Directory.GetCurrentDirectory()" />
-    public static AbsolutePath GetCurrentDirectory(this IDirectory directory)
+    public static AbsolutePath CurrentDirectory(this IDirectory directory)
     {
         var result = directory.GetCurrentDirectory();
         return AbsolutePath.Create(result);

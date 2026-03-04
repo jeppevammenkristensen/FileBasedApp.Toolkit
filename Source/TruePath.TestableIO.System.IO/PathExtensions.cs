@@ -1,12 +1,21 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using TruePath;
-using IPath = System.IO.Abstractions.IPath;
+// ReSharper disable CheckNamespace
 
-namespace FileBasedApp.Toolkit.Abstractions;
+namespace System.IO.Abstractions;
+
+internal static class AbsolutePathExtensions
+{
+    public static AbsolutePath? AsAbsolutePath(this string? path)
+    {
+        return path == null ? null : AbsolutePath.Create(path);
+    }
+}
 
 /// <summary>
 /// Provides a set of extension methods for working with file and directory paths using the <see cref="System.IO.Abstractions.IPath"/> abstraction.
 /// </summary>
+/// <remarks>This is included for consistency. But a large amount these can be solved by using build in functionality of AbsolutePath</remarks>
 public static class PathExtensions
 {
     /// <inheritdoc cref = "Path.ChangeExtension(string, string)"/>
@@ -16,6 +25,12 @@ public static class PathExtensions
     public static AbsolutePath? ChangeExtension(this IPath source, AbsolutePath? path, string? extension)
     {
         var result = source.ChangeExtension(path?.Value, extension);
+        return result.AsAbsolutePath();
+    }
+    
+    public static AbsolutePath? ChangeExtension(this IPath source, AbsolutePath path, string? extension)
+    {
+        var result = source.ChangeExtension(path.Value, extension);
         return result.AsAbsolutePath();
     }
 

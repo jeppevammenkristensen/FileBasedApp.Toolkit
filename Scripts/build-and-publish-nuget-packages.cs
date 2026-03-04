@@ -6,35 +6,91 @@ using Spectre.Console;
 using System.IO.Abstractions;
 using System.Text.RegularExpressions;
 using TruePath;
+using Spectre.Console.Cli;
+using System.ComponentModel;
+using System.Collections.Immutable;
 
-var currentPath = PathUtil.GetCurrentWorkingFolder();
-var fileSystem = new FileSystem();
+var commandApp = new CommandApp<BuildCommand>().
+	WithDescription("Helps build this solution for local or to nuget");
+	
+await commandApp.RunAsync(args);
 
-var codePath = PathUtil.GetExecutionFolder();
-
-var root = codePath / "..";
-var artifact = codePath / "TempArtifact";
-
-AbsolutePath solutionFile = fileSystem.Directory.GetFiles(root, "*.slnx", SearchOption.AllDirectories).First();
-
-await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", "Debug","-o", artifact.Value]);
-
-var items = await Methods.GetNugetSources();
-
-// Prompt the use to select source
-var source = AnsiConsole.Prompt(new SelectionPrompt<string>()
-	.Title("Select source")
-	.AddChoices(items));
-
-// Enumerate all the generated nuget packages and publish them to the source
-foreach (var element in fileSystem.Directory.GetFiles(artifact, "*.nup*"))
+public class BuildCommand : AsyncCommand<BuildCommand.Settings>
 {
-	AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
-	await SimpleExec.Command.RunAsync("dotnet", ["nuget", "push", element.Value, "--source", source]);
+
+	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
+	{
+		var currentPath = PathUtil.GetCurrentWorkingFolder();
+		var fileSystem = new FileSystem();
+
+		var codePath = PathUtil.GetExecutionFolder();
+
+		var root = codePath / "..";
+		var artifact = codePath / "TempArtifact";
+
+		try
+		{	
+	
+			AbsolutePath solutionFile = fileSystem.Directory.GetFiles(root, "*.slnx", SearchOption.AllDirectories).First();
+	
+			await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", settings.Configuration, "-o", artifact.Value]);
+	
+			var items = await Methods.GetNugetSources();
+	
+			// Prompt the use to select source
+			var source = AnsiConsole.Prompt(new SelectionPrompt<string>()
+				.Title("Select source")
+				.AddChoices(items));
+	
+			// Enumerate all the generated nuget packages and publish them to the source
+			foreach (var element in fileSystem.Directory.GetFiles(artifact, "*.nup*"))
+			{
+				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
+				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source];
+				
+				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
+				{
+					arguments = arguments.AddRange("--api-key", settings.NugetApiKey);
+				}	
+				
+				
+				await SimpleExec.Command.RunAsync("dotnet",arguments);
+			}
+	
+			AnsiConsole.MarkupLineInterpolated($"[green]Remove temp artifact [bold]{artifact}[/][/]");
+
+		}
+
+		finally
+
+		{
+
+			fileSystem.Directory.Delete(artifact, true);	
+
+		}
+		
+		return 0;
+	}
+
+	public class Settings : FileBasedApp.Toolkit.ExtendedCommandSettings
+	{
+		[
+		CommandOption("--api-key")]
+		public string? NugetApiKey {get;set; }
+		
+		protected override ValidationResult DoValidate()
+		{			
+			return base.DoValidate();
+		}
+		
+		[CommandOption("-c|--configuration")]
+		[DefaultValue("Debug")]
+		public required string Configuration {get;set;}
+	}
 }
 
-AnsiConsole.MarkupLineInterpolated($"[green]Remove temp artifact [bold]{artifact}[/][/]");
-fileSystem.Directory.Delete(artifact, true);
+
+
 
 
 public class Methods 

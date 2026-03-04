@@ -1,13 +1,13 @@
-﻿using System.IO.Abstractions;
-using TruePath;
-
-namespace FileBasedApp.Toolkit.Abstractions;
+﻿using TruePath;
+// ReSharper
+// disable CheckNamespace
+namespace System.IO.Abstractions;
 
 /// <summary>
 /// Provides extension methods for <see cref="IDirectoryInfo"/> to enhance functionality
 /// including the creation of subdirectories and handling absolute paths.
 /// </summary>
-public static class DirectoryInfoExtensions
+public static partial class DirectoryInfoExtensions
 {
     /// <inheritdoc cref="DirectoryInfo.CreateSubdirectory(string)" />
     public static IDirectoryInfo CreateSubdirectory(IDirectoryInfo directoryInfo,

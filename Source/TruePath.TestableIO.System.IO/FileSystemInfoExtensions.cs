@@ -1,7 +1,7 @@
-using System.IO.Abstractions;
 using TruePath;
+// ReSharper disable CheckNamespace
 
-namespace FileBasedApp.Toolkit.Abstractions;
+namespace System.IO.Abstractions;
 
 /// <summary>
 /// Provides extension methods for <see cref="IFileSystemInfo"/> to extend its functionality.

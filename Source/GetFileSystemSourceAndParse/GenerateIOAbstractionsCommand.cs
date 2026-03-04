@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO.Abstractions;
 using FileBasedApp.Toolkit;
 using GetFileSystemSourceAndParse;
@@ -8,6 +9,7 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using TruePath;
 using FileBasedApp.Toolkit.Abstractions;
+using ValidationResult = Spectre.Console.ValidationResult;
 
 /// <summary>
 /// Represents a command to generate abstractions for input/output (I/O) operations (Based on Testably.Abstractions,

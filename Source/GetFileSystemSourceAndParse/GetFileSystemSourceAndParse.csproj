@@ -17,13 +17,11 @@
         <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-hh2w-p6rv-4g7w" />
         <!-- Package 'Microsoft.Build.Tasks.Core' 17.7.2 has a known high severity vulnerability -->
         <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-h4j7-5rxr-p4wc" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <ProjectReference Include="..\FileBasedApp.Toolkit\FileBasedApp.Toolkit.csproj" />
-    </ItemGroup>
+    </ItemGroup>  
+   
 
     <ItemGroup>
+        <PackageReference Include="FileBasedApp.Toolkit" Version="0.10.2" />
         <PackageReference Include="Microsoft.Build" Version="18.0.2" ExcludeAssets="runtime" />
       <PackageReference Include="Microsoft.Build.Locator" Version="1.7.8" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />

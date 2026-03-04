@@ -1,5 +1,4 @@
 ﻿using System.IO.Abstractions;
-using FileBasedApp.Toolkit.Abstractions;
 using TruePath;
 
 namespace FileBasedApp.Toolkit;
@@ -9,9 +8,9 @@ namespace FileBasedApp.Toolkit;
 /// </summary>
 public static class PathUtil
 {
-    private static IFileSystem _fileSystem => new FileSystem(); 
-    
-    internal static bool DirectoryExist(AbsolutePath path) => _fileSystem.Directory.Exists(path);
+    private static IFileSystem _fileSystem => new FileSystem();
+
+    internal static bool DirectoryExist(AbsolutePath path) => path.DirectoryExists();
     internal static bool FileExist(AbsolutePath path) => _fileSystem.File.Exists(path);
     
     private const string EntrypointFileDirectoryPath = "EntryPointFileDirectoryPath";

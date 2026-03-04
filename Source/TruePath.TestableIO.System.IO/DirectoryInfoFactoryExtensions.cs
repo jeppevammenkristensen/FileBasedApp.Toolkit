@@ -1,13 +1,13 @@
-﻿using System.IO.Abstractions;
-using TruePath;
+﻿using TruePath;
+// ReSharper disable CheckNamespace
 
-namespace FileBasedApp.Toolkit.Abstractions;
+namespace System.IO.Abstractions;
 
 /// <summary>
 /// Provides extension methods for the <see cref="IDirectoryInfoFactory"/> type to create
 /// <see cref="IDirectoryInfo"/> instances using an <see cref="AbsolutePath"/> parameter.
 /// </summary>
-public static class DirectoryInfoFactoryExtensions
+public static partial class DirectoryInfoFactoryExtensions
 {
     /// <summary>
     ///  Initializes a new instance of a wrapper for <see cref="DirectoryInfo" /> which implements

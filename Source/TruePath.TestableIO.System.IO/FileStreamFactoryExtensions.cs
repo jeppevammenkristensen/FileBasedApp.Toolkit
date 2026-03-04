@@ -1,7 +1,6 @@
-﻿using System.IO.Abstractions;
-using TruePath;
-
-namespace FileBasedApp.Toolkit.Abstractions;
+﻿using TruePath;
+// ReSharper disable CheckNamespace
+namespace System.IO.Abstractions;
 
 /// <summary>
 /// Provides extension methods for creating <see cref="FileSystemStream"/> instances

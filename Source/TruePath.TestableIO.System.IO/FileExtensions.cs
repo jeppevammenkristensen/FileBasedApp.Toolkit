@@ -1,16 +1,16 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.IO.Abstractions;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using System.Text;
 using TruePath;
+// ReSharper disable CheckNamespace
 
-namespace FileBasedApp.Toolkit.Abstractions;
+namespace System.IO.Abstractions;
 
 /// <summary>
 /// Provides a collection of extension methods for performing common file operations on an instance of <see cref="IFile"/>.
 /// </summary>
-public static class FileExtensions
+public static partial class FileExtensions
 {
 #if FEATURE_FILE_SPAN
     /// <inheritdoc cref="File.AppendAllBytes(string,byte[])" />

@@ -1,9 +1,8 @@
-﻿using System.IO.Abstractions;
-using TruePath;
-
+﻿using TruePath;
+// ReSharper disable CheckNamespace
 // ReSharper disable InvalidXmlDocComment
 
-namespace FileBasedApp.Toolkit.Abstractions;
+namespace System.IO.Abstractions;
 
 /// <summary>
 /// Provides extension methods for creating instances of <see cref="IFileSystemWatcher" /> through an

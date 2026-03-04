@@ -1,7 +1,6 @@
 #:package FileBasedApp.Toolkit@*
 
 using FileBasedApp.Toolkit;
-using FileBasedApp.Toolkit.Abstractions;
 using Spectre.Console;
 using System.IO.Abstractions;
 using System.Text.RegularExpressions;
@@ -31,7 +30,7 @@ public class BuildCommand : AsyncCommand<BuildCommand.Settings>
 		try
 		{	
 	
-			AbsolutePath solutionFile = fileSystem.Directory.GetFiles(root, "*.slnx", SearchOption.AllDirectories).First();
+			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).First();
 	
 			await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", settings.Configuration, "-o", artifact.Value]);
 	
@@ -43,7 +42,7 @@ public class BuildCommand : AsyncCommand<BuildCommand.Settings>
 				.AddChoices(items));
 	
 			// Enumerate all the generated nuget packages and publish them to the source
-			foreach (var element in fileSystem.Directory.GetFiles(artifact, "*.nup*"))
+			foreach (var element in artifact.EnumerateFiles("*.nup*"))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
 				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source];

@@ -1,4 +1,5 @@
 #:package FileBasedApp.Toolkit@*
+#:property PackageAot=false
 
 using FileBasedApp.Toolkit;
 using Spectre.Console;

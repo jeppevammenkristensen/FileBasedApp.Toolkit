@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Jeppe Roi Kristensen",
+  "classifications": [ "Library", "FileBasedApp" ],
+  "identity": "FileBasedApp.FileBasedAppTemplate",
+  "name": "File‑Based App",
+  "shortName": "filebasedtoolkitapp",
+  "sourceName": "FileBasedToolkitApp",
+  "description": "A simple file-based application class template. using the FileBasedApp.Toolkit",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "preferNameDirectory": false
+}

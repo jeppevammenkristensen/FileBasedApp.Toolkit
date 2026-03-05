@@ -1,22 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageType>Template</PackageType>
-    <PackageId>FileBasedApp.FileBasedAppTemplate</PackageId>
-    <Version>0.0.11</Version>
-    <Authors>Jeppe Roi Kristensen</Authors>
-    <Title>File-Based App Templates</Title>
-    <Description>A simple file-based application class template. using the FileBasedApp.Toolkit</Description>
-    <PackageTags>filebased</PackageTags>
-    <IncludeContentInPack>true</IncludeContentInPack>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
-    <ContentTargetFolders>content</ContentTargetFolders>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <PackageType>Template</PackageType>
+        <PackageId>FileBasedApp.Toolkit.Template</PackageId>
+        <Authors>Jeppe Roi Kristensen</Authors>
+        <Title>File-Based App Templates</Title>
+        <Description>A simple file-based application class template. using the FileBasedApp.Toolkit</Description>
+        <PackageTags>filebased</PackageTags>
+        <IncludeContentInPack>true</IncludeContentInPack>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <ContentTargetFolders>content</ContentTargetFolders>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <NoWarn>$(NoWarn);NU5128</NoWarn>
+        
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="FileBasedAppTemplate\**\*" Exclude="**\bin\**;**\obj\**" />
-    <Compile Remove="**\*" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
+
+        <Content Include="FileBasedAppTemplate\**\*" Exclude="**\bin\**;**\obj\**"/>
+        <Compile Remove="**\*"/>
+    </ItemGroup>
 
 </Project>

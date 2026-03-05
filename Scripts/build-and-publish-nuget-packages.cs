@@ -29,8 +29,8 @@ public class BuildCommand : AsyncCommand<BuildCommand.Settings>
 		var artifact = codePath / "TempArtifact";
 
 		try
-		{	
-	
+		{				
+			
 			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).First();
 	
 			await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", settings.Configuration, "-o", artifact.Value]);

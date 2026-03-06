@@ -19,11 +19,15 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 		
 		var parentDirectory = settings.SomePathAbsolute / "..";
 		
-		// Uses the extensions method to GetFiles
-		foreach(var csfile in parentDirectory.EnumerateFiles("*.cs", SearchOption.AllDirectories).Take(50))
+		AnsiConsole.Status().Start("Checking for .cs files", ctx =>
 		{
-			AnsiConsole.MarkupLineInterpolated($"[dim]Relative path {csfile.RelativeTo(settings.SomePathAbsolute)}[/]");
-		}
+
+			// Uses the extensions method to GetFiles
+			foreach (var csfile in parentDirectory.EnumerateFiles("*.cs", SearchOption.AllDirectories).Take(50))
+			{
+				AnsiConsole.MarkupLineInterpolated($"[dim]Relative path {csfile.RelativeTo(settings.SomePathAbsolute)}[/]");
+			}
+		});
 		
 		await SimpleExec.Command.RunAsync("dotnet", ["--version"], parentDirectory.Value);
 		return 0; // 0 for success

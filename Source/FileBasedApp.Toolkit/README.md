@@ -16,3 +16,7 @@ A collection of opinionated helpers and extensions for building file-based appli
 - [SimpleExec](https://github.com/adamralph/simpleexec)
 - [Spectre.Console.Cli](https://github.com/spectreconsole/spectre.console)
 - [TestableIO.System.IO.Abstractions.Wrappers](https://github.com/TestableIO/System.IO.Abstractions)
+
+## Bugs or things missing
+
+Feel free to create an issue or submit a pull request. 

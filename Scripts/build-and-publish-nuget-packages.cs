@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@*
+#:package FileBasedApp.Toolkit@0.11.2
 #:property PackageAot=false
 
 using FileBasedApp.Toolkit;
@@ -9,18 +9,105 @@ using TruePath;
 using Spectre.Console.Cli;
 using System.ComponentModel;
 using System.Collections.Immutable;
+using SimpleExec;
 
-var commandApp = new CommandApp<BuildCommand>().
-	WithDescription("Helps build this solution for local or to nuget");
+var commandApp = new CommandApp();
+
+commandApp.Configure(ctx => {
+	ctx.AddCommand<BuildTemplateCommand>("build-template").WithDescription("Build the template");
+	
+	ctx.AddCommand<BuildCodeCommand>("build-code").WithDescription("Build the code");	
+		
+});
+
+	
 	
 await commandApp.RunAsync(args);
 
-public class BuildCommand : AsyncCommand<BuildCommand.Settings>
+
+public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
+{
+	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
+	{
+		var fileSystem = new FileSystem();
+		var codePath = PathUtil.GetExecutionFolder();
+
+		var root = codePath / "..";
+		var artifact = codePath / "TempTemplateArtifact";
+
+		try
+		{
+			artifact.Delete(true);
+		}
+		catch
+		{
+
+		}
+
+		try
+		{
+
+			AbsolutePath projectFile = (root / "Templates" / "FileBasedAppTemplates.csproj");
+			if (!fileSystem.File.Exists(projectFile)){
+				throw new InvalidOperationException($"Project file {projectFile} was not found");
+			}
+
+			await SimpleExec.Command.RunAsync("dotnet", ["pack", projectFile.Value, "-c", "Release", "-o", artifact.Value]);
+			var items = await Methods.GetNugetSources();
+
+			// Prompt the use to select source
+			var source = AnsiConsole.Prompt(new SelectionPrompt<string>()
+				.Title("Select source")
+				.AddChoices(items));
+			
+			// Enumerate all the generated nuget packages and publish them to the source
+			foreach (var element in artifact.EnumerateFiles("*.*nupkg"))
+			{
+				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
+				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source];
+
+				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
+				{
+					arguments = arguments.AddRange("--api-key", settings.NugetApiKey);
+				}
+
+
+				try
+				{
+					await SimpleExec.Command.RunAsync("dotnet", arguments);
+				}
+				catch (ExitCodeReadException)
+				{
+					AnsiConsole.MarkupLineInterpolated($"[red]Could not publish {element.Value}[/]");
+				}
+			}
+
+			AnsiConsole.MarkupLineInterpolated($"[green]Remove temp artifact [bold]{artifact}[/][/]");
+
+		}
+
+		finally
+
+		{		
+			artifact.Delete(true);
+		}
+
+		return 0;
+	}
+
+	public class Settings : ExtendedCommandSettings
+	{
+		[CommandOption("--api-key")]
+		public string? NugetApiKey { get; set; }	
+	}
+}
+
+
+public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 {
 
 	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
-	{
-		var currentPath = PathUtil.GetCurrentWorkingFolder();
+	{		
 		var fileSystem = new FileSystem();
 
 		var codePath = PathUtil.GetExecutionFolder();
@@ -29,21 +116,35 @@ public class BuildCommand : AsyncCommand<BuildCommand.Settings>
 		var artifact = codePath / "TempArtifact";
 
 		try
+		{
+			artifact.Delete(true);	
+		}
+		catch {
+			
+		}
+		
+		
+
+		try
 		{				
 			
 			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).First();
 	
-			await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", settings.Configuration, "-o", artifact.Value]);
-	
+			await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", settings.Configuration, "-o", artifact.Value, "-p:IncludeSymbols=true", "-p:SymbolPackageFormat=snupkg"]);	
 			var items = await Methods.GetNugetSources();
 	
 			// Prompt the use to select source
 			var source = AnsiConsole.Prompt(new SelectionPrompt<string>()
 				.Title("Select source")
 				.AddChoices(items));
+				
+			if (settings.SkipDeploy)
+			{
+				return 0;
+			}
 	
 			// Enumerate all the generated nuget packages and publish them to the source
-			foreach (var element in artifact.EnumerateFiles("*.nup*"))
+			foreach (var element in artifact.EnumerateFiles("*.*nupkg"))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
 				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source];
@@ -54,7 +155,14 @@ public class BuildCommand : AsyncCommand<BuildCommand.Settings>
 				}	
 				
 				
-				await SimpleExec.Command.RunAsync("dotnet",arguments);
+				try
+				{	        
+					await SimpleExec.Command.RunAsync("dotnet",arguments);
+				}
+				catch (ExitCodeReadException)
+				{
+					AnsiConsole.MarkupLineInterpolated($"[red]Could not publish {element.Value}[/]");					
+				}
 			}
 	
 			AnsiConsole.MarkupLineInterpolated($"[green]Remove temp artifact [bold]{artifact}[/][/]");
@@ -64,8 +172,11 @@ public class BuildCommand : AsyncCommand<BuildCommand.Settings>
 		finally
 
 		{
-
-			fileSystem.Directory.Delete(artifact, true);	
+			if (!settings.SkipDeploy)
+			{
+				artifact.Delete(true);				
+			}
+			
 
 		}
 		
@@ -74,18 +185,30 @@ public class BuildCommand : AsyncCommand<BuildCommand.Settings>
 
 	public class Settings : FileBasedApp.Toolkit.ExtendedCommandSettings
 	{
-		[
-		CommandOption("--api-key")]
+		[CommandOption("--api-key")]
 		public string? NugetApiKey {get;set; }
 		
 		protected override ValidationResult DoValidate()
 		{			
+			if (!string.IsNullOrWhiteSpace(NugetApiKey))
+			{
+				Configuration = "Release";
+			}
+			
 			return base.DoValidate();
 		}
 		
 		[CommandOption("-c|--configuration")]
 		[DefaultValue("Debug")]
 		public required string Configuration {get;set;}
+		
+		[CommandOption("--skip-deploy")]
+		[DefaultValue("false")]
+		public bool SkipDeploy {get;set;}
+		
+		
+		
+		
 	}
 }
 

@@ -8,8 +8,6 @@ namespace FileBasedApp.Toolkit;
 /// </summary>
 public static class PathUtil
 {
-    private static IFileSystem _fileSystem => new FileSystem();
-
     internal static bool DirectoryExist(AbsolutePath path) => path.DirectoryExists();
     internal static bool FileExist(AbsolutePath path) => path.FileExists();
     
@@ -25,7 +23,7 @@ public static class PathUtil
         // This is relevant for FileBasedApps
         var path = AppContext.GetData(EntrypointFileDirectoryPath) as string;
 
-        // If that value is not available we use the check below
+        // If that value is not available we use the check below. 
         if (path is null)
         {
             return AbsolutePath.Create(AppDomain.CurrentDomain.BaseDirectory);

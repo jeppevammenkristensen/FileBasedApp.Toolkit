@@ -4,7 +4,9 @@ using System.IO.Abstractions;
 using TruePath;
 
 var fileSystem = new FileSystem();
+var absolutePath = fileSystem.Path.GetTempFileAbsolute();
+
 var myPath = new AbsolutePath("/var/log/app.log");
 
-fileSystem.File.WriteAllText(myPath, "Hello, world!");
-myPath.WriteAllText("Hello world", fileSystem);
+
+

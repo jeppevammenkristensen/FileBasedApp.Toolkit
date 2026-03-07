@@ -62,7 +62,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 			foreach (var element in artifact.EnumerateFiles("*.*nupkg"))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
-				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source];
+				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source,"--skip-duplicate"];
 
 				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
 				{
@@ -145,7 +145,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 			foreach (var element in artifact.EnumerateFiles("*.*nupkg"))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
-				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source];
+				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source, "--skip-duplicate"];
 				
 				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
 				{

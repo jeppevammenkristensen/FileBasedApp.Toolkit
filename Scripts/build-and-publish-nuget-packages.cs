@@ -1,5 +1,5 @@
-#:package FileBasedApp.Toolkit@0.11.2
-#:property PackageAot=false
+#: package FileBasedApp.Toolkit@*
+#: property PublishAot=false
 
 using FileBasedApp.Toolkit;
 using Spectre.Console;
@@ -14,10 +14,8 @@ using SimpleExec;
 var commandApp = new CommandApp();
 
 commandApp.Configure(ctx => {
-	ctx.AddCommand<BuildTemplateCommand>("build-template").WithDescription("Build the template");
-	
-	ctx.AddCommand<BuildCodeCommand>("build-code").WithDescription("Build the code");	
-		
+	ctx.AddCommand<BuildTemplateCommand>("build-template").WithDescription("Build the template");	
+	ctx.AddCommand<BuildCodeCommand>("build-code").WithDescription("Build the code");			
 });
 
 	

@@ -39,11 +39,9 @@
     <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="22.1.0" />
     <PackageReference Include="TruePath" Version="1.11.0" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\TruePath.TestableIO.System.IO\TruePath.TestableIO.System.IO.csproj" />
-  </ItemGroup>
-
-  
+  </ItemGroup> 
 
 </Project>

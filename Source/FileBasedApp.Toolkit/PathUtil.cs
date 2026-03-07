@@ -11,7 +11,7 @@ public static class PathUtil
     private static IFileSystem _fileSystem => new FileSystem();
 
     internal static bool DirectoryExist(AbsolutePath path) => path.DirectoryExists();
-    internal static bool FileExist(AbsolutePath path) => _fileSystem.File.Exists(path);
+    internal static bool FileExist(AbsolutePath path) => path.FileExists();
     
     private const string EntrypointFileDirectoryPath = "EntryPointFileDirectoryPath";
 

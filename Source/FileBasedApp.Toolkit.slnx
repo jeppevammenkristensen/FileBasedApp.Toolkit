@@ -9,7 +9,15 @@
     <Project Path="GetFileSystemSourceAndParse/GetFileSystemSourceAndParse.csproj" />
   </Folder>
   
-  <Project Path="FileBasedApp.Toolkit.Tests/FileBasedApp.Toolkit.Tests.csproj" />
-  <Project Path="FileBasedApp.Toolkit/FileBasedApp.Toolkit.csproj" />
-  <Project Path="TruePath.TestableIO.System.IO/TruePath.TestableIO.System.IO.csproj" />
+  <Folder Name="/FilebasedApp/">
+    <Project Path="FileBasedApp.Toolkit.Tests/FileBasedApp.Toolkit.Tests.csproj" />
+    <Project Path="FileBasedApp.Toolkit/FileBasedApp.Toolkit.csproj" />
+  </Folder>
+  <Folder Name="/Truepath/">
+    <Project Path="TruePath.TestableIO.System.IO/TruePath.TestableIO.System.IO.csproj" />  
+  </Folder>
+  <Project Path="TruePath.Playground/TruePath.Playground.csproj" />
+  
+  
+  
 </Solution>

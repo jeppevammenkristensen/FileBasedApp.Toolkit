@@ -1,4 +1,4 @@
-#:package FilebasedApp.Toolkit
+#:package FileBasedApp.Toolkit@0.13.0-preview-01
 #:property PublishAot=false 
 
 using Spectre.Console.Cli;
@@ -16,9 +16,9 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
 	{
 		AnsiConsole.MarkupLineInterpolated($"[green]SomePath is {settings.SomePathAbsolute.Value}[/]");
-		
+
 		var parentDirectory = settings.SomePathAbsolute / "..";
-		
+
 		AnsiConsole.Status().Start("Checking for .cs files", ctx =>
 		{
 
@@ -28,7 +28,7 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 				AnsiConsole.MarkupLineInterpolated($"[dim]Relative path {csfile.RelativeTo(settings.SomePathAbsolute)}[/]");
 			}
 		});
-		
+
 		await SimpleExec.Command.RunAsync("dotnet", ["--version"], parentDirectory.Value);
 		return 0; // 0 for success
 	}
@@ -46,9 +46,9 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 
 			// This will evaluate the path. If the path is relative, it will relative (in this case) against the execution folder. That would be the
 			// directory that this .cs lives in
-			SomePathAbsolute = this.TryGetDirectory(SomePath, allowEmpty: true, shouldExist: false, PredefinedRootPath.ExecutionFolder);
-
+			SomePathAbsolute = this.TryGetDirectory(SomePath, allowEmpty: true, shouldExist: true, PredefinedRootPath.ExecutionFolder);         
+    
 			return base.DoValidate();
-		}		
+		}
 	}
 }

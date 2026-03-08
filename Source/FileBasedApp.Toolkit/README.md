@@ -73,6 +73,10 @@ fileSystem.File.Create(newDirectory / "test.txt");
 (newDirectory / "..").GetDirectories(fileSystem)
 ```
 
+## Template
+
+You can use the `FileBasedApp.Toolkit.Template` to easily create a new filebase app with FileBasedApp.Toolkit references added https://www.nuget.org/packages/FileBasedApp.Toolkit.Template/
+
 ## Bugs or things missing
 
 Feel free to create an issue or submit a pull request. 

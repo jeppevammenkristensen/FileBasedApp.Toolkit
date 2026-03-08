@@ -20,7 +20,7 @@ public static class IO
 
     /// <summary>
     /// Represents the default maximum depth value used for file or folder traversal operations in the IO utilities.
-    /// This constant is primarily utilized by methods like <see cref="FindParent"/> and <see cref="GetAncestors"/>
+    /// This constant is primarily utilized by methods like <see cref="FindRequiredParent"/> and <see cref="GetAncestors"/>
     /// to limit the depth of recursive or iterative operations, preventing infinite loops or unnecessary traversal.
     /// </summary>
     public const int DefaultMaxDepth = 20;
@@ -35,7 +35,7 @@ public static class IO
     /// <exception cref="InvalidOperationException">
     /// Thrown if no matching ancestor directory is found within the specified depth.
     /// </exception>
-    public static AbsolutePath FindParent(this AbsolutePath folder, Func<AbsolutePath, bool> predicate,
+    public static AbsolutePath FindRequiredParent(this AbsolutePath folder, Func<AbsolutePath, bool> predicate,
         int maxDepth = DefaultMaxDepth)
     {
         return folder.FindAncestorOrNull(false, predicate, maxDepth) ??
@@ -71,7 +71,7 @@ public static class IO
     /// <param name="predicate">The search predicate</param>
     /// <param name="maxDepth">The max depth to traverse up before skipping travering (to avoid endless loop) default is <see cref="DefaultMaxDepth"/></param>
     /// <returns></returns>
-    public static AbsolutePath? FindAncestorOrNull(this AbsolutePath path, bool includeSelf, Func<AbsolutePath, bool> predicate,
+    internal static AbsolutePath? FindAncestorOrNull(this AbsolutePath path, bool includeSelf, Func<AbsolutePath, bool> predicate,
         int maxDepth = DefaultMaxDepth)
     {
         return path
@@ -96,6 +96,22 @@ public static class IO
         ArgumentNullException.ThrowIfNull(path);
         return AbsolutePath.Create(path);
     }
+
+    /// <summary>
+    /// Tries to convert the provided string to an absolute path.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static AbsolutePath ToRequired(this AbsolutePath? path) =>
+        path ?? throw new ArgumentNullException(nameof(path));
+    
+    /// <summary>
+    /// Returns the path or a nullable
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public static AbsolutePath? ToNullable(this AbsolutePath path) => path;
 
     /// <summary>
     /// Converts the provided path, given as a read-only span of characters, to an absolute path.

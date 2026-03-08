@@ -7,4 +7,4 @@ namespace FileBasedApp.Toolkit;
 /// </summary>
 /// <param name="path">The absolute path to evaluate.</param>
 /// <returns>A boolean value indicating whether the specified path exists.</returns>
-public delegate bool PathExistEvaluator(AbsolutePath path);
+internal delegate bool PathExistEvaluator(AbsolutePath path);

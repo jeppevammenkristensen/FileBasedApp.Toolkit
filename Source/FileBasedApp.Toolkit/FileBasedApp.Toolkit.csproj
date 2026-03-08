@@ -42,6 +42,9 @@
   
   <ItemGroup>
     <ProjectReference Include="..\TruePath.TestableIO.System.IO\TruePath.TestableIO.System.IO.csproj" />
-  </ItemGroup> 
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="FileBasedApp.Toolkit.Tests" />
+  </ItemGroup>
 
 </Project>

@@ -15,36 +15,32 @@ namespace FileBasedApp.Toolkit;
 /// <param name="Exists">
 /// A boolean indicating whether the evaluated path exists on the file system.
 /// </param>
-[TypeConverter]
-public record EvaluatedPath(string? OriginalPath, AbsolutePath? Path, bool Exists)
+internal record EvaluatedPath(string? OriginalPath, AbsolutePath? Path, bool Exists) : IEvaluatedPath
 {
     /// <summary>
-    /// 
+    /// Return a tuple with the Path and string representing an error message if the path is not valid or does not exist. The parameters allow for flexible validation based on the context in which the path is being used.
     /// </summary>
     /// <param name="shouldExist"></param>
     /// <param name="originalPathCanBeNull"></param>
     /// <returns></returns>
-    /// <exception cref="InvalidOperationException"></exception>
-    public AbsolutePath GetPath(bool shouldExist, bool originalPathCanBeNull)
+    public (AbsolutePath path, string? errorMessage) GetPath(bool shouldExist, bool originalPathCanBeNull)
     {
         if (!originalPathCanBeNull && string.IsNullOrWhiteSpace(OriginalPath))
         {
-            throw new InvalidOperationException("OriginalPath cannot be null");
+            return (default, "OriginalPath cannot be null");
         }
 
         if (shouldExist && !Exists)
         {
-            throw new InvalidOperationException($"Path {OriginalPath} translated to {Path} does not exist");
+            return (default, $"Path {OriginalPath} translated to {Path} does not exist");
         }
         
         if (Path is null)
         {
-            throw new InvalidOperationException($"Path {OriginalPath} could not be translated to an AbsolutePath");
+            return (default,$"Path {OriginalPath} could not be translated to an AbsolutePath");
         }
 
-        
-
-        return Path.Value;
+        return (Path.Value, null);
 
     }
 }

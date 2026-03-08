@@ -4,18 +4,56 @@ A collection of opinionated helpers and extensions for building file-based appli
 
 ## Features
 
-- **Path Utilities**: Enhanced path manipulation and validation using [TruePath](https://github.com/Youssef13/TruePath).
-- **IO Extensions**: Helpers for traversing directory structures (ancestors, parents) and handling absolute paths.
-- **CLI Support**: Integration with [Spectre.Console.Cli](https://github.com/spectreconsole/spectre.console) for building robust command-line tools.
-- **Process Execution**: Simplified external process execution via [SimpleExec](https://github.com/adamralph/simpleexec).
-- **Testable IO**: Support for [TestableIO.System.IO.Abstractions](https://github.com/TestableIO/System.IO.Abstractions).
+* Provides a `PathUtil` class for working with paths and validating string paths
+* Provides an IO class to provide methods and extension methods for `TruePath`
+* Provides an extension of the `CommandSettings` from the `Spectre.Console.Cli` providing validation of file and directory paths
+* Includes the following libraries
+  * `TruePath`
+  * `SimpleExec`
+  * `Spectre.Console.Cli`
+  * `TestableIO.System.IO.Abstractions.Wrappers`
+  * `TruePath.TestableIO.System.IO`
 
-## Dependencies
+## Example
 
-- [TruePath](https://github.com/Youssef13/TruePath)
-- [SimpleExec](https://github.com/adamralph/simpleexec)
-- [Spectre.Console.Cli](https://github.com/spectreconsole/spectre.console)
-- [TestableIO.System.IO.Abstractions.Wrappers](https://github.com/TestableIO/System.IO.Abstractions)
+### Extended settings
+
+The example below shows how to use the `ExtendedCommandSettings` class to validate file and directory paths.
+
+```csharp
+using FileBasedApp.Toolkit;
+using Spectre.Console;
+using Spectre.Console.Cli;
+using TruePath;
+
+public class CustomCommandSettings : ExtendedCommandSettings
+{
+    [CommandArgument(0, "<directory-path>")]
+    public string? Directory { get; set; }
+    
+    [CommandOption("--filePath")]
+    public required string File { get; set; }
+
+    public AbsolutePath DirectoryPath { get; set; }
+    
+    public AbsolutePath FilePath { get; set; }
+    
+    protected override ValidationResult DoValidate()
+    {
+        // Evaluates the directory string.
+        DirectoryPath = TryGetDirectory(Directory,
+            allowEmpty: true,
+            shouldExist: true,
+            PredefinedRootPath.ExecutionFolder);
+        FilePath = TryGetFile(File, true, roots: [PathUtil.GetCurrentWorkingFolder(), PathUtil.GetExecutionFolder()]);
+        return base.DoValidate();
+    }
+}
+```
+
+### TruePath IO extensions
+
+### 
 
 ## Bugs or things missing
 

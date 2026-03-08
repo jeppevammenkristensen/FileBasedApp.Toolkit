@@ -14,6 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\FileBasedApp.Toolkit\FileBasedApp.Toolkit.csproj" />
       <ProjectReference Include="..\TruePath.TestableIO.System.IO\TruePath.TestableIO.System.IO.csproj" />
     </ItemGroup>
 

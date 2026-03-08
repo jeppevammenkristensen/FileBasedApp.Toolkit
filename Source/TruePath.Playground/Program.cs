@@ -1,12 +1,19 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.IO.Abstractions;
-using TruePath;
+using FileBasedApp.Toolkit;
 
-var fileSystem = new FileSystem();
-var absolutePath = fileSystem.Path.GetTempFileAbsolute();
+var applicationData = Environment.SpecialFolder.ApplicationData.GetSpecialFolder();
+applicationData.FindRequiredParent(x => x.FileName == "SomeValue");
+var ancestors = applicationData.GetAncestors(true).ToList();
 
-var myPath = new AbsolutePath("/var/log/app.log");
+// Combining with TruePath.TestableIO.System.IO
+// This was orignally part of the FileBased.Toolkit library but moved
+// to it's own library
+var newDirectory = applicationData / "NewDirectory";
+newDirectory.CreateDirectory();
 
+IFileSystem fileSystem = new FileSystem();
+fileSystem.File.Create(newDirectory / "test.txt");
 
-
+(newDirectory / "..").GetDirectories(fileSystem);

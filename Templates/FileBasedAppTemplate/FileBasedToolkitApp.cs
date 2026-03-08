@@ -19,9 +19,8 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 		
 		var parentDirectory = settings.SomePathAbsolute / "..";
 		
-		AnsiConsole.Status().Start("Checking for .cs files", ctx =>
+		AnsiConsole.Status().Start($"Checking for .cs files in folder {parentDirectory.Value} ", ctx =>
 		{
-
 			// Uses the extensions method to GetFiles
 			foreach (var csfile in parentDirectory.EnumerateFiles("*.cs", SearchOption.AllDirectories).Take(50))
 			{

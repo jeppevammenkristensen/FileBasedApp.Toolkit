@@ -1,4 +1,4 @@
-#:package FilebasedApp.Toolkit@*
+#:package FilebasedApp.Toolkit
 #:property PublishAot=false 
 
 using Spectre.Console.Cli;
@@ -19,8 +19,9 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 		
 		var parentDirectory = settings.SomePathAbsolute / "..";
 		
-		AnsiConsole.Status().Start($"Checking for .cs files in folder {parentDirectory.Value} ", ctx =>
+		AnsiConsole.Status().Start("Checking for .cs files", ctx =>
 		{
+
 			// Uses the extensions method to GetFiles
 			foreach (var csfile in parentDirectory.EnumerateFiles("*.cs", SearchOption.AllDirectories).Take(50))
 			{
@@ -45,7 +46,7 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 
 			// This will evaluate the path. If the path is relative, it will relative (in this case) against the execution folder. That would be the
 			// directory that this .cs lives in
-			SomePathAbsolute = this.TryGetDirectory(SomePath, PredefinedRootPath.ExecutionFolder, allowEmpty: true, shouldExist: false);
+			SomePathAbsolute = this.TryGetDirectory(SomePath, allowEmpty: true, shouldExist: false, PredefinedRootPath.ExecutionFolder);
 
 			return base.DoValidate();
 		}		

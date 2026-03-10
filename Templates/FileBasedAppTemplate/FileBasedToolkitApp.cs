@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.13.0
+#:package FileBasedApp.Toolkit@0.14.0
 #:property PublishAot=false 
 
 using Spectre.Console.Cli;
@@ -9,7 +9,6 @@ using System.IO.Abstractions;
 
 var commandApp = new CommandApp<RunCommand>();
 await commandApp.RunAsync(args);
-
 
 public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you can use Command (and have Execute instead of ExecuteAsync
 {

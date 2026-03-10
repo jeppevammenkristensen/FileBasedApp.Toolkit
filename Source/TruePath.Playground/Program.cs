@@ -2,6 +2,7 @@
 
 using System.IO.Abstractions;
 using FileBasedApp.Toolkit;
+using TruePath.TestableIO.System.IO;
 
 var applicationData = Environment.SpecialFolder.ApplicationData.GetSpecialFolder();
 applicationData.FindRequiredParent(x => x.FileName == "SomeValue");
@@ -12,8 +13,10 @@ var ancestors = applicationData.GetAncestors(true).ToList();
 // to it's own library
 var newDirectory = applicationData / "NewDirectory";
 newDirectory.CreateDirectory();
+// or DirectoryIO.CreateDirectory(newDirectory);
 
 IFileSystem fileSystem = new FileSystem();
 fileSystem.File.Create(newDirectory / "test.txt");
+// or FileIO.Create(newDirectory / "test.txt"); 
 
 (newDirectory / "..").GetDirectories(fileSystem);

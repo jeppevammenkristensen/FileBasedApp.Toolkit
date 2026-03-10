@@ -39,13 +39,15 @@
     <PackageReference Include="Spectre.Console.Cli" Version="0.53.1" />
     <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="22.1.0" />
     <PackageReference Include="TruePath" Version="1.11.0" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\TruePath.TestableIO.System.IO\TruePath.TestableIO.System.IO.csproj" />
-  </ItemGroup>
+    
+  </ItemGroup> 
+ 
   <ItemGroup>
     <InternalsVisibleTo Include="FileBasedApp.Toolkit.Tests" />
+  </ItemGroup> 
+ 
+  <ItemGroup>
+    <ProjectReference Include="..\TruePath.TestableIO.System.IO\TruePath.TestableIO.System.IO.csproj" />
   </ItemGroup>
 
 </Project>

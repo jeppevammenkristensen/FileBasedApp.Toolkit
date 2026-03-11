@@ -1,5 +1,5 @@
-#: package FileBasedApp.Toolkit@*
-#: property PublishAot=false
+#:package FileBasedApp.Toolkit@*
+#:property PublishAot=false
 
 using FileBasedApp.Toolkit;
 using Spectre.Console;

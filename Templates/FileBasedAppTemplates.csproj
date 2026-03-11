@@ -7,7 +7,7 @@
         <Authors>Jeppe Roi Kristensen</Authors>
         <Title>File-Based App Templates</Title>
         <Description>A simple file-based application class template. using the FileBasedApp.Toolkit</Description>
-        <PackageTags>filebased</PackageTags>
+        <PackageTags>filebased</PackageTags>        
         <IncludeContentInPack>true</IncludeContentInPack>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <ContentTargetFolders>content</ContentTargetFolders>

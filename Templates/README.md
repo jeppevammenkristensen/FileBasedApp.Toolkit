@@ -20,13 +20,7 @@ dotnet new filebasedtoolkitapp -n MyFileBasedApp
 
 The generated project will include the basic structure and boilerplate required to build an application that operates on files and directories, leveraging the helpers and utilities provided by the `FileBasedApp.Toolkit`.
 
-## Features
-
-- **Pre-configured Structure**: Includes necessary project settings and initial code.
-- **Toolkit Integration**: Seamlessly uses `FileBasedApp.Toolkit` for path manipulation and IO operations.
-- **Modern .NET**: Targeted for the latest .NET versions.
-
 ## Learn More
 
-- [FileBasedApp.Toolkit GitHub Repository](https://github.com/JeppeRoi/FileBasedApp.Toolkit)
+- [FileBasedApp.Toolkit GitHub Repository](https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit)
 - [Main Toolkit NuGet Package](https://www.nuget.org/packages/FileBasedApp.Toolkit)

@@ -6,6 +6,7 @@ using TruePath;
 using Spectre.Console;
 using FileBasedApp.Toolkit;
 using System.IO.Abstractions;
+using TruePath.TestableIO.System.IO;
 
 var commandApp = new CommandApp<RunCommand>();
 await commandApp.RunAsync(args);
@@ -16,8 +17,14 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 	{
 		AnsiConsole.MarkupLineInterpolated($"[green]SomePath is {settings.SomePathAbsolute.Value}[/]");
 
-		var parentDirectory = settings.SomePathAbsolute / "..";
+		var directoryInfo = DirectoryInfoFactory.New(settings.SomePathAbsolute);
+		AnsiConsole.MarkupLineInterpolated($"[dim]Creation time: {directoryInfo.CreationTimeUtc}[/]");
 
+		settings.SomePathAbsolute.DirectoryGetParent()!.GetAbsolutePath();
+
+		var parentDirectory = settings.SomePathAbsolute / "..";
+		
+		
 		AnsiConsole.Status().Start("Checking for .cs files", ctx =>
 		{
 

@@ -128,13 +128,19 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 			
 			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).First();
 	
-			await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", settings.Configuration, "-o", artifact.Value, "-p:IncludeSymbols=true", "-p:SymbolPackageFormat=snupkg"]);	
+			await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", settings.Configuration, "-o", artifact.Value, "-p:IncludeSymbols=true", "-p:SymbolPackageFormat=snupkg"], ct: cancellationToken);	
 			var items = await Methods.GetNugetSources();
-	
-			// Prompt the use to select source
-			var source = AnsiConsole.Prompt(new SelectionPrompt<string>()
-				.Title("Select source")
-				.AddChoices(items));
+
+
+			if (settings.Interactive)
+			{
+				// Prompt the use to select source
+				var source = AnsiConsole.Prompt(new SelectionPrompt<string>()
+					.Title("Select source")
+					.AddChoices(items));	
+			}
+			
+			
 				
 			if (settings.SkipDeploy)
 			{
@@ -200,10 +206,20 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		public bool TruePathOnly { get; set; }
 		
 		protected override ValidationResult DoValidate()
-		{			
+		{
+			if (string.IsNullOrWhiteSpace(NugetApiKey))
+			{
+				NugetApiKey = Environment.GetEnvironmentVariable("NUGET_API_KEY");
+			}
+			
 			if (!string.IsNullOrWhiteSpace(NugetApiKey))
 			{
 				Configuration = "Release";
+			}
+
+			if (!Interactive && string.IsNullOrWhiteSpace(NugetSource))
+			{
+				throw new InvalidOperationException("You must specify a source when not in interactive mode");
 			}
 			
 			return base.DoValidate();
@@ -217,6 +233,11 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		[DefaultValue("false")]
 		public bool SkipDeploy {get;set;}
 		
+		[CommandOption("--interactive")]
+		public bool Interactive { get; set; }
+		
+		[CommandOption("--source")]
+		public string? NugetSource { get; set; }
 		
 		
 		

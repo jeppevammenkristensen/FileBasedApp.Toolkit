@@ -19,3 +19,5 @@ jobs:
     - name: Build-And-Publish-Code
       shell: pwsh
       run: dotnet run (Join-Path Scripts build-and-publish-nuget-packages.cs) -- build-code --skip-deploy -c Release --source nuget.org
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}

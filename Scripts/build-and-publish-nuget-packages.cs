@@ -35,7 +35,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 
 		try
 		{
-			artifact.Delete(true);
+			artifact.DirectoryDelete(true);
 		}
 		catch
 		{
@@ -87,7 +87,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 		finally
 
 		{		
-			artifact.Delete(true);
+			artifact.DirectoryDelete(true);
 		}
 
 		return 0;
@@ -115,7 +115,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 
 		try
 		{
-			artifact.Delete(true);	
+			artifact.DirectoryDelete(true);	
 		}
 		catch {
 			
@@ -142,7 +142,17 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 			}
 	
 			// Enumerate all the generated nuget packages and publish them to the source
-			foreach (var element in artifact.EnumerateFiles("*.*nupkg"))
+			foreach (var element in artifact.EnumerateFiles("*.*nupkg").Where(x =>
+			         {
+				         if (settings.TruePathOnly)
+				         {
+					         return x.GetFilenameWithoutExtension().StartsWith("TruePath.");
+				         }
+				         else
+				         {
+					         return true;
+				         }
+			         }))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
 				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source, "--skip-duplicate"];
@@ -172,7 +182,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		{
 			if (!settings.SkipDeploy)
 			{
-				artifact.Delete(true);				
+				artifact.DirectoryDelete(true);				
 			}
 			
 
@@ -185,6 +195,9 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 	{
 		[CommandOption("--api-key")]
 		public string? NugetApiKey {get;set; }
+		
+		[CommandOption("--true-path-only")]
+		public bool TruePathOnly { get; set; }
 		
 		protected override ValidationResult DoValidate()
 		{			

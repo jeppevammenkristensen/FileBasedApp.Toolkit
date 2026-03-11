@@ -132,14 +132,15 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 			var items = await Methods.GetNugetSources();
 
 
-			if (settings.Interactive)
+			string? source = settings.NugetSource;
+			
+			if (settings.Interactive && string.IsNullOrWhiteSpace(source))
 			{
 				// Prompt the use to select source
-				var source = AnsiConsole.Prompt(new SelectionPrompt<string>()
+				source = AnsiConsole.Prompt(new SelectionPrompt<string>()
 					.Title("Select source")
 					.AddChoices(items));	
 			}
-			
 			
 				
 			if (settings.SkipDeploy)

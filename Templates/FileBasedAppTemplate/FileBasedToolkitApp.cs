@@ -9,7 +9,7 @@ using System.IO.Abstractions;
 using TruePath.TestableIO.System.IO;
 
 var commandApp = new CommandApp<RunCommand>();
-await commandApp.RunAsync(args);
+return await commandApp.RunAsync(args);
 
 public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you can use Command (and have Execute instead of ExecuteAsync
 {

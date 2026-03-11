@@ -13,6 +13,7 @@
         <ContentTargetFolders>content</ContentTargetFolders>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReleaseNotes>Fixed template to correctly return error code</PackageReleaseNotes>
         <NoWarn>$(NoWarn);NU5128</NoWarn>
         
     </PropertyGroup>

@@ -64,15 +64,16 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
 				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source,"--skip-duplicate"];
 
+				var secrets = new List<string>();
+				
 				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
 				{
-					arguments = arguments.AddRange("--api-key", settings.NugetApiKey);
+					secrets.AddRange("--api-key", settings.NugetApiKey);
 				}
-
-
+				
 				try
 				{
-					await SimpleExec.Command.RunAsync("dotnet", arguments);
+					await SimpleExec.Command.RunAsync("dotnet", arguments, secrets: secrets, ct: cancellationToken);
 				}
 				catch (ExitCodeReadException)
 				{

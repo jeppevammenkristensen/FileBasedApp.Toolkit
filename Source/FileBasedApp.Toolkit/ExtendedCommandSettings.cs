@@ -146,4 +146,48 @@ public abstract class ExtendedCommandSettings : CommandSettings
     {
         return TryGetFile(candidatePath, shouldExist, paramName, root.GetRootFolder());
     }
+
+    /// <summary>
+    /// Retrieves a required value either from the provided input or from an environment variable.
+    /// Throws an exception if the resulting value is null or whitespace.
+    /// </summary>
+    /// <param name="originalValue">The original value to check, which can be null or empty.</param>
+    /// <param name="environmentKey">The key of the environment variable to fallback to if the original value is null or empty.</param>
+    /// <param name="valueName">The name of the value being processed, primarily for use in exception messages. This is automatically captured by the compiler unless explicitly provided.</param>
+    /// <returns>A non-empty string containing either the provided input or the value from the specified environment variable.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the resulting value is null, empty, or whitespace.</exception>
+    protected string? GetReqiredFromValueOrFromEnvironment(string? originalValue, string environmentKey,
+        [CallerArgumentExpression(nameof(originalValue))]
+        string? valueName = null)
+    {
+        var value = GetValueOrFromEnvironment(originalValue, environmentKey);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new InvalidOperationException($"{valueName}: Value cannot be empty. ");
+        }
+
+        return value;
+    }
+
+    /// <summary>
+    /// Retrieves a non-empty value by either returning the provided value or falling back to the value of a specified environment variable.
+    /// If the provided value is non-empty, it is returned as-is.
+    /// Otherwise, the environment variable associated with the provided key is queried, and its value is returned.
+    /// </summary>
+    /// <param name="originalValue">The value to check and potentially return if it is non-empty.</param>
+    /// <param name="environmentKey">The name of the environment variable to query if <paramref name="originalValue"/> is empty or null.</param>
+    /// <returns>
+    /// A string containing either the value of <paramref name="originalValue"/> if it is non-empty,
+    /// or the value of the environment variable specified by <paramref name="environmentKey"/>.
+    /// Returns null if both <paramref name="originalValue"/> and the environment variable are null or empty.
+    /// </returns>
+    protected string? GetValueOrFromEnvironment(string? originalValue, string environmentKey)
+    {
+        if (string.IsNullOrWhiteSpace(originalValue))
+        {
+            return Environment.GetEnvironmentVariable(environmentKey);
+        }
+
+        return originalValue;
+    }
 }

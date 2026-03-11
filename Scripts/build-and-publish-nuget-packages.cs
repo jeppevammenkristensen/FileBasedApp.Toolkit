@@ -1,4 +1,5 @@
 #:package FileBasedApp.Toolkit@0.15.0-dev-03
+#:package SimpleExec@*
 #:property PublishAot=false
 
 using FileBasedApp.Toolkit;
@@ -18,9 +19,7 @@ commandApp.Configure(ctx => {
 	ctx.AddCommand<BuildCodeCommand>("build-code").WithDescription("Build the code");			
 });
 
-	
-	
-await commandApp.RunAsync(args);
+return await commandApp.RunAsync(args);
 
 public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 {
@@ -62,13 +61,14 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 				         .StartsWith("s") ? 1 : 0))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to source [bold]{source}[/] [/]");
-				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source,"--skip-duplicate"];
+				List<string> arguments = ["nuget", "push", element.Value, "--source", source,"--skip-duplicate"];
 
 				var secrets = new List<string>();
 				
 				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
 				{
-					secrets.AddRange("--api-key", settings.NugetApiKey);
+					arguments.AddRange("--api-key", settings.NugetApiKey);
+					secrets.AddRange(settings.NugetApiKey);
 				}
 				
 				try
@@ -132,7 +132,6 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 			await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", settings.Configuration, "-o", artifact.Value, "-p:IncludeSymbols=true", "-p:SymbolPackageFormat=snupkg"], ct: cancellationToken);	
 			var items = await Methods.GetNugetSources();
 
-
 			string? source = settings.NugetSource;
 			
 			if (settings.Interactive && string.IsNullOrWhiteSpace(source))
@@ -142,7 +141,6 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 					.Title("Select source")
 					.AddChoices(items));	
 			}
-			
 				
 			if (settings.SkipDeploy)
 			{
@@ -156,26 +154,25 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 				         {
 					         return x.GetFilenameWithoutExtension().StartsWith("TruePath.");
 				         }
-				         else
-				         {
-					         return true;
-				         }
+
+				         return true;
 			         }))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
-				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source, "--skip-duplicate"];
+				List<string> arguments = ["nuget", "push", element.Value, "--source", source, "--skip-duplicate"];
 				
-				List<string> secrets = new();
+				List<string> s = new();
 
 				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
 				{
-					secrets.AddRange("--api-key", settings.NugetApiKey);				
+					arguments.AddRange("--api-key", settings.NugetApiKey);
+					s.Add(settings.NugetApiKey);
 				}					
 				
 				try
 				{	        
 					await SimpleExec.Command.RunAsync("dotnet",
-						arguments.Concat(secrets), ct: cancellationToken);
+						arguments, secrets:s,  ct: cancellationToken);
 				}
 				catch (ExitCodeReadException)
 				{

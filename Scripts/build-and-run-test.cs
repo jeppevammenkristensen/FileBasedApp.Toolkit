@@ -45,10 +45,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 			AnsiConsole.MarkupLineInterpolated($"[green]Running tests for{absolutePath.RelativeTo(settings.ParentFolder)}[/]");
 			List<string> testParameters = ["test", absolutePath.Value, $"--logger:trx;LogFileName={(testReports / (absolutePath.GetFilenameWithoutExtension() + ".trx")).Value}"];
 			await RunAsync("dotnet", testParameters, settings.ParentFolder.Value, ct: cancellationToken);
-
 		}
-
-		
 
 		return 0; // 0 for success
 	}

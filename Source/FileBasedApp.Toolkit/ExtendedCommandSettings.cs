@@ -156,7 +156,7 @@ public abstract class ExtendedCommandSettings : CommandSettings
     /// <param name="valueName">The name of the value being processed, primarily for use in exception messages. This is automatically captured by the compiler unless explicitly provided.</param>
     /// <returns>A non-empty string containing either the provided input or the value from the specified environment variable.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the resulting value is null, empty, or whitespace.</exception>
-    protected string? GetReqiredFromValueOrFromEnvironment(string? originalValue, string environmentKey,
+    protected string? GetRequiredFromValueOrEnvironment(string? originalValue, string environmentKey,
         [CallerArgumentExpression(nameof(originalValue))]
         string? valueName = null)
     {

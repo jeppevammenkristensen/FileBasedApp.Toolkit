@@ -1,38 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TestRun id="56082c7f-511d-4490-be93-b5eddeb55452" name="jayki@DESKTOP-RHANN0P 2026-03-11 15:05:26" runUser="DESKTOP-RHANN0P\jayki" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
-  <Times creation="2026-03-11T15:05:26.4326417+01:00" queuing="2026-03-11T15:05:26.4326422+01:00" start="2026-03-11T15:05:24.9867542+01:00" finish="2026-03-11T15:05:26.4411114+01:00" />
-  <TestSettings name="default" id="9426bc73-82fb-45d1-b19b-708b6cdcea8c">
-    <Deployment runDeploymentRoot="jayki_DESKTOP-RHANN0P_2026-03-11_15_05_26" />
+<TestRun id="592c464a-a892-461c-9828-b3e69f99e5e2" name="jayki@DESKTOP-RHANN0P 2026-03-11 21:56:33" runUser="DESKTOP-RHANN0P\jayki" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-03-11T21:56:33.8915198+01:00" queuing="2026-03-11T21:56:33.8915204+01:00" start="2026-03-11T21:56:31.5441454+01:00" finish="2026-03-11T21:56:33.9012289+01:00" />
+  <TestSettings name="default" id="0dce2543-b936-45ee-809b-ac5557a82af6">
+    <Deployment runDeploymentRoot="jayki_DESKTOP-RHANN0P_2026-03-11_21_56_33" />
   </TestSettings>
   <Results>
-    <UnitTestResult executionId="4346a48d-d9d5-49f8-a62d-155be926b44d" testId="134ca248-3ab1-757c-504a-2c21d90db250" testName="FileBasedApp.Toolkit.Tests.PathUtilTest.AnalyzeFilePath_NoRoots_FileShouldExists" computerName="DESKTOP-RHANN0P" duration="00:00:00.0046619" startTime="2026-03-11T15:05:26.2435261+01:00" endTime="2026-03-11T15:05:26.2470697+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4346a48d-d9d5-49f8-a62d-155be926b44d" />
-    <UnitTestResult executionId="7c7c4349-5c3c-499e-bb1e-b2e2d08b48bc" testId="9ffa894b-238e-f20c-d3fd-853a82fc5567" testName="FileBasedApp.Toolkit.Tests.PathUtilTest.AnalyzeFilePath_MultipleRootsNoMatch_FileShouldNotExist" computerName="DESKTOP-RHANN0P" duration="00:00:00.0901760" startTime="2026-03-11T15:05:26.1458807+01:00" endTime="2026-03-11T15:05:26.2422930+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7c7c4349-5c3c-499e-bb1e-b2e2d08b48bc" />
-    <UnitTestResult executionId="5e1e6329-685f-47e6-b3b3-f8b85b1dc0f8" testId="6b8155d7-77f4-4fb1-bb18-0ae3d95e064b" testName="FileBasedApp.Toolkit.Tests.AbsolutePathExtensionsTest.GetAncestors_ShouldGenerateExpectedResult" computerName="DESKTOP-RHANN0P" duration="00:00:00.0574062" startTime="2026-03-11T15:05:26.1428384+01:00" endTime="2026-03-11T15:05:26.2134212+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5e1e6329-685f-47e6-b3b3-f8b85b1dc0f8" />
-    <UnitTestResult executionId="f7685d58-fc63-4aa6-8e91-08c3e0130522" testId="9133ba1e-06c6-1f1d-6e79-542e3ac3f3e4" testName="FileBasedApp.Toolkit.Tests.PathUtilTest.AnalyzeFilePath_MultipleRootsSecondMatch_FileShouldNotExist" computerName="DESKTOP-RHANN0P" duration="00:00:00.0009264" startTime="2026-03-11T15:05:26.2473200+01:00" endTime="2026-03-11T15:05:26.2480467+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f7685d58-fc63-4aa6-8e91-08c3e0130522" />
+    <UnitTestResult executionId="0dbecf1c-3da9-4f14-8924-9efe478f1cac" testId="9ffa894b-238e-f20c-d3fd-853a82fc5567" testName="FileBasedApp.Toolkit.Tests.PathUtilTest.AnalyzeFilePath_MultipleRootsNoMatch_FileShouldNotExist" computerName="DESKTOP-RHANN0P" duration="00:00:00.1373776" startTime="2026-03-11T21:56:33.4711483+01:00" endTime="2026-03-11T21:56:33.6157031+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0dbecf1c-3da9-4f14-8924-9efe478f1cac" />
+    <UnitTestResult executionId="b8b6b080-e1ef-41bb-940e-8d31c0354204" testId="134ca248-3ab1-757c-504a-2c21d90db250" testName="FileBasedApp.Toolkit.Tests.PathUtilTest.AnalyzeFilePath_NoRoots_FileShouldExists" computerName="DESKTOP-RHANN0P" duration="00:00:00.0060766" startTime="2026-03-11T21:56:33.6176529+01:00" endTime="2026-03-11T21:56:33.6219805+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b8b6b080-e1ef-41bb-940e-8d31c0354204" />
+    <UnitTestResult executionId="2b4d00b7-acfb-49ff-a4ed-5beed3c67eba" testId="9133ba1e-06c6-1f1d-6e79-542e3ac3f3e4" testName="FileBasedApp.Toolkit.Tests.PathUtilTest.AnalyzeFilePath_MultipleRootsSecondMatch_FileShouldNotExist" computerName="DESKTOP-RHANN0P" duration="00:00:00.0019477" startTime="2026-03-11T21:56:33.6224021+01:00" endTime="2026-03-11T21:56:33.6240131+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2b4d00b7-acfb-49ff-a4ed-5beed3c67eba" />
+    <UnitTestResult executionId="1b6222d3-c7cd-4214-bd24-842adb4d1245" testId="6b8155d7-77f4-4fb1-bb18-0ae3d95e064b" testName="FileBasedApp.Toolkit.Tests.AbsolutePathExtensionsTest.GetAncestors_ShouldGenerateExpectedResult" computerName="DESKTOP-RHANN0P" duration="00:00:00.0913882" startTime="2026-03-11T21:56:33.4670845+01:00" endTime="2026-03-11T21:56:33.5767153+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1b6222d3-c7cd-4214-bd24-842adb4d1245" />
   </Results>
   <TestDefinitions>
     <UnitTest name="FileBasedApp.Toolkit.Tests.PathUtilTest.AnalyzeFilePath_MultipleRootsSecondMatch_FileShouldNotExist" storage="d:\code\filebasedapp.toolkit\source\filebasedapp.toolkit.tests\bin\debug\net10.0\filebasedapp.toolkit.tests.dll" id="9133ba1e-06c6-1f1d-6e79-542e3ac3f3e4">
-      <Execution id="f7685d58-fc63-4aa6-8e91-08c3e0130522" />
+      <Execution id="2b4d00b7-acfb-49ff-a4ed-5beed3c67eba" />
       <TestMethod codeBase="D:\code\FileBasedApp.Toolkit\Source\FileBasedApp.Toolkit.Tests\bin\Debug\net10.0\FileBasedApp.Toolkit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="FileBasedApp.Toolkit.Tests.PathUtilTest" name="AnalyzeFilePath_MultipleRootsSecondMatch_FileShouldNotExist" />
     </UnitTest>
     <UnitTest name="FileBasedApp.Toolkit.Tests.AbsolutePathExtensionsTest.GetAncestors_ShouldGenerateExpectedResult" storage="d:\code\filebasedapp.toolkit\source\filebasedapp.toolkit.tests\bin\debug\net10.0\filebasedapp.toolkit.tests.dll" id="6b8155d7-77f4-4fb1-bb18-0ae3d95e064b">
-      <Execution id="5e1e6329-685f-47e6-b3b3-f8b85b1dc0f8" />
+      <Execution id="1b6222d3-c7cd-4214-bd24-842adb4d1245" />
       <TestMethod codeBase="D:\code\FileBasedApp.Toolkit\Source\FileBasedApp.Toolkit.Tests\bin\Debug\net10.0\FileBasedApp.Toolkit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="FileBasedApp.Toolkit.Tests.AbsolutePathExtensionsTest" name="GetAncestors_ShouldGenerateExpectedResult" />
     </UnitTest>
     <UnitTest name="FileBasedApp.Toolkit.Tests.PathUtilTest.AnalyzeFilePath_MultipleRootsNoMatch_FileShouldNotExist" storage="d:\code\filebasedapp.toolkit\source\filebasedapp.toolkit.tests\bin\debug\net10.0\filebasedapp.toolkit.tests.dll" id="9ffa894b-238e-f20c-d3fd-853a82fc5567">
-      <Execution id="7c7c4349-5c3c-499e-bb1e-b2e2d08b48bc" />
+      <Execution id="0dbecf1c-3da9-4f14-8924-9efe478f1cac" />
       <TestMethod codeBase="D:\code\FileBasedApp.Toolkit\Source\FileBasedApp.Toolkit.Tests\bin\Debug\net10.0\FileBasedApp.Toolkit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="FileBasedApp.Toolkit.Tests.PathUtilTest" name="AnalyzeFilePath_MultipleRootsNoMatch_FileShouldNotExist" />
     </UnitTest>
     <UnitTest name="FileBasedApp.Toolkit.Tests.PathUtilTest.AnalyzeFilePath_NoRoots_FileShouldExists" storage="d:\code\filebasedapp.toolkit\source\filebasedapp.toolkit.tests\bin\debug\net10.0\filebasedapp.toolkit.tests.dll" id="134ca248-3ab1-757c-504a-2c21d90db250">
-      <Execution id="4346a48d-d9d5-49f8-a62d-155be926b44d" />
+      <Execution id="b8b6b080-e1ef-41bb-940e-8d31c0354204" />
       <TestMethod codeBase="D:\code\FileBasedApp.Toolkit\Source\FileBasedApp.Toolkit.Tests\bin\Debug\net10.0\FileBasedApp.Toolkit.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="FileBasedApp.Toolkit.Tests.PathUtilTest" name="AnalyzeFilePath_NoRoots_FileShouldExists" />
     </UnitTest>
   </TestDefinitions>
   <TestEntries>
-    <TestEntry testId="134ca248-3ab1-757c-504a-2c21d90db250" executionId="4346a48d-d9d5-49f8-a62d-155be926b44d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="9ffa894b-238e-f20c-d3fd-853a82fc5567" executionId="7c7c4349-5c3c-499e-bb1e-b2e2d08b48bc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="6b8155d7-77f4-4fb1-bb18-0ae3d95e064b" executionId="5e1e6329-685f-47e6-b3b3-f8b85b1dc0f8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="9133ba1e-06c6-1f1d-6e79-542e3ac3f3e4" executionId="f7685d58-fc63-4aa6-8e91-08c3e0130522" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9ffa894b-238e-f20c-d3fd-853a82fc5567" executionId="0dbecf1c-3da9-4f14-8924-9efe478f1cac" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="134ca248-3ab1-757c-504a-2c21d90db250" executionId="b8b6b080-e1ef-41bb-940e-8d31c0354204" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9133ba1e-06c6-1f1d-6e79-542e3ac3f3e4" executionId="2b4d00b7-acfb-49ff-a4ed-5beed3c67eba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6b8155d7-77f4-4fb1-bb18-0ae3d95e064b" executionId="1b6222d3-c7cd-4214-bd24-842adb4d1245" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
   </TestEntries>
   <TestLists>
     <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
@@ -42,9 +42,9 @@
     <Counters total="4" executed="4" passed="4" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
     <Output>
       <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.5+1b188a7b0a (64-bit .NET 10.0.4)&#xD;
-[xUnit.net 00:00:00.13]   Discovering: FileBasedApp.Toolkit.Tests&#xD;
-[xUnit.net 00:00:00.20]   Discovered:  FileBasedApp.Toolkit.Tests&#xD;
-[xUnit.net 00:00:00.23]   Starting:    FileBasedApp.Toolkit.Tests&#xD;
+[xUnit.net 00:00:00.26]   Discovering: FileBasedApp.Toolkit.Tests&#xD;
+[xUnit.net 00:00:00.37]   Discovered:  FileBasedApp.Toolkit.Tests&#xD;
+[xUnit.net 00:00:00.42]   Starting:    FileBasedApp.Toolkit.Tests&#xD;
      Warning:&#xD;
      The component "Fluent Assertions" is governed by the rules defined in the Xceed License Agreement and&#xD;
      the Xceed Fluent Assertions Community License. You may use Fluent Assertions free of charge for&#xD;
@@ -54,7 +54,7 @@
      Fluent Assertions users under both commercial and community licenses. Help us&#xD;
      keep Fluent Assertions at the forefront of unit testing.&#xD;
      For more information, visit https://xceed.com/products/unit-testing/fluent-assertions/&#xD;
-[xUnit.net 00:00:00.38]   Finished:    FileBasedApp.Toolkit.Tests&#xD;
+[xUnit.net 00:00:00.66]   Finished:    FileBasedApp.Toolkit.Tests&#xD;
 </StdOut>
     </Output>
   </ResultSummary>

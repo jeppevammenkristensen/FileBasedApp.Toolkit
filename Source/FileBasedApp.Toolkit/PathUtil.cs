@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.IO.Abstractions;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters;
 using TruePath;
 
@@ -40,7 +41,31 @@ public class PathUtil : IStaticFileSystemSetter
     internal static bool FileExist(AbsolutePath path) => path.FileExists(_fileSystem);
     
     private const string EntrypointFileDirectoryPath = "EntryPointFileDirectoryPath";
+    private const string EntrypointFilePath = "EntryPointFilePath";
 
+
+    /// <summary>
+    /// Gets the executing file path of the FileBasedApp.
+    /// </summary>
+    /// <returns>The absolute path to the entrypoint file.</returns>
+    /// <remarks>This is achieved by using the AppContext, with a fallback to the entry assembly location.</remarks>
+    public static AbsolutePath GetExecutionFile()
+    {
+        var path = AppContext.GetData(EntrypointFilePath) as string;
+
+        if (path is null)
+        {
+            var assemblyLocation = Assembly.GetEntryAssembly()?.Location;
+            if (string.IsNullOrEmpty(assemblyLocation))
+            {
+                throw new InvalidOperationException("Unable to determine the execution file path.");
+            }
+            return AbsolutePath.Create(assemblyLocation);
+        }
+
+        return AbsolutePath.Create(path);
+    }
+    
     /// <summary>
     /// Gets the executing folder path of the FileBasedApp.
     /// </summary>

@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@*
+#:package FileBasedApp.Toolkit@0.15.0-dev-03
 #:property PublishAot=false
 
 using FileBasedApp.Toolkit;
@@ -21,7 +21,6 @@ commandApp.Configure(ctx => {
 	
 	
 await commandApp.RunAsync(args);
-
 
 public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 {
@@ -62,7 +61,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 			foreach (var element in artifact.EnumerateFiles("*.*nupkg").OrderBy(x => x.GetExtensionWithoutDot()
 				         .StartsWith("s") ? 1 : 0))
 			{
-				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
+				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to source [bold]{source}[/] [/]");
 				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source,"--skip-duplicate"];
 
 				var secrets = new List<string>();
@@ -166,15 +165,17 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
 				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source, "--skip-duplicate"];
 				
+				List<string> secrets = new();
+
 				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
 				{
-					arguments = arguments.AddRange("--api-key", settings.NugetApiKey);
-				}	
-				
+					secrets.AddRange("--api-key", settings.NugetApiKey);				
+				}					
 				
 				try
 				{	        
-					await SimpleExec.Command.RunAsync("dotnet",arguments);
+					await SimpleExec.Command.RunAsync("dotnet",
+						arguments.Concat(secrets), ct: cancellationToken);
 				}
 				catch (ExitCodeReadException)
 				{
@@ -210,11 +211,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		
 		protected override ValidationResult DoValidate()
 		{
-			if (string.IsNullOrWhiteSpace(NugetApiKey))
-			{
-				NugetApiKey = Environment.GetEnvironmentVariable("NUGET_API_KEY");
-			}
-			
+			NugetApiKey = GetValueOrFromEnvironment(NugetApiKey, "NUGET_API_KEY");
 			if (!string.IsNullOrWhiteSpace(NugetApiKey))
 			{
 				Configuration = "Release";

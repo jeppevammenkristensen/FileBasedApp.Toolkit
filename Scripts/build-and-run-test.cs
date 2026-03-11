@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.15.0-dev-01
+#:package FileBasedApp.Toolkit@0.15.0-dev-05
 #:property PublishAot=false 
 
 using Spectre.Console.Cli;
@@ -11,7 +11,7 @@ using TruePath.TestableIO.System.IO;
 using static SimpleExec.Command;
 
 var commandApp = new CommandApp<RunCommand>();
-await commandApp.RunAsync(args);
+return await commandApp.RunAsync(args);
 
 public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you can use Command (and have Execute instead of ExecuteAsync
 {
@@ -26,6 +26,15 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 		AnsiConsole.MarkupLineInterpolated($"[green]{settings.ParentFolder}[/]");
 		var solutionFile = settings.ParentFolder.EnumerateFiles("FileBasedApp.Toolkit.slnx", SearchOption.AllDirectories).GetSingle(x => true);
 
+		foreach (var fileBased in DirectoryIO.GetFiles(settings.ParentFolder / "Scripts", "*.cs"))
+		{
+			if (fileBased.Equals(PathUtil.GetExecutionFile()))
+				continue;
+
+			AnsiConsole.MarkupLineInterpolated($"[green]Building filebased app {fileBased.FileName}[/]");
+			await RunAsync("dotnet", ["build", fileBased.Value],ct:cancellationToken);
+		}
+		
 		await RunAsync("dotnet", ["build", solutionFile.Value], ct: cancellationToken);
 
 		var testReports = settings.ParentFolder / "test-reports";

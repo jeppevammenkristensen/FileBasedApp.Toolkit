@@ -8,7 +8,7 @@ namespace FileBasedApp.Toolkit;
 public interface IEvaluatedPath
 {
     /// <summary>
-    /// Returns the given path or an error message
+    /// Evalutes and retur the given path or an error message
     /// </summary>
     /// <param name="shouldExist"></param>
     /// <param name="originalPathCanBeNull"></param>

@@ -35,7 +35,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 
 		try
 		{
-			artifact.Delete(true);
+			artifact.DirectoryDelete(true);
 		}
 		catch
 		{
@@ -87,7 +87,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 		finally
 
 		{		
-			artifact.Delete(true);
+			artifact.DirectoryDelete(true);
 		}
 
 		return 0;
@@ -115,7 +115,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 
 		try
 		{
-			artifact.Delete(true);	
+			artifact.DirectoryDelete(true);	
 		}
 		catch {
 			
@@ -172,7 +172,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		{
 			if (!settings.SkipDeploy)
 			{
-				artifact.Delete(true);				
+				artifact.DirectoryDelete(true);				
 			}
 			
 

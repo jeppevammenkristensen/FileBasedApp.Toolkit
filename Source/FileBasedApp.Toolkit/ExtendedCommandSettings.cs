@@ -5,8 +5,6 @@ using TruePath;
 
 namespace FileBasedApp.Toolkit;
 
-
-
 /// <summary>
 /// Extends upon the existing <see cref="CommandSettings"/> to add convience
 /// methods to aid with settings up a command line application with file based apps

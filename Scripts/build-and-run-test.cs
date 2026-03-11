@@ -20,15 +20,22 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 	
 	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
 	{
+		AnsiConsole.MarkupLineInterpolated($"[green]Current working folder{PathUtil.GetCurrentWorkingFolder()}[/]");
+		AnsiConsole.MarkupLineInterpolated($"[green]Current execution folder{PathUtil.GetExecutionFolder()}[/]");
+		
 		AnsiConsole.MarkupLineInterpolated($"[green]{settings.ParentFolder}[/]");
 		var solutionFile = settings.ParentFolder.EnumerateFiles("FileBasedApp.Toolkit.slnx", SearchOption.AllDirectories).GetSingle(x => true);
 
 		await RunAsync("dotnet", ["build", solutionFile.Value], ct: cancellationToken);
-		
+
+		var testReports = settings.ParentFolder / "test-reports";
+		testReports.CreateDirectory();
+
 		foreach (var absolutePath in settings.ParentFolder.EnumerateFiles("*.csproj", SearchOption.AllDirectories).Where(x => TestsRegex().IsMatch(x.FileName)))
 		{
 			AnsiConsole.MarkupLineInterpolated($"[green]Running tests for{absolutePath.RelativeTo(settings.ParentFolder)}[/]");
-			await RunAsync("dotnet", ["test", absolutePath.Value, "--logger","trx"], ct: cancellationToken);
+			List<string> testParameters = ["test", absolutePath.Value, $"--logger:trx;LogFileName={(testReports / (absolutePath.GetFilenameWithoutExtension() + ".trx")).Value}"];
+			await RunAsync("dotnet", testParameters, settings.ParentFolder.Value, ct: cancellationToken);
 
 		}
 

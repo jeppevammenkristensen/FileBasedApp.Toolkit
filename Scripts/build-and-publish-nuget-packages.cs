@@ -39,7 +39,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 		}
 		catch
 		{
-
+			// ignore
 		}
 
 		try
@@ -59,7 +59,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 				.AddChoices(items));
 			
 			// Enumerate all the generated nuget packages and publish them to the source
-			foreach (var element in artifact.EnumerateFiles("*.*nupkg"))
+			foreach (var element in artifact.EnumerateFiles("*.*nupkg").OrderBy(x => x.GetExtensionWithoutDot().StartsWith("s") ? 1 : 0))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
 				ImmutableArray<string> arguments = ["nuget", "push", element.Value, "--source", source,"--skip-duplicate"];

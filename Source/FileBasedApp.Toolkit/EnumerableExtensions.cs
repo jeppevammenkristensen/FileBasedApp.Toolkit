@@ -26,14 +26,13 @@ public static class EnumerableExtensions
             _ => candidates[0]
         });
     }
-    
+
     /// <summary>
     /// Retrieves the first struct element from the provided collection that matches the predicate, if none are found
     /// null is returned
     /// </summary>
     /// <param name="source"></param>
     /// <param name="predicate"></param>
-    /// <param name="noMatchErrorMessage"></param>
     /// <typeparam name="TStruct"></typeparam>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>

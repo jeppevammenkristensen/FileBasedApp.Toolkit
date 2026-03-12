@@ -49,11 +49,16 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 			await SimpleExec.Command.RunAsync("dotnet", ["pack", projectFile.Value, "-c", "Release", "-o", artifact.Value]);
 			var items = await Methods.GetNugetSources();
 
-			// Prompt the use to select source
-			var source = AnsiConsole.Prompt(new SelectionPrompt<string>()
-				.Title("Select source")
-				.AddChoices(items));
-			
+			string? source = settings.NugetSource;
+
+			if (settings.Interactive && string.IsNullOrWhiteSpace(source))
+			{
+				// Prompt the use to select source
+				source = AnsiConsole.Prompt(new SelectionPrompt<string>()
+					.Title("Select source")
+					.AddChoices(items));
+			}
+
 			// Enumerate all the generated nuget packages and publish them to the source
 			foreach (var element in artifact.EnumerateFiles("*.*nupkg").OrderBy(x => x.GetExtensionWithoutDot()
 				         .StartsWith("s") ? 1 : 0))
@@ -80,7 +85,6 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 			}
 
 			AnsiConsole.MarkupLineInterpolated($"[green]Remove temp artifact [bold]{artifact}[/][/]");
-
 		}
 
 		finally
@@ -96,6 +100,18 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 	{
 		[CommandOption("--api-key")]
 		public string? NugetApiKey { get; set; }	
+		
+		[CommandOption("--interactive")]
+		public bool Interactive { get; set; }
+		
+		[CommandOption("--source")]
+		public string? NugetSource { get; internal set; }
+
+		protected override ValidationResult DoValidate()
+		{
+			NugetApiKey = this.GetRequiredFromValueOrEnvironment(NugetApiKey,"NUGET_API_KEY");
+			return base.DoValidate();
+		}
 	}
 }
 
@@ -122,8 +138,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		}
 
 		try
-		{				
-			
+		{							
 			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).GetSingleRequired(_ => true, "Could not find a solution file");
 	
 			await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", settings.Configuration, "-o", artifact.Value, "-p:IncludeSymbols=true", "-p:SymbolPackageFormat=snupkg"], ct: cancellationToken);	

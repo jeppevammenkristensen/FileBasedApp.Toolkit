@@ -1,5 +1,4 @@
 #:package FileBasedApp.Toolkit@0.15.0-rc-01
-#:package SimpleExec@*
 #:property PublishAot=false
 
 using FileBasedApp.Toolkit;
@@ -125,7 +124,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		try
 		{				
 			
-			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).GetSingle(_ => true, "Could not find a solution file");
+			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).GetSingleRequired(_ => true, "Could not find a solution file");
 	
 			await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", settings.Configuration, "-o", artifact.Value, "-p:IncludeSymbols=true", "-p:SymbolPackageFormat=snupkg"], ct: cancellationToken);	
 			var items = await Methods.GetNugetSources();

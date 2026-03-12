@@ -24,7 +24,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 		AnsiConsole.MarkupLineInterpolated($"[green]Current execution folder{PathUtil.GetExecutionFolder()}[/]");
 		
 		AnsiConsole.MarkupLineInterpolated($"[green]{settings.ParentFolder}[/]");
-		var solutionFile = settings.ParentFolder.EnumerateFiles("FileBasedApp.Toolkit.slnx", SearchOption.AllDirectories).GetSingle(x => true);
+		var solutionFile = settings.ParentFolder.EnumerateFiles("FileBasedApp.Toolkit.slnx", SearchOption.AllDirectories).GetSingleRequired(x => true, "Failed to locate FileBasedApp.Toolkit.slnx");
 
 		foreach (var fileBased in DirectoryIO.GetFiles(settings.ParentFolder / "Scripts", "*.cs").Concat([settings.ParentFolder / "Templates" / "FileBasedAppTemplate" / "FileBasedToolkitApp.cs"]))
 		{
@@ -42,7 +42,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 
 		foreach (var absolutePath in settings.ParentFolder.EnumerateFiles("*.csproj", SearchOption.AllDirectories).Where(x => TestsRegex().IsMatch(x.FileName)))
 		{
-			AnsiConsole.MarkupLineInterpolated($"[green]Running tests for{absolutePath.RelativeTo(settings.ParentFolder)}[/]");
+			AnsiConsole.MarkupLineInterpolated($"[green]Running tests for [bold]{absolutePath.RelativeTo(settings.ParentFolder)}[/][/]");
 			List<string> testParameters = ["test", absolutePath.Value, $"--logger:trx;LogFileName={(testReports / (absolutePath.GetFilenameWithoutExtension() + ".trx")).Value}"];
 			await RunAsync("dotnet", testParameters, settings.ParentFolder.Value, ct: cancellationToken);
 		}

@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@*
+#:package FileBasedApp.Toolkit@0.15.0-rc-01
 #:property PublishAot=false 
 
 using Spectre.Console.Cli;

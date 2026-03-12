@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
-using FileBasedApp.Toolkit;
 using FluentAssertions;
 using JetBrains.Annotations;
 using TruePath;

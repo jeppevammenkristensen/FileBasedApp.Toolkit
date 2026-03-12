@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.15.0-dev-03
+#:package FileBasedApp.Toolkit@0.15.0-rc-01
 #:package SimpleExec@*
 #:property PublishAot=false
 
@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using TruePath;
 using Spectre.Console.Cli;
 using System.ComponentModel;
-using System.Collections.Immutable;
 using SimpleExec;
 
 var commandApp = new CommandApp();

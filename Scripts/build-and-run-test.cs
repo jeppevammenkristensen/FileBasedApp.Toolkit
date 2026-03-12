@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.15.0-dev-05
+#:package FileBasedApp.Toolkit@0.15.0-rc-01
 #:property PublishAot=false 
 
 using Spectre.Console.Cli;
@@ -26,7 +26,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 		AnsiConsole.MarkupLineInterpolated($"[green]{settings.ParentFolder}[/]");
 		var solutionFile = settings.ParentFolder.EnumerateFiles("FileBasedApp.Toolkit.slnx", SearchOption.AllDirectories).GetSingle(x => true);
 
-		foreach (var fileBased in DirectoryIO.GetFiles(settings.ParentFolder / "Scripts", "*.cs"))
+		foreach (var fileBased in DirectoryIO.GetFiles(settings.ParentFolder / "Scripts", "*.cs").Concat([settings.ParentFolder / "Templates" / "FileBasedAppTemplate" / "FileBasedToolkitApp.cs"]))
 		{
 			if (fileBased.Equals(PathUtil.GetExecutionFile()))
 				continue;

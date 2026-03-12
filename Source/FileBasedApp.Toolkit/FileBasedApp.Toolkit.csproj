@@ -11,7 +11,7 @@
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp.Toolkit</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>    
-    <PackageReleaseNotes>Aligning version with TruePath.TestableIO.System.IO which has bug fix</PackageReleaseNotes>
+    <PackageReleaseNotes>Added enumerable extensions for structs. Particulary aimed at AbsolutePath</PackageReleaseNotes>
     <LangVersion>14</LangVersion>    
   </PropertyGroup>
   

@@ -62,39 +62,12 @@ public static class IO
         return folder.FindAncestorOrNull(false, predicate, maxDepth) ??
                throw new InvalidOperationException($"Could not find parent folder for path {folder}");
     }
-
-    /// <summary>
-    /// Retrieves a single matching path from the source collection based on the specified predicate.
-    /// Throws an exception if no match or multiple matches are found.
-    /// </summary>
-    /// <param name="source">The collection of absolute paths to search through.</param>
-    /// <param name="predicate">The condition to evaluate for selecting a path.</param>
-    /// <param name="noMatchErrorMessage">
-    /// The error message included in the exception if no match is found. Default is "No single path found".
-    /// </param>
-    /// <param name="multipleMatchesError">
-    /// The error message included in the exception if multiple matches are found. Default is "Found more than 1 match".
-    /// </param>
-    /// <returns>The single matching path that satisfies the predicate.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if no path matches the predicate or if more than one path matches.
-    /// </exception>
-    public static AbsolutePath GetSingle(this IEnumerable<AbsolutePath> source, Func<AbsolutePath, bool> predicate,
-        string? noMatchErrorMessage = null, string? multipleMatchesError = null)
-    {
-        noMatchErrorMessage ??= "No single path found";
-        multipleMatchesError ??= "Found more than 1 match";
-        var candidates = source.Where(predicate).ToList();
-
-        return candidates switch
-        {
-            { Count: 1} => candidates[0],
-            { Count: > 1 } => throw new InvalidOperationException(multipleMatchesError),
-            _ => throw new InvalidOperationException(noMatchErrorMessage)
-        };
-
-    }
     
+    
+    
+
+    
+
     /// <summary>
     /// Traverses the parents of the given path based on the <see cref="Predicate{T}"/>
     /// </summary>

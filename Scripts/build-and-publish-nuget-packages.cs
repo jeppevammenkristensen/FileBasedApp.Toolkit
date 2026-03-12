@@ -116,18 +116,17 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 
 		try
 		{
-			artifact.DirectoryDelete(true);	
+			artifact.DirectoryDelete(true);
 		}
-		catch {
-			
+		catch
+		{
+			// ignore
 		}
-		
-		
 
 		try
 		{				
 			
-			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).First();
+			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).GetSingle(_ => true, "Could not find a solution file");
 	
 			await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", settings.Configuration, "-o", artifact.Value, "-p:IncludeSymbols=true", "-p:SymbolPackageFormat=snupkg"], ct: cancellationToken);	
 			var items = await Methods.GetNugetSources();

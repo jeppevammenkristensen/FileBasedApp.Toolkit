@@ -117,7 +117,7 @@ public class PathUtilTest
 
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
-            var analyzeDirectory = PathUtil.AnalyzeDirectory("nonexistent", AbsolutePath.Create(@"C:\test"));
+            var analyzeDirectory = PathUtil.AnalyzeDirectory("nonexistent",AbsolutePath.CurrentWorkingDirectory / "test");
             (AbsolutePath path, string errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
             errorMessage.Should().NotBeNull();
             errorMessage.Should().Contain("does not exist");
@@ -131,10 +131,10 @@ public class PathUtilTest
 
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
-            var analyzeDirectory = PathUtil.AnalyzeDirectory("", AbsolutePath.Create(@"C:\test"));
+            var analyzeDirectory = PathUtil.AnalyzeDirectory("", AbsolutePath.CurrentWorkingDirectory / "test");
             (AbsolutePath path, string errorMessage) = analyzeDirectory.GetPath(shouldExist: false, true);
             errorMessage.Should().BeNull();
-            path.Should().BeEquivalentTo(AbsolutePath.Create(@"C:\test"));
+            path.Should().BeEquivalentTo(AbsolutePath.CurrentWorkingDirectory / "test");
         }
     }
 

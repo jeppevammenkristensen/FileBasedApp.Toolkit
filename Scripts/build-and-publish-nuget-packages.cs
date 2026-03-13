@@ -168,7 +168,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 				         }
 
 				         return true;
-			         }))
+			         }).OrderBy(x => x.GetExtensionWithoutDot().StartsWith('s') ? 1 : 0))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
 				List<string> arguments = ["nuget", "push", element.Value, "--source", source, "--skip-duplicate"];

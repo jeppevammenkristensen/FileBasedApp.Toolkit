@@ -168,4 +168,74 @@ public class EnumerableExtensionsTest
         // Assert
         result.Should().Be(2);
     }
+
+    [Fact]
+    public void GetFirstRequired_WithCustomErrorMessage_ThrowsWithCustomMessage()
+    {
+        // Arrange
+        var collection = new List<int> {1, 2, 3};
+        var customMessage = "Custom no match error";
+
+        // Act & Assert
+        var ex = Assert.Throws<InvalidOperationException>(() => collection.GetFirstRequired(i => i > 10, customMessage));
+        ex.Message.Should().Be(customMessage);
+    }
+
+    [Fact]
+    public void GetFirstRequired_NoPredicate_ReturnsFirstElement()
+    {
+        // Arrange
+        var collection = new List<int> {5, 2, 3};
+
+        // Act
+        var result = collection.GetFirstRequired();
+
+        // Assert
+        result.Should().Be(5);
+    }
+
+    [Fact]
+    public void GetFirstOrNull_NoPredicate_ReturnsFirstElement()
+    {
+        // Arrange
+        var collection = new List<int> {5, 2, 3};
+
+        // Act
+        var result = collection.GetFirstOrNull();
+
+        // Assert
+        result.Should().Be(5);
+    }
+
+    [Fact]
+    public void GetSingleRequired_WithCustomErrorMessages_ThrowsWithCustomMessages()
+    {
+        // Arrange
+        var collection = new List<int> {1, 2, 3};
+        var noMatchMessage = "Custom no match";
+        var multipleMatchMessage = "Custom multiple matches";
+
+        // Act & Assert - no match
+        var exNoMatch = Assert.Throws<InvalidOperationException>(() => 
+            collection.GetSingleRequired(i => i > 10, noMatchMessage, multipleMatchMessage));
+        exNoMatch.Message.Should().Be(noMatchMessage);
+
+        // Act & Assert - multiple matches
+        var exMultiple = Assert.Throws<InvalidOperationException>(() => 
+            collection.GetSingleRequired(i => i > 1, noMatchMessage, multipleMatchMessage));
+        exMultiple.Message.Should().Be(multipleMatchMessage);
+    }
+
+    [Fact]
+    public void GetSingleOrNull_WithCustomMultipleMatchesError_ThrowsWithCustomMessage()
+    {
+        // Arrange
+        var collection = new List<int> {1, 2, 2, 3};
+        var customMessage = "Custom multiple match error";
+
+        // Act & Assert
+        var ex = Assert.Throws<InvalidOperationException>(() => 
+            collection.GetSingleOrNull(i => i == 2, customMessage));
+        ex.Message.Should().Be(customMessage);
+    }
 }

@@ -16,17 +16,17 @@ public class PathUtil : IStaticFileSystemSetter
     private static IFileSystem _fileSystem = DefaultFileSystem;
         
         
-    static IFileSystem IStaticFileSystemSetter.GetDefault()
+    static IFileSystem IStaticValueSetter<IFileSystem>.GetDefault()
     {
         return new FileSystem();
     }
 
-    static IFileSystem IStaticFileSystemSetter.GetFileSystem()
+    static IFileSystem IStaticValueSetter<IFileSystem>.GetFileSystem()
     {
         return _fileSystem;
     }
 
-    static void IStaticFileSystemSetter.SetFileSystem(IFileSystem fileSystem)
+    static void IStaticValueSetter<IFileSystem>.SetFileSystem(IFileSystem fileSystem)
     {
         SetFileSystem(fileSystem);
     }

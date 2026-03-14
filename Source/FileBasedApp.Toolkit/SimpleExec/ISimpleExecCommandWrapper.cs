@@ -1,10 +1,10 @@
 ﻿using System.Text;
 using SimpleExec;
 
-namespace FileBasedApp.Toolkit;
+namespace FileBasedApp.Toolkit.SimpleExec;
 
 /// <summary>
-/// An interface for wrapping a <see cref="SimpleExec.Command"/> 
+/// An interface for wrapping a <see cref="Command"/> 
 /// </summary>
 public interface ISimpleExecCommandWrapper
 {

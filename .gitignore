@@ -482,3 +482,6 @@ FodyWeavers.xsd
 
 *.trx
 
+# Claude
+.claude
+

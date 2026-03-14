@@ -4,19 +4,17 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Folder Name="/Tools/">
-    <File Path="../Directory.Build.props" />
-    <!-- <File Path="../Scripts/build-and-publish-nuget-packages.cs" /> -->
-    <Project Path="GetFileSystemSourceAndParse/GetFileSystemSourceAndParse.csproj" />
-  </Folder>
-  
   <Folder Name="/FilebasedApp/">
-    <Project Path="FileBasedApp.Toolkit.Tests/FileBasedApp.Toolkit.Tests.csproj" />
-    <Project Path="FileBasedApp.Toolkit/FileBasedApp.Toolkit.csproj" />
+    <Project Path="FileBasedApp/FileBasedApp.Toolkit.Tests/FileBasedApp.Toolkit.Tests.csproj" />
+    <Project Path="FileBasedApp/FileBasedApp.Toolkit/FileBasedApp.Toolkit.csproj" />
   </Folder>
   <Folder Name="/Truepath/">
-    <Project Path="TruePath.TestableIO.System.IO/TruePath.TestableIO.System.IO.csproj" />  
+    <Project Path="TruePath.TestableIO/TruePath.TestableIO.System.IO/TruePath.TestableIO.System.IO.csproj" />
   </Folder>
-  <Project Path="TruePath.Playground/TruePath.Playground.csproj" />
+  <Project Path="TruePath.TestableIO/TruePath.Playground/TruePath.Playground.csproj" />
+  <Folder Name="/Tools/">
+    <!-- <File Path="../Scripts/build-and-publish-nuget-packages.cs" /> -->
+    <Project Path="Tools/GetFileSystemSourceAndParse/GetFileSystemSourceAndParse.csproj" />
+  </Folder>
   
 </Solution>

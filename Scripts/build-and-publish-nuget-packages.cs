@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using TruePath;
 using Spectre.Console.Cli;
 using System.ComponentModel;
+using FileBasedApp.Toolkit.SimpleExec;
 using SimpleExec;
 
 var commandApp = new CommandApp();
@@ -48,7 +49,12 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 				throw new InvalidOperationException($"Project file {projectFile} was not found");
 			}
 
-			await SimpleExec.Command.RunAsync("dotnet", ["pack", projectFile.Value, "-c", "Release", "-o", artifact.Value]);
+			await new SimpleExecRunner("dotnet")
+				.AddArgument("pack")
+				.AddArgument(projectFile)
+				.AddArgumentPair("-c", "Release", false)
+				.AddArgumentPair("-o", artifact).RunAsync(token: cancellationToken);
+			
 			var items = await Methods.GetNugetSources();
 
 			string? source = settings.NugetSource;
@@ -66,19 +72,24 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 				         .StartsWith("s") ? 1 : 0))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to source [bold]{source}[/] [/]");
-				List<string> arguments = ["nuget", "push", element.Value, "--source", source!,"--skip-duplicate"];
+
+				var simpleExecRunner = new SimpleExecRunner("dotnet")
+					.AddArguments(isSecret: false, "nuget", "push")
+					.AddArgument(element)
+					.AddArgumentPair("--source", source, false)
+					.AddArgument("--skip-duplicate");
 
 				var secrets = new List<string>();
 				
 				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
 				{
-					arguments.AddRange("--api-key", settings.NugetApiKey);
-					secrets.AddRange(settings.NugetApiKey);
+					simpleExecRunner.AddArgumentPair("--api-key", settings.NugetApiKey, true);
 				}
 				
 				try
 				{
-					await SimpleExec.Command.RunAsync("dotnet", arguments, secrets: secrets, ct: cancellationToken);
+
+					await simpleExecRunner.RunAsync(token: cancellationToken);
 				}
 				catch (ExitCodeReadException)
 				{

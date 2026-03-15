@@ -1,6 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
     <VersionPrefix>0.16.0</VersionPrefix>
-    <VersionSuffix>dev-01</VersionSuffix>
+    <VersionSuffix>dev-02</VersionSuffix>
   </PropertyGroup>
 </Project>

@@ -62,11 +62,6 @@ public static class IO
         return folder.FindAncestorOrNull(false, predicate, maxDepth) ??
                throw new InvalidOperationException($"Could not find parent folder for path {folder}");
     }
-    
-    
-    
-
-    
 
     /// <summary>
     /// Traverses the parents of the given path based on the <see cref="Predicate{T}"/>
@@ -149,4 +144,53 @@ public static class IO
             currentDepth++;
         }
     }
+
+
+    /// <summary>
+    /// Enumerates all directories within the specified source path that match the given search pattern, including subdirectories at all levels.
+    /// </summary>
+    /// <param name="source">The absolute path of the directory to search.</param>
+    /// <param name="searchPattern">The search string to match against the names of directories. This parameter can contain a combination of valid literal path and wildcard characters.</param>
+    /// <param name="fileSystem">The file system abstraction to use for the operation. If null, the default file system is used.</param>
+    /// <returns>An enumerable collection of absolute paths representing all directories that match the search pattern within the source directory and its subdirectories.</returns>
+    /// <remarks>This is a convenience method for all directories matching the pattern</remarks> 
+    public static IEnumerable<AbsolutePath> EnumerateAllDirectories(this AbsolutePath source, string searchPattern,
+        IFileSystem? fileSystem = null)
+        => source.EnumerateDirectories(searchPattern, SearchOption.AllDirectories, fileSystem);
+    
+    /// <summary>
+    /// Retrieves all subdirectories within the specified directory that match the given search pattern, including all nested subdirectories.
+    /// </summary>
+    /// <param name="source">The absolute path of the directory to search.</param>
+    /// <param name="searchPattern">The search pattern to match against the names of subdirectories.</param>
+    /// <param name="fileSystem">The file system abstraction to use for the operation. If null, the default file system is used.</param>
+    /// <returns>An enumerable collection of absolute paths representing all matching subdirectories found within the source directory and its subdirectories.</returns>
+    /// <remarks>This is a convenience method for all directories matching the pattern</remarks>
+    public static AbsolutePath[] GetAllDirectories(this AbsolutePath source, string searchPattern,
+        IFileSystem? fileSystem = null)
+        => source.GetDirectories(searchPattern, SearchOption.AllDirectories, fileSystem);
+    
+    /// <summary>
+    /// Enumerates all files in the specified directory and its subdirectories that match the given search pattern.
+    /// </summary>
+    /// <param name="source">The directory path to search for files.</param>
+    /// <param name="searchPattern">The search pattern to match against the names of files. Supports wildcards such as * and ?.</param>
+    /// <param name="fileSystem">The file system abstraction to use for enumeration. If null, the default file system is used.</param>
+    /// <returns>An enumerable collection of absolute paths representing all files that match the search pattern in the directory and its subdirectories.</returns>
+    /// <remarks>This is a convenience method for all files matching the pattern</remarks>
+    public static IEnumerable<AbsolutePath> EnumerateAllFiles(this AbsolutePath source, string searchPattern,
+        IFileSystem? fileSystem = null)
+        => source.EnumerateFiles(searchPattern, SearchOption.AllDirectories, fileSystem);
+
+    /// <summary>
+    /// Retrieves all files from the specified directory and its subdirectories that match the given search pattern.
+    /// </summary>
+    /// <param name="source">The absolute path of the directory to search.</param>
+    /// <param name="searchPattern">The search pattern to match against the names of files.</param>
+    /// <param name="fileSystem">The file system abstraction to use for file operations. If null, the default file system is used.</param>
+    /// <returns>An array of absolute paths representing all files found that match the search pattern.</returns>
+    /// <remarks>This is a convenience method for returning all files matching the pattern</remarks>
+    public static AbsolutePath[] GetAllFiles(this AbsolutePath source, string searchPattern,
+        IFileSystem? fileSystem = null)
+        => source.GetFiles(searchPattern, SearchOption.AllDirectories, fileSystem);
 }

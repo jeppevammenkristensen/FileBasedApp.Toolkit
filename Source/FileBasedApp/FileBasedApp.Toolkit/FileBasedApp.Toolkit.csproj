@@ -8,7 +8,7 @@
     <Description>Opiniated helpers for a FileBaseApp. Based on TruePath, SimpleExec and Spectre.Console.Cli</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net10.0;net8.0</TargetFrameworks>
     <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp.Toolkit</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>    
     <PackageReleaseNotes>

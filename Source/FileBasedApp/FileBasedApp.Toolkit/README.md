@@ -7,6 +7,7 @@ A collection of opinionated helpers and extensions for building file-based appli
 * Provides a `PathUtil` class for working with paths and validating string paths
 * Provides an IO class to provide methods and extension methods for `TruePath`
 * Provides an extension of the `CommandSettings` from the `Spectre.Console.Cli` providing validation of file and directory paths
+* Provides a `SimpleExecRunner` fluent builder for constructing and executing system commands via the `SimpleExec` library, with support for secrets redaction and `TruePath` integration
 * Includes the following libraries
   * `TruePath`
   * `SimpleExec`
@@ -72,6 +73,53 @@ fileSystem.File.Create(newDirectory / "test.txt");
 
 (newDirectory / "..").GetDirectories(fileSystem)
 ```
+
+### SimpleExecRunner
+
+The `SimpleExecRunner` provides a fluent builder API on top of the [SimpleExec](https://github.com/adamralph/simple-exec) library for constructing and executing system commands. It supports `TruePath` types (`AbsolutePath`, `LocalPath`) directly as arguments, and can redact secrets from echoed output.
+
+```csharp
+using FileBasedApp.Toolkit.SimpleExec;
+using TruePath;
+
+// Basic command execution
+await new SimpleExecRunner("dotnet")
+    .AddArgument("build")
+    .AddArgument("MyProject.csproj")
+    .RunAsync();
+
+// Using AddArgumentPair for flag + value combinations
+await new SimpleExecRunner("dotnet")
+    .AddArgument("pack")
+    .AddArgumentPair("-c", "Release")
+    .AddArgumentPair("-o", outputPath) // accepts AbsolutePath directly
+    .RunAsync();
+
+// With secrets redaction — the API key value is replaced with "***" in echoed output
+await new SimpleExecRunner("dotnet")
+    .AddArguments("nuget", "push")
+    .AddArgument(packagePath)
+    .AddArgumentPair("--source", "nuget.org")
+    .AddArgumentPair("--api-key", apiKey, isSecret: true)
+    .RunAsync();
+
+// Reading command output
+var (stdout, stderr) = await new SimpleExecRunner("dotnet")
+    .AddArgument("--version")
+    .ReadAsync();
+
+// Working directory, environment variables, and custom exit code handling
+await new SimpleExecRunner("git")
+    .AddArguments("status", "--porcelain")
+    .WithWorkingDirectory(repoRoot)
+    .WithConfigureEnvironment(env => env["GIT_TERMINAL_PROMPT"] = "0")
+    .WithExitCodeHandler(code => code is 0 or 1)
+    .RunAsync();
+```
+
+**Key types:**
+* `SimpleExecRunner` — the fluent builder. Create with `new SimpleExecRunner("command-name")`, add arguments, then call `Run()`, `RunAsync()`, or `ReadAsync()`.
+* `ISimpleExecCommandWrapper` — an interface wrapping `SimpleExec.Command` to enable unit testing. The default implementation (`SimpleExecCommand`) delegates directly to the static `Command` class.
 
 ## Template
 

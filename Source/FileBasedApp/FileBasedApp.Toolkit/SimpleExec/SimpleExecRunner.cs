@@ -99,6 +99,8 @@ public class SimpleExecRunner
     /// <remarks>isSecret is only effective if calling Run or RunAsync</remarks>
     public SimpleExecRunner AddArgument(string argument, bool isSecret = false)
     {
+        ArgumentNullException.ThrowIfNull(argument);
+
         Arguments = Arguments.Add(argument);
         if (isSecret)
         {
@@ -169,8 +171,7 @@ public class SimpleExecRunner
 
         return this;
     }
-    
-    
+
 
     /// <summary>
     /// Appends multiple values as secrets. The secrets must already have been defined as an argument to have an effect. if strict is true an exception will be thrown if unmatched secrets are passed
@@ -180,8 +181,27 @@ public class SimpleExecRunner
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">Thrown if strict is true and unmatched secrets are used</exception>
     /// <remarks>Secrets are only relevant if calling Run or RunAsync</remarks>
-    public SimpleExecRunner AddSecrets(bool strict = false, params string[] secrets)
+    public SimpleExecRunner AddSecrets(params string[] secrets)
     {
+        return AddSecrets(false, secrets);
+    }
+
+    /// <summary>
+    /// Appends multiple values as secrets. The secrets must already have been defined as an argument to have an effect. if strict is true an exception will be thrown if unmatched secrets are passed
+    /// </summary>
+    /// <param name="strict">Evaluate the secrets against the existing arguments</param>
+    /// <param name="secrets">The secrets to add</param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException">Thrown if strict is true and unmatched secrets are used</exception>
+    /// <remarks>Secrets are only relevant if calling Run or RunAsync</remarks>
+    public SimpleExecRunner AddSecrets(bool strict, params string[] secrets)
+    {
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if (secrets.Any(x => x == null))
+        {
+            throw new ArgumentException("One or more secrets where null");
+        }
+        
         if (strict)
         {
             var unmatchedSecrets = Secrets.Except(secrets, StringComparer.OrdinalIgnoreCase);

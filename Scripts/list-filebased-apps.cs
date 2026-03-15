@@ -12,9 +12,10 @@ using TruePath.TestableIO.System.IO;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
 
 var commandApp = new CommandApp<RunCommand>()
-	.WithDescription("Locates filebase apps and list them so their paths can be copied");
+	.WithDescription("Locates filebase apps and list them so their paths can be copied. It uses Roslyn in combination with regex to find file based directives like for instance :package to determine if the files are files based apps");
 	
 commandApp.Configure(ctx => {
 	ctx.PropagateExceptions();
@@ -35,6 +36,16 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 
 		var paths = settings.Path.GetFiles("*.cs", SearchOption.AllDirectories).Where(EvaluateFile).ToList();
 		
+		if (settings.NonInteractive)
+		{
+			foreach (var element in paths)
+			{
+				AnsiConsole.MarkupLineInterpolated($"[green]{element.RelativeTo(settings.Path)}[/]");
+			}
+			return 0;
+		}
+			
+		
 		var result = await AnsiConsole.PromptAsync(new SelectionPrompt<AbsolutePath>().Title("Select filebased app").AddChoices(paths).UseConverter(x => x.RelativeTo(settings.Path).Value));
 		
 		TextCopy.ClipboardService.SetText(result.Value);
@@ -49,6 +60,8 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 		
 		
 		var compilationUnit = ParseCompilationUnit(path.ReadAllText());
+		// Note there is a risk that the GlobalStatementSyntax check can result in some 
+		// filebasedapps failing this check. 
 		if (compilationUnit.Members.FirstOrDefault() is GlobalStatementSyntax)
 		{
 			return compilationUnit.GetLeadingTrivia().Any(x => HasFileBasedDirective().IsMatch(x.ToString()));
@@ -58,14 +71,17 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 	}
 
 	public class Settings : ExtendedCommandSettings
-	{
-
-
-		/// <summary></summary>
-		public AbsolutePath SomePathAbsolute { get; private set; }
+	{		
 		
 		[CommandArgument(0, "[Path]")]
-		public string CustomPath { get; private set; }
+		[Description("The folder to traverse for file based apps")]
+		public string? CustomPath { get; private set; }
+		
+		[CommandOption("--non-interactive")]
+		[Description("When this is toggled no select prompt will occur")]
+		public bool NonInteractive {get;set;}
+		
+		
 		public AbsolutePath Path { get; private set; }
 
 		protected override ValidationResult DoValidate()

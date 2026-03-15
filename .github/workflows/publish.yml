@@ -37,6 +37,8 @@ jobs:
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: 10.0.x
+    - name: Add GitHub Packages source
+      run: dotnet nuget add source "https://nuget.pkg.github.com/jeppevammenkristensen/index.json" --name "github" --username jeppevammenkristensen --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
     - name: Publish template
       if: inputs.target == 'template'
       shell: pwsh

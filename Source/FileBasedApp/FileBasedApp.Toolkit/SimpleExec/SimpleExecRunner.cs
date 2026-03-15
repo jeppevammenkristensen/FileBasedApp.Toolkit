@@ -162,7 +162,19 @@ public class SimpleExecRunner
     /// <param name="arguments">The arguments to append.</param>
     /// <returns>The current <see cref="SimpleExecRunner"/> instance for chaining.</returns>
     /// <remarks>isSecret is only relevant to set if you call Run or RunAsync</remarks>
-    public SimpleExecRunner AddArguments(bool isSecret = false, params string[] arguments)
+    public SimpleExecRunner AddArguments(params string[] arguments)
+    {
+        return AddArguments(false, arguments);
+    }
+
+    /// <summary>
+    /// Appends multiple arguments to the command's argument list in a single call.
+    /// </summary>
+    /// <param name="isSecret">When <see langword="true"/>, every argument is treated as a secret.</param>
+    /// <param name="arguments">The arguments to append.</param>
+    /// <returns>The current <see cref="SimpleExecRunner"/> instance for chaining.</returns>
+    /// <remarks>isSecret is only relevant to set if you call Run or RunAsync</remarks>
+    public SimpleExecRunner AddArguments(bool isSecret, params string[] arguments)
     {
         foreach (var argument in arguments)
         {

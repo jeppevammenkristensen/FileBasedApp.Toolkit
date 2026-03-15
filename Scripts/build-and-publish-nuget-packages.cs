@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.16.0-rc-01
+#:package FileBasedApp.Toolkit@0.16.0-rc-02
 #:property PublishAot=false
 
 using FileBasedApp.Toolkit;
@@ -54,8 +54,8 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 			await new SimpleExecRunner("dotnet")
 				.AddArgument("pack")
 				.AddArgument(projectFile)
-				.AddArgument("-c").AddArgument("Release")
-				.AddArgument("-o").AddArgument(artifact).RunAsync(token: cancellationToken);
+				.AddArgumentPair("-c","Release")
+				.AddArgumentPair("-o", artifact).RunAsync(token: cancellationToken);
 			
 			var items = await Methods.GetNugetSources();
 
@@ -78,7 +78,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 				var simpleExecRunner = new SimpleExecRunner("dotnet")
 					.AddArguments(isSecret: false, "nuget", "push")
 					.AddArgument(element)
-					.AddArgument("--source").AddArgument(source!)
+					.AddArgumentPair("--source",source!)
 					.AddArgument("--skip-duplicate");
 
 				var secrets = new List<string>();
@@ -128,7 +128,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 
 		protected override ValidationResult DoValidate()
 		{
-			NugetApiKey = this.GetRequiredFromValueOrEnvironment(NugetApiKey,"NUGET_API_KEY");
+			NugetApiKey = this.GetValueOrFromEnvironment(NugetApiKey,"NUGET_API_KEY");
 			return base.DoValidate();
 		}
 	}
@@ -162,8 +162,8 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 
 			await new SimpleExecRunner("dotnet")
 				.AddArgument("pack").AddArgument(solutionFile)
-				.AddArgument("-c").AddArgument(settings.Configuration)
-				.AddArgument("-o").AddArgument(artifact)
+				.AddArgumentPair("-c",settings.Configuration)
+				.AddArgumentPair("-o",artifact)
 				.AddArguments(arguments: ["-p:IncludeSymbols=true", "-p:SymbolPackageFormat=snupkg"]).RunAsync(token: cancellationToken);
 				
 			var items = await Methods.GetNugetSources();
@@ -188,7 +188,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 			         {
 				         return settings.CodeToBuild switch
 				         {
-					         Settings.CodeToBuildType.FileBaseApp => x.GetFilenameWithoutExtension()
+					         Settings.CodeToBuildType.FileBasedApp => x.GetFilenameWithoutExtension()
 						         .StartsWith("FileBasedApp."),
 					         Settings.CodeToBuildType.TruePath => x.GetFilenameWithoutExtension()
 						         .StartsWith("TruePath."),
@@ -200,7 +200,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 				var pushRunner = new SimpleExecRunner("dotnet")
 					.AddArguments(arguments: ["nuget","push"])
 					.AddArgument(element)
-					.AddArgument("--source").AddArgument(source!)
+					.AddArgumentPair("--source",source!)
 					.AddArgument("--skip-duplicate");
 			
 				
@@ -208,7 +208,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 
 				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
 				{
-					pushRunner.AddArgument("--api-key").AddArgument(settings.NugetApiKey, isSecret: true);
+					pushRunner.AddArgumentPair("--api-key", settings.NugetApiKey, isSecret: true);
 				}					
 				
 				try
@@ -244,7 +244,9 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		[CommandOption("--api-key")]
 		public string? NugetApiKey {get;set; }
 		
-		[CommandOption("--code-to-build", true)]
+		[CommandOption("--code-to-build", false)]
+		[DefaultValue(CodeToBuildType.All)]
+		[Description($"The type to build. Values {nameof(CodeToBuildType.All)},{nameof(CodeToBuildType.FileBasedApp)},{nameof(CodeToBuildType.TruePath)}")]
 		public CodeToBuildType CodeToBuild { get; set; }
 		
 		protected override ValidationResult DoValidate()
@@ -281,8 +283,11 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		// For now simple non flags enum
 		public enum CodeToBuildType
 		{
-			FileBaseApp,
+			[Description("Only FileBasedApp.Toolkit")]
+			FileBasedApp,
+			[Description("Only TruePath")]
 			TruePath,
+			[Description("All packages")]
 			All
 		}
 		

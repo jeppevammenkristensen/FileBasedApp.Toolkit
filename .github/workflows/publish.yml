@@ -1,0 +1,44 @@
+name: Publish nuget packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'What to publish'
+        required: true
+        type: choice
+        options:
+          - code-all
+          - code-filebasedapp
+          - code-truepath
+          - template
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+    - name: Publish template
+      if: inputs.target == 'template'
+      shell: pwsh
+      run: dotnet run (Join-Path Scripts build-and-publish-nuget-packages.cs) -- build-template --source nuget.org
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    - name: Publish code
+      if: inputs.target != 'template'
+      shell: pwsh
+      run: |
+        $codeMap = @{
+          'code-all' = 'All'
+          'code-filebasedapp' = 'FileBaseApp'
+          'code-truepath' = 'TruePath'
+        }
+        $codeToBuild = $codeMap['${{ inputs.target }}']
+        dotnet run (Join-Path Scripts build-and-publish-nuget-packages.cs) -- build-code -c Release --source nuget.org --code-to-build $codeToBuild
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}

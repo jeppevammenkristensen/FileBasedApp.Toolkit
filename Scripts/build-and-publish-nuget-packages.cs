@@ -41,7 +41,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 		try
 		{
 
-			AbsolutePath projectFile = (root / "Templates" / "FileBasedAppTemplates.csproj");
+			AbsolutePath projectFile = root.GetFiles("FileBasedAppTemplates.csproj").GetSingleRequired(noMatchErrorMessage:"FileBasedAppTemplates.csproj was not found", multipleMatchesError:"Multiple matches for FileBasedAppTemplates.csproj");
 			if (!fileSystem.File.Exists(projectFile)){
 				throw new InvalidOperationException($"Project file {projectFile} was not found");
 			}
@@ -162,12 +162,14 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 			// Enumerate all the generated nuget packages and publish them to the source
 			foreach (var element in artifact.EnumerateFiles("*.*nupkg").Where(x =>
 			         {
-				         if (settings.TruePathOnly)
+				         return settings.CodeToBuild switch
 				         {
-					         return x.GetFilenameWithoutExtension().StartsWith("TruePath.");
-				         }
-
-				         return true;
+					         Settings.CodeToBuildType.FileBaseApp => x.GetFilenameWithoutExtension()
+						         .StartsWith("FileBasedApp."),
+					         Settings.CodeToBuildType.TruePath => x.GetFilenameWithoutExtension()
+						         .StartsWith("TruePath."),
+					         _ => true
+				         };
 			         }).OrderBy(x => x.GetExtensionWithoutDot().StartsWith('s') ? 1 : 0))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
@@ -215,8 +217,8 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		[CommandOption("--api-key")]
 		public string? NugetApiKey {get;set; }
 		
-		[CommandOption("--true-path-only")]
-		public bool TruePathOnly { get; set; }
+		[CommandOption("--code-to-build", true)]
+		public CodeToBuildType CodeToBuild { get; set; }
 		
 		protected override ValidationResult DoValidate()
 		{
@@ -247,7 +249,15 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		
 		[CommandOption("--source")]
 		public string? NugetSource { get; set; }
-		
+
+
+		// For now simple non flags enum
+		public enum CodeToBuildType
+		{
+			FileBaseApp,
+			TruePath,
+			All
+		}
 		
 		
 	}

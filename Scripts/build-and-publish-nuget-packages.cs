@@ -43,7 +43,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 		try
 		{
 
-			AbsolutePath projectFile = root.GetFiles("FileBasedAppTemplates.csproj").GetSingleRequired(noMatchErrorMessage:"FileBasedAppTemplates.csproj was not found", multipleMatchesError:"Multiple matches for FileBasedAppTemplates.csproj");
+			AbsolutePath projectFile = root.GetFiles("FileBasedAppTemplates.csproj", SearchOption.AllDirectories ).GetSingleRequired(noMatchErrorMessage:"FileBasedAppTemplates.csproj was not found", multipleMatchesError:"Multiple matches for FileBasedAppTemplates.csproj");
 			if (!fileSystem.File.Exists(projectFile)){
 				throw new InvalidOperationException($"Project file {projectFile} was not found");
 			}
@@ -91,8 +91,12 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 
 		finally
 
-		{		
-			artifact.DirectoryDelete(true);
+		{	
+			if (artifact.DirectoryExists())
+			{
+				artifact.DirectoryDelete(true);
+			}				
+			
 		}
 
 		return 0;

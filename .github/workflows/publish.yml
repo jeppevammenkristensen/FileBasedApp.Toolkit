@@ -12,10 +12,24 @@ on:
           - code-filebasedapp
           - code-truepath
           - template
+      environment:
+        description: 'Where to publish'
+        required: true
+        type: choice
+        default: staging
+        options:
+          - staging
+          - production
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
+    env:
+      NUGET_SOURCE: ${{ inputs.environment == 'production' && 'nuget.org' || 'https://nuget.pkg.github.com/jeppevammenkristensen/index.json' }}
+      NUGET_API_KEY: ${{ inputs.environment == 'production' && secrets.NUGET_API_KEY || secrets.GITHUB_TOKEN }}
 
     steps:
     - uses: actions/checkout@v4
@@ -26,9 +40,9 @@ jobs:
     - name: Publish template
       if: inputs.target == 'template'
       shell: pwsh
-      run: dotnet run (Join-Path Scripts build-and-publish-nuget-packages.cs) -- build-template --source nuget.org
+      run: dotnet run (Join-Path Scripts build-and-publish-nuget-packages.cs) -- build-template --source $env:NUGET_SOURCE
       env:
-        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        NUGET_API_KEY: ${{ env.NUGET_API_KEY }}
     - name: Publish code
       if: inputs.target != 'template'
       shell: pwsh
@@ -39,6 +53,6 @@ jobs:
           'code-truepath' = 'TruePath'
         }
         $codeToBuild = $codeMap['${{ inputs.target }}']
-        dotnet run (Join-Path Scripts build-and-publish-nuget-packages.cs) -- build-code -c Release --source nuget.org --code-to-build $codeToBuild
+        dotnet run (Join-Path Scripts build-and-publish-nuget-packages.cs) -- build-code -c Release --source $env:NUGET_SOURCE --code-to-build $codeToBuild
       env:
-        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        NUGET_API_KEY: ${{ env.NUGET_API_KEY }}

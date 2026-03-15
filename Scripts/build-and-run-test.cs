@@ -12,6 +12,15 @@ using TruePath.TestableIO.System.IO;
 using static SimpleExec.Command;
 
 var commandApp = new CommandApp<RunCommand>();
+#if DEBUG
+	commandApp.Configure(ctx =>
+	{
+		ctx.PropagateExceptions();
+	});
+
+#endif
+	
+
 return await commandApp.RunAsync(args);
 
 public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you can use Command (and have Execute instead of ExecuteAsync
@@ -37,11 +46,18 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 			if (fileBased.Equals(PathUtil.GetExecutionFile()))
 				continue;
 
-			AnsiConsole.MarkupLineInterpolated($"[green]Building filebased app {fileBased.FileName}[/]");
-			await new SimpleExecRunner("dotnet").AddArgumentPair("build", fileBased).RunAsync(token: cancellationToken);
+			try
+			{
+				AnsiConsole.MarkupLineInterpolated($"[green]Building filebased app {fileBased.FileName}[/]");
+				await new SimpleExecRunner("dotnet").AddArgument("build").AddArgument(fileBased).RunAsync(token: cancellationToken);
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException($"Failed to build {fileBased}");
+			}
 		}
 		
-		await new SimpleExecRunner("dotnet").AddArgumentPair("build", solutionFile)
+		await new SimpleExecRunner("dotnet").AddArgument("build").AddArgument(solutionFile)
 			.RunAsync(token: cancellationToken);
 
 		var testReports = settings.ParentFolder / "test-reports";
@@ -53,7 +69,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 			List<string> testParameters = ["test", absolutePath.Value, $"--logger:trx;LogFileName={(testReports / (absolutePath.GetFilenameWithoutExtension() + ".trx")).Value}"];
 			
 			await new SimpleExecRunner("dotnet")
-				.AddArgumentPair("test", absolutePath)
+				.AddArgument("test").AddArgument(absolutePath)
 				.AddArgument($"--logger:trx;LogFileName={(testReports / (absolutePath.GetFilenameWithoutExtension() + ".trx")).Value}").RunAsync(token: cancellationToken);
 			
 		}

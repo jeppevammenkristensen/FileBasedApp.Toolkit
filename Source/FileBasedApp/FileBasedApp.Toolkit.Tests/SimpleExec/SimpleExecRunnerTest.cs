@@ -346,12 +346,12 @@ public class SimpleExecRunnerTest
     }
 
     [Fact]
-    public void AddArgumentPair_AddsConcatenatedAndValue()
+    public void AddArgumentPair_AddsTwoarguments()
     {
         var runner = CreateRunner()
             .AddArgumentPair("--out", "/tmp", false);
 
-        runner.Arguments.Should().BeEquivalentTo(["--out /tmp", "/tmp"]);
+        runner.Arguments.Should().BeEquivalentTo(["--out", "/tmp"]);
     }
 
     [Fact]

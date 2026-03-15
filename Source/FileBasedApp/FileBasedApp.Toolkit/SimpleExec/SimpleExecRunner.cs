@@ -158,7 +158,6 @@ public class SimpleExecRunner
     /// <summary>
     /// Appends multiple arguments to the command's argument list in a single call.
     /// </summary>
-    /// <param name="isSecret">When <see langword="true"/>, every argument is treated as a secret.</param>
     /// <param name="arguments">The arguments to append.</param>
     /// <returns>The current <see cref="SimpleExecRunner"/> instance for chaining.</returns>
     /// <remarks>isSecret is only relevant to set if you call Run or RunAsync</remarks>
@@ -188,7 +187,6 @@ public class SimpleExecRunner
     /// <summary>
     /// Appends multiple values as secrets. The secrets must already have been defined as an argument to have an effect. if strict is true an exception will be thrown if unmatched secrets are passed
     /// </summary>
-    /// <param name="strict">Evaluate the secrets against the existing arguments</param>
     /// <param name="secrets">The secrets to add</param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">Thrown if strict is true and unmatched secrets are used</exception>

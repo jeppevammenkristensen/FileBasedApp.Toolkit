@@ -26,7 +26,12 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 		AnsiConsole.MarkupLineInterpolated($"[green]{settings.ParentFolder}[/]");
 		var solutionFile = settings.ParentFolder.EnumerateFiles("FileBasedApp.Toolkit.slnx", SearchOption.AllDirectories).GetSingleRequired(x => true, "Failed to locate FileBasedApp.Toolkit.slnx");
 
-		foreach (var fileBased in DirectoryIO.GetFiles(settings.ParentFolder / "Scripts", "*.cs").Concat([settings.ParentFolder / "Templates" / "FileBasedAppTemplate" / "FileBasedToolkitApp.cs"]))
+		foreach (var fileBased in DirectoryIO.GetFiles(settings.ParentFolder / "Scripts", "*.cs")
+			         .Concat([
+				         settings.ParentFolder.GetFiles("FileBasedToolkitApp.cs", SearchOption.AllDirectories)
+					         .GetSingleRequired(x => x.Parent!.Value.FileName.Contains("Template",
+						         StringComparison.OrdinalIgnoreCase), "Failed to locate FileBasedToolkitApp.cs")
+			         ]))
 		{
 			if (fileBased.Equals(PathUtil.GetExecutionFile()))
 				continue;

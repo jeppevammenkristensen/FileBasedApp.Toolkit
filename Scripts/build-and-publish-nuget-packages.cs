@@ -54,8 +54,8 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 			await new SimpleExecRunner("dotnet")
 				.AddArgument("pack")
 				.AddArgument(projectFile)
-				.AddArgumentPair("-c", "Release")
-				.AddArgumentPair("-o", artifact).RunAsync(token: cancellationToken);
+				.AddArgument("-c").AddArgument("Release")
+				.AddArgument("-o").AddArgument(artifact).RunAsync(token: cancellationToken);
 			
 			var items = await Methods.GetNugetSources();
 
@@ -78,14 +78,14 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 				var simpleExecRunner = new SimpleExecRunner("dotnet")
 					.AddArguments(isSecret: false, "nuget", "push")
 					.AddArgument(element)
-					.AddArgumentPair("--source", source!)
+					.AddArgument("--source").AddArgument(source!)
 					.AddArgument("--skip-duplicate");
 
 				var secrets = new List<string>();
 				
 				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
 				{
-					simpleExecRunner.AddArgumentPair("--api-key", settings.NugetApiKey, true);
+					simpleExecRunner.AddArgument("--api-key").AddArgument(settings.NugetApiKey, true);
 				}
 				
 				try
@@ -161,9 +161,9 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).GetSingleRequired(_ => true, "Could not find a solution file");
 
 			await new SimpleExecRunner("dotnet")
-				.AddArgumentPair("pack", solutionFile)
-				.AddArgumentPair("_c", settings.Configuration)
-				.AddArgumentPair("-o", artifact)
+				.AddArgument("pack").AddArgument(solutionFile)
+				.AddArgument("-c").AddArgument(settings.Configuration)
+				.AddArgument("-o").AddArgument(artifact)
 				.AddArguments(arguments: ["-p:IncludeSymbols=true", "-p:SymbolPackageFormat=snupkg"]).RunAsync(token: cancellationToken);
 				
 			var items = await Methods.GetNugetSources();
@@ -200,7 +200,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 				var pushRunner = new SimpleExecRunner("dotnet")
 					.AddArguments(arguments: ["nuget","push"])
 					.AddArgument(element)
-					.AddArgumentPair("--source", source!)
+					.AddArgument("--source").AddArgument(source!)
 					.AddArgument("--skip-duplicate");
 			
 				
@@ -208,7 +208,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 
 				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
 				{
-					pushRunner.AddArgumentPair("--api-key", settings.NugetApiKey, isSecret: true);
+					pushRunner.AddArgument("--api-key").AddArgument(settings.NugetApiKey, isSecret: true);
 				}					
 				
 				try

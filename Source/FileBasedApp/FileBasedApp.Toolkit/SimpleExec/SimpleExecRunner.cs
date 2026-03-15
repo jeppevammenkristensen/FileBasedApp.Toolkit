@@ -132,7 +132,7 @@ public class SimpleExecRunner
     /// <param name="isSecret">When <see langword="true"/>, <paramref name="value"/> is treated as a secret.</param>
     /// <returns>The current <see cref="SimpleExecRunner"/> instance for chaining.</returns>
     /// <remarks>Only the value will be secret</remarks>
-    public SimpleExecRunner AddArgumentPair(string argument, string value, bool isSecret) => AddArgument($"{argument} {value}").AddArgument(value, isSecret);
+    public SimpleExecRunner AddArgumentPair(string argument, string value, bool isSecret = false) => AddArgument($"{argument} {value}").AddArgument(value, isSecret);
 
     /// <summary>
     /// Appends a named argument together with an <see cref="AbsolutePath"/> value.

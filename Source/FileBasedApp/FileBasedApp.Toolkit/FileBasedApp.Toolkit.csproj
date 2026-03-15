@@ -11,7 +11,11 @@
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp.Toolkit</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>    
-    <PackageReleaseNotes>Added enumerable extensions for structs. Particulary aimed at AbsolutePath</PackageReleaseNotes>
+    <PackageReleaseNotes>
+- Added SimpleExecRunner: a fluent builder for constructing and executing system commands via SimpleExec (Run, RunAsync, ReadAsync)
+- Added ISimpleExecCommandWrapper and SimpleExecCommand for testable wrapping of SimpleExec's static Command class
+- Updated TruePath dependency to 1.12.0
+    </PackageReleaseNotes>
     <LangVersion>14</LangVersion>    
   </PropertyGroup>
   

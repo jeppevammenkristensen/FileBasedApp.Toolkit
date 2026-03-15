@@ -11,6 +11,12 @@ registries:
 updates:
   - package-ecosystem: nuget
     registries: '*'
-    directory: "/" # Location of package manifests
+    directories:
+      - "/Source/FileBasedApp/"
+      - "/Source/TruePath.TestableIO/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: github-actions
+    directory: "/"
     schedule:
       interval: "weekly"

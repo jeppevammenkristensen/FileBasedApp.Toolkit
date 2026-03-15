@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.16.0-dev-02
+#:package FileBasedApp.Toolkit@0.16.0-rc-01
 #:property PublishAot=false
 
 using FileBasedApp.Toolkit;
@@ -44,7 +44,9 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 		try
 		{
 
-			AbsolutePath projectFile = root.GetFiles("FileBasedAppTemplates.csproj", SearchOption.AllDirectories ).GetSingleRequired(noMatchErrorMessage:"FileBasedAppTemplates.csproj was not found", multipleMatchesError:"Multiple matches for FileBasedAppTemplates.csproj");
+			AbsolutePath projectFile = root.GetFiles("FileBasedAppTemplates.csproj", SearchOption.AllDirectories )
+				.GetSingleRequired(noMatchErrorMessage:"FileBasedAppTemplates.csproj was not found", multipleMatchesError:"Multiple matches for FileBasedAppTemplates.csproj");
+			
 			if (!fileSystem.File.Exists(projectFile)){
 				throw new InvalidOperationException($"Project file {projectFile} was not found");
 			}
@@ -157,8 +159,13 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		try
 		{							
 			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).GetSingleRequired(_ => true, "Could not find a solution file");
-	
-			await SimpleExec.Command.RunAsync("dotnet", ["pack", solutionFile.Value, "-c", settings.Configuration, "-o", artifact.Value, "-p:IncludeSymbols=true", "-p:SymbolPackageFormat=snupkg"], ct: cancellationToken);	
+
+			await new SimpleExecRunner("dotnet")
+				.AddArgumentPair("pack", solutionFile)
+				.AddArgumentPair("_c", settings.Configuration)
+				.AddArgumentPair("-o", artifact)
+				.AddArguments(arguments: ["-p:IncludeSymbols=true", "-p:SymbolPackageFormat=snupkg"]).RunAsync(token: cancellationToken);
+				
 			var items = await Methods.GetNugetSources();
 
 			string? source = settings.NugetSource;
@@ -190,20 +197,23 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 			         }).OrderBy(x => x.GetExtensionWithoutDot().StartsWith('s') ? 1 : 0))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to local source[/]");
-				List<string> arguments = ["nuget", "push", element.Value, "--source", source, "--skip-duplicate"];
+				var pushRunner = new SimpleExecRunner("dotnet")
+					.AddArguments(arguments: ["nuget","push"])
+					.AddArgument(element)
+					.AddArgumentPair("--source", source!)
+					.AddArgument("--skip-duplicate");
+			
 				
 				List<string> s = new();
 
 				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
 				{
-					arguments.AddRange("--api-key", settings.NugetApiKey);
-					s.Add(settings.NugetApiKey);
+					pushRunner.AddArgumentPair("--api-key", settings.NugetApiKey, isSecret: true);
 				}					
 				
 				try
 				{	        
-					await SimpleExec.Command.RunAsync("dotnet",
-						arguments, secrets:s,  ct: cancellationToken);
+					await pushRunner.RunAsync(token: cancellationToken);
 				}
 				catch (ExitCodeReadException)
 				{

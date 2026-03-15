@@ -1,10 +1,11 @@
-#:package FileBasedApp.Toolkit@0.16.0-dev-01
+#:package FileBasedApp.Toolkit@0.16.0-rc-01
 #:property PublishAot=false 
 
 using Spectre.Console.Cli;
 using TruePath;
 using Spectre.Console;
 using FileBasedApp.Toolkit;
+using FileBasedApp.Toolkit.SimpleExec;
 using System.IO.Abstractions;
 using TruePath.TestableIO.System.IO;
 
@@ -33,9 +34,13 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 			{
 				AnsiConsole.MarkupLineInterpolated($"[dim]Relative path {csfile.RelativeTo(settings.SomePathAbsolute)}[/]");
 			}
-		});
-
-		await SimpleExec.Command.RunAsync("dotnet", ["--version"], parentDirectory.Value);
+		});	
+		
+		await new SimpleExecRunner("dotnet")
+			.AddArgument("--version")
+			.WithWorkingDirectory(parentDirectory)
+			.RunAsync(token: cancellationToken);
+		
 		return 0; // 0 for success
 	}
 

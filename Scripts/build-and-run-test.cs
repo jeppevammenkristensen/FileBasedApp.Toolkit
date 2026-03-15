@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.16.0-dev-01
+#:package FileBasedApp.Toolkit@0.16.0-rc-01
 #:property PublishAot=false 
 
 using Spectre.Console.Cli;
@@ -7,6 +7,7 @@ using Spectre.Console;
 using FileBasedApp.Toolkit;
 using System.IO.Abstractions;
 using System.Text.RegularExpressions;
+using FileBasedApp.Toolkit.SimpleExec;
 using TruePath.TestableIO.System.IO;
 using static SimpleExec.Command;
 
@@ -37,10 +38,11 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 				continue;
 
 			AnsiConsole.MarkupLineInterpolated($"[green]Building filebased app {fileBased.FileName}[/]");
-			await RunAsync("dotnet", ["build", fileBased.Value],ct:cancellationToken);
+			await new SimpleExecRunner("dotnet").AddArgumentPair("build", fileBased).RunAsync(token: cancellationToken);
 		}
 		
-		await RunAsync("dotnet", ["build", solutionFile.Value], ct: cancellationToken);
+		await new SimpleExecRunner("dotnet").AddArgumentPair("build", solutionFile)
+			.RunAsync(token: cancellationToken);
 
 		var testReports = settings.ParentFolder / "test-reports";
 		testReports.CreateDirectory();
@@ -49,7 +51,11 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 		{
 			AnsiConsole.MarkupLineInterpolated($"[green]Running tests for [bold]{absolutePath.RelativeTo(settings.ParentFolder)}[/][/]");
 			List<string> testParameters = ["test", absolutePath.Value, $"--logger:trx;LogFileName={(testReports / (absolutePath.GetFilenameWithoutExtension() + ".trx")).Value}"];
-			await RunAsync("dotnet", testParameters, settings.ParentFolder.Value, ct: cancellationToken);
+			
+			await new SimpleExecRunner("dotnet")
+				.AddArgumentPair("test", absolutePath)
+				.AddArgument($"--logger:trx;LogFileName={(testReports / (absolutePath.GetFilenameWithoutExtension() + ".trx")).Value}").RunAsync(token: cancellationToken);
+			
 		}
 
 		return 0; // 0 for success

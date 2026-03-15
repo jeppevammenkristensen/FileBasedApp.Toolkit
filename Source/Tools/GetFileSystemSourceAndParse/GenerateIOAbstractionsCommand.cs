@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis.MSBuild;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using TruePath;
-using FileBasedApp.Toolkit.Abstractions;
 using ValidationResult = Spectre.Console.ValidationResult;
 
 /// <summary>
@@ -48,7 +47,7 @@ public class GenerateIOAbstractionsCommand : AsyncCommand<GenerateIOAbstractions
             }
             else
             {
-                PathFull = TryGetDirectory(Path, PredefinedRootPath.CurrentDirectory, true, false);
+                PathFull = TryGetDirectory(Path, true, false, PredefinedRootPath.CurrentDirectory);
             }
 
             return base.DoValidate();

@@ -21,8 +21,7 @@
    
 
     <ItemGroup>
-        <PackageReference Include="FileBasedApp.Toolkit" Version="0.10.2" />
-        <PackageReference Include="Microsoft.Bcl.Memory" Version="9.0.14" />
+        <PackageReference Include="FileBasedApp.Toolkit" Version="0.15.0" />
         <PackageReference Include="Microsoft.Build" Version="18.0.2" ExcludeAssets="runtime" />
       <PackageReference Include="Microsoft.Build.Locator" Version="1.7.8" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />

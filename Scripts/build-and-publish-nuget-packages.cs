@@ -12,7 +12,9 @@ using SimpleExec;
 
 var commandApp = new CommandApp();
 
-commandApp.Configure(ctx => {
+commandApp.Configure(ctx =>
+{
+	ctx.PropagateExceptions();
 	ctx.AddCommand<BuildTemplateCommand>("build-template").WithDescription("Build the template");	
 	ctx.AddCommand<BuildCodeCommand>("build-code").WithDescription("Build the code");			
 });
@@ -64,7 +66,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 				         .StartsWith("s") ? 1 : 0))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Publishing {element.Value} to source [bold]{source}[/] [/]");
-				List<string> arguments = ["nuget", "push", element.Value, "--source", source,"--skip-duplicate"];
+				List<string> arguments = ["nuget", "push", element.Value, "--source", source!,"--skip-duplicate"];
 
 				var secrets = new List<string>();
 				

@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.16.0-dev-01
+#:package FileBasedApp.Toolkit@0.16.0-dev-02
 #:property PublishAot=false
 
 using FileBasedApp.Toolkit;
@@ -52,7 +52,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 			await new SimpleExecRunner("dotnet")
 				.AddArgument("pack")
 				.AddArgument(projectFile)
-				.AddArgumentPair("-c", "Release", false)
+				.AddArgumentPair("-c", "Release")
 				.AddArgumentPair("-o", artifact).RunAsync(token: cancellationToken);
 			
 			var items = await Methods.GetNugetSources();
@@ -76,7 +76,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 				var simpleExecRunner = new SimpleExecRunner("dotnet")
 					.AddArguments(isSecret: false, "nuget", "push")
 					.AddArgument(element)
-					.AddArgumentPair("--source", source, false)
+					.AddArgumentPair("--source", source!)
 					.AddArgument("--skip-duplicate");
 
 				var secrets = new List<string>();

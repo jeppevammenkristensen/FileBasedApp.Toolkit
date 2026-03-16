@@ -1,4 +1,5 @@
 ﻿using System.IO.Abstractions;
+using System.Text.RegularExpressions;
 using TruePath;
 
 namespace FileBasedApp.Toolkit;
@@ -71,21 +72,22 @@ public static class IO
     /// <param name="predicate">The search predicate</param>
     /// <param name="maxDepth">The max depth to traverse up before skipping travering (to avoid endless loop) default is <see cref="DefaultMaxDepth"/></param>
     /// <returns></returns>
-    internal static AbsolutePath? FindAncestorOrNull(this AbsolutePath path, bool includeSelf, Func<AbsolutePath, bool> predicate,
+    internal static AbsolutePath? FindAncestorOrNull(this AbsolutePath path, bool includeSelf,
+        Func<AbsolutePath, bool> predicate,
         int maxDepth = DefaultMaxDepth)
     {
         return path
             .GetAncestors(includeSelf, maxDepth)
             .FirstOrDefault(predicate);
     }
-    
+
     /// <summary>
     /// Returns the path or a nullable 
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
     public static AbsolutePath? AsAbsolutePath(this string? path) => path is null ? null : AbsolutePath.Create(path);
-    
+
     /// <summary>
     /// Returns a an non nullable path
     /// </summary>
@@ -105,7 +107,7 @@ public static class IO
     /// <exception cref="ArgumentNullException"></exception>
     public static AbsolutePath ToRequired(this AbsolutePath? path) =>
         path ?? throw new ArgumentNullException(nameof(path));
-    
+
     /// <summary>
     /// Returns the path or a nullable
     /// </summary>
@@ -131,7 +133,7 @@ public static class IO
         int maxDepth = DefaultMaxDepth)
     {
         maxDepth = maxDepth < 1 ? DefaultMaxDepth : maxDepth;
-        
+
         if (includeSelf) yield return source;
         int currentDepth = 0;
         var currentPath = source;
@@ -157,8 +159,86 @@ public static class IO
     public static IEnumerable<AbsolutePath> EnumerateAllDirectories(this AbsolutePath source, string searchPattern,
         IFileSystem? fileSystem = null)
         => source.EnumerateDirectories(searchPattern, SearchOption.AllDirectories, fileSystem);
+
+    /// <summary>
+    /// Filters a sequence of file paths by applying a predicate to the content stream of each file.
+    /// </summary>
+    /// <param name="source">The sequence of absolute paths to files to be filtered.</param>
+    /// <param name="predicate">A function that examines the content stream of a file and returns true if the file should be included in the result.</param>
+    /// <param name="fileSystem">An optional file system abstraction to use for file operations. If null, the default file system is used.</param>
+    /// <returns>A sequence of absolute paths to files for which the predicate returned true.</returns>
+    public static IEnumerable<AbsolutePath> FindInFiles(this IEnumerable<AbsolutePath> source,
+        Func<Stream, bool> predicate, IFileSystem? fileSystem = null)
+    {
+        foreach (var item in source)
+        {
+            using var fileSystemStream = item.OpenRead(fileSystem);
+            if (predicate(fileSystemStream))
+            {
+                yield return item;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Replaces the contents of a file with the specified text.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="converter"></param>
+    /// <param name="fileSystem"></param>
+    /// <returns></returns>
+    public static AbsolutePath Replace(this AbsolutePath path, Func<string, string> converter,
+        IFileSystem? fileSystem = null)
+    {
+        var existing = path.ReadAllText(fileSystem);
+        var newText = converter(existing);
+        if (existing.Equals(newText)) return path;
+        path.WriteAllText(newText, fileSystem);
+        return path;
+    }
+    
     
     /// <summary>
+    /// Filters a collection of file paths to only those whose contents match the specified regular expression pattern.
+    /// </summary>
+    /// <param name="source">The collection of file paths to search through.</param>
+    /// <param name="regex">The regular expression pattern to match against the contents of each file.</param>
+    /// <param name="searchStrategy"></param>
+    /// <param name="fileSystem">The file system abstraction to use for file operations. If null, the default file system is used.</param>
+    /// <returns>A collection of file paths whose contents contain at least one line matching the regular expression pattern.</returns>
+    public static IEnumerable<AbsolutePath> FindInFiles(this IEnumerable<AbsolutePath> source, Regex regex, FileSearchStrategy searchStrategy = FileSearchStrategy.ByLine,
+        IFileSystem? fileSystem = null)
+    {
+        return source.FindInFiles((Func<Stream, bool>) ContainsRegex, fileSystem);
+
+        bool ContainsRegex(Stream s)
+        {
+            using var streamReader = new StreamReader(s);
+
+            if (searchStrategy == FileSearchStrategy.AllText)
+            {
+                return regex.IsMatch(streamReader.ReadToEnd());
+            }
+            else if (searchStrategy == FileSearchStrategy.ByLine)
+            {
+                var currentLine = streamReader.ReadLine();
+
+                while (currentLine != null)
+                {
+                    if (regex.IsMatch(currentLine))
+                    {
+                        return true;
+                    }
+
+                    currentLine = streamReader.ReadLine();
+                }    
+            }
+            
+            return false;
+        }
+    }
+
+/// <summary>
     /// Retrieves all subdirectories within the specified directory that match the given search pattern, including all nested subdirectories.
     /// </summary>
     /// <param name="source">The absolute path of the directory to search.</param>
@@ -193,4 +273,18 @@ public static class IO
     public static AbsolutePath[] GetAllFiles(this AbsolutePath source, string searchPattern,
         IFileSystem? fileSystem = null)
         => source.GetFiles(searchPattern, SearchOption.AllDirectories, fileSystem);
+
+    public enum FileSearchStrategy
+    {
+        /// <summary>
+        /// A filter is applied by reading every line one by one
+        /// </summary>
+        /// <remarks>Can give performance boost if the files being searched are expected to be vary large</remarks>
+        ByLine,
+        /// <summary>
+        /// All text is loaded in. If the filter used expects to work on multiplelines this is the right approach
+        /// </summary>
+        /// <remarks>God for medium sized files</remarks>
+        AllText
+    }
 }

@@ -67,14 +67,19 @@ public class SimpleExecRunner
     /// <remarks>Only used by <see cref="Run"/> and <see cref="RunAsync"/>.</remarks>
     protected bool CreateNoWindow { get; private set; }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="SimpleExecRunner"/> with the specified command name.
-    /// </summary>
-    /// <param name="name">The name of the command to execute, e.g. <c>git</c>.</param>
+    ///<inheritdoc cref="SimpleExecRunner.Init"/>
     public SimpleExecRunner(string name)
     {
         Name = name;
     }
+    
+    /// <summary>
+    /// Initializes a new instance of <see cref="SimpleExecRunner"/> with the specified command name.
+    /// </summary>
+    /// <param name="name">The name of the command to run. For instance dotnet, git, etc...</param>
+    /// <returns></returns>
+    /// <remarks>Use chaining methods like .Add... or .With... to add properties. End with a call to Run, RunAsync, or ReadAsync</remarks>
+    public static SimpleExecRunner Init(string name) => new(name);
 
     /// <summary>
     /// Sets the working directory in which the command will be executed.

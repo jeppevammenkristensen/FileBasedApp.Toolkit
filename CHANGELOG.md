@@ -20,7 +20,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Added `JsonDeserializer` implementing `IDeserializer` using `System.Text.Json` with web-compatible defaults
 - Added `FlexibleFilePath` record for cross-platform path resolution (Windows/Unix) usable in JSON configuration
 - Added `LoadSetting<T>` methods on `ExtendedCommandSettings` for deserializing settings objects from files
-- Added XML doc comment to `FileSearchStrategy` enum
+- Fixed stream leak in `LoadSetting<T>` overloads — the deserialization stream is now properly disposed
+
+### FileBasedApp.Toolkit.CSharp
+
+- New project added
+- Added `FileBasedAppEvaluator` — uses Roslyn to detect file-based apps by inspecting leading trivia for `#:package`, `#:property`, `#:sdk`, or `#:project` directives
 
 ### FileBasedApp.Toolkit.Recipes
 

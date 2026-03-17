@@ -274,6 +274,10 @@ public static class IO
         IFileSystem? fileSystem = null)
         => source.GetFiles(searchPattern, SearchOption.AllDirectories, fileSystem);
 
+    /// <summary>
+    /// Defines the strategy for searching file content with a regular expression pattern.
+    /// ByLine checks each line individually, while AllText searches the entire file content as a single string.
+    /// </summary>
     public enum FileSearchStrategy
     {
         /// <summary>

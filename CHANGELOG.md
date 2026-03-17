@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.17.0-dev-01]
+
 ### FileBasedApp.Toolkit
 
 - Added `FindInFiles` extension methods for stream-predicate and regex-based file content search
@@ -13,6 +15,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Added `FileSearchStrategy` enum (ByLine, AllText)
 - Added `SimpleExecRunner.Init` static factory method
 - Renamed test file from AbsolutePathExtensionsTest to IOExtensionsTest
+- Added `CommandCli` namespace with `ExtendedCommandSettings`, an abstract base for Spectre.Console `CommandSettings` with convenience methods for resolving file/directory paths, loading settings from files, and reading values from environment variables
+- Added `IDeserializer` interface for synchronous and asynchronous stream deserialization
+- Added `JsonDeserializer` implementing `IDeserializer` using `System.Text.Json` with web-compatible defaults
+- Added `FlexibleFilePath` record for cross-platform path resolution (Windows/Unix) usable in JSON configuration
+- Added `LoadSetting<T>` methods on `ExtendedCommandSettings` for deserializing settings objects from files
+- Added XML doc comment to `FileSearchStrategy` enum
 
 ### FileBasedApp.Toolkit.Recipes
 

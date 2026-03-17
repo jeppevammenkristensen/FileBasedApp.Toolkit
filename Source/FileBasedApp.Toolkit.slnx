@@ -5,6 +5,8 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/FilebasedApp/">
+    <Project Path="FileBasedApp/FileBasedApp.Toolkit.CSharp.Tests/FileBasedApp.Toolkit.CSharp.Tests.csproj" />
+    <Project Path="FileBasedApp/FileBasedApp.Toolkit.CSharp/FileBasedApp.Toolkit.CSharp.csproj" />
     <Project Path="FileBasedApp/FileBasedApp.Toolkit.Tests/FileBasedApp.Toolkit.Tests.csproj" />
     <Project Path="FileBasedApp/FileBasedApp.Toolkit/FileBasedApp.Toolkit.csproj" />
   </Folder>

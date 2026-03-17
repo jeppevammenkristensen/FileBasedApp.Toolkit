@@ -1,5 +1,8 @@
 ﻿namespace FileBasedApp.Toolkit;
 
+/// <summary>
+/// Provides extension methods for string manipulation and validation operations.
+/// </summary>
 public static class StringExtensions
 {
     /// <summary>

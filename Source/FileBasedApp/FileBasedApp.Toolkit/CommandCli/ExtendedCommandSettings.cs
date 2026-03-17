@@ -194,7 +194,8 @@ public abstract class ExtendedCommandSettings : CommandSettings
         if (string.IsNullOrWhiteSpace(path)) return null;
 
         var file = TryGetFile(path, true, roots: [PathUtil.GetCurrentWorkingFolder(), PathUtil.GetExecutionFolder()]);
-        return Deserializer.Deserialize<T>(file.OpenRead(fileSystem));
+        using var stream = file.OpenRead(fileSystem);
+        return Deserializer.Deserialize<T>(stream);
     }
 
     /// <summary>
@@ -211,8 +212,8 @@ public abstract class ExtendedCommandSettings : CommandSettings
         if (path == null) return null;
 
         var file = TryGetFile(path.Value.Value, true, roots: [PathUtil.GetCurrentWorkingFolder(), PathUtil.GetExecutionFolder()]);
-        return Deserializer.Deserialize<T>(file.OpenRead(fileSystem));
-        
+        using var stream = file.OpenRead(fileSystem);
+        return Deserializer.Deserialize<T>(stream);
     }
 
     /// <summary>

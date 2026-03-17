@@ -16,7 +16,6 @@ using Roslynator.CSharp;
 using Roslynator.CSharp.Syntax;
 using TextCopy;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Roslynator.CSharp.CSharpFactory;
 
 
 var commandApp = new CommandApp<RunCommand>();

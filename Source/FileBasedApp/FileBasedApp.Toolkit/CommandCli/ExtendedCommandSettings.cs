@@ -1,9 +1,10 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.IO.Abstractions;
+using System.Runtime.CompilerServices;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using TruePath;
 
-namespace FileBasedApp.Toolkit;
+namespace FileBasedApp.Toolkit.CommandCli;
 
 /// <summary>
 /// Extends upon the existing <see cref="CommandSettings"/> to add convience
@@ -11,6 +12,16 @@ namespace FileBasedApp.Toolkit;
 /// </summary>
 public abstract class ExtendedCommandSettings : CommandSettings
 {
+    /// <summary>
+    /// Gets the deserializer used to load settings from files.
+    /// </summary>
+    /// <value>
+    /// An <see cref="IDeserializer"/> instance used for deserializing file content.
+    /// The default implementation returns a <see cref="JsonDeserializer"/>.
+    /// Override this property to provide a custom deserializer implementation.
+    /// </value>
+    protected virtual IDeserializer Deserializer => new JsonDeserializer();
+    
     /// <summary>
     /// Validates the current settings instance using custom validation logic.
     /// If an exception is thrown during validation, its message will be used as the error description in the result.
@@ -167,6 +178,41 @@ public abstract class ExtendedCommandSettings : CommandSettings
         }
 
         return value;
+    }
+
+    /// <summary>
+    /// Loads and deserializes a settings object from a file at the specified path.
+    /// The file is searched in the current working directory and execution folder if not found at the given path.
+    /// Returns null if the path is null or whitespace.
+    /// </summary>
+    /// <param name="path">The path to the settings file to load. Can be relative or absolute.</param>
+    /// <param name="fileSystem">Optional file system abstraction to use for file operations. If null, the default file system is used.</param>
+    /// <typeparam name="T">The type to deserialize the settings into. Must be a reference type.</typeparam>
+    /// <returns>The deserialized settings object of type T, or null if the path is null or whitespace.</returns>
+    protected T? LoadSetting<T>(string? path, IFileSystem? fileSystem = null) where T : class
+    {
+        if (string.IsNullOrWhiteSpace(path)) return null;
+
+        var file = TryGetFile(path, true, roots: [PathUtil.GetCurrentWorkingFolder(), PathUtil.GetExecutionFolder()]);
+        return Deserializer.Deserialize<T>(file.OpenRead(fileSystem));
+    }
+
+    /// <summary>
+    /// Loads and deserializes a settings object from a file at the specified local path.
+    /// The file is searched in the current working directory and execution folder.
+    /// Returns null if the path is null.
+    /// </summary>
+    /// <typeparam name="T">The type of the settings object to deserialize. Must be a reference type.</typeparam>
+    /// <param name="path">The local path to the settings file, or null if no file should be loaded.</param>
+    /// <param name="fileSystem">Optional file system abstraction to use for file operations. If null, the default file system is used.</param>
+    /// <returns>The deserialized settings object of type <typeparamref name="T"/>, or null if the path parameter is null.</returns>
+    protected T? LoadSetting<T>(LocalPath? path, IFileSystem? fileSystem = null) where T : class
+    {
+        if (path == null) return null;
+
+        var file = TryGetFile(path.Value.Value, true, roots: [PathUtil.GetCurrentWorkingFolder(), PathUtil.GetExecutionFolder()]);
+        return Deserializer.Deserialize<T>(file.OpenRead(fileSystem));
+        
     }
 
     /// <summary>

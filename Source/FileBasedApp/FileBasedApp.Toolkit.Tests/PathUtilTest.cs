@@ -21,7 +21,7 @@ public class PathUtilTest
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeFile("test.file", AbsolutePath.CurrentWorkingDirectory / "first", AbsolutePath.CurrentWorkingDirectory / "second");
-            (AbsolutePath path, string errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
+            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
             errorMessage.Should().NotBeNull();
             path.Should().BeEquivalentTo(default(AbsolutePath));
         }
@@ -39,7 +39,7 @@ public class PathUtilTest
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeFile("test.file", AbsolutePath.CurrentWorkingDirectory / "first", AbsolutePath.CurrentWorkingDirectory / "second");
-            (AbsolutePath path, string errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
+            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
             errorMessage.Should().BeNull();
             path.Should().BeEquivalentTo(AbsolutePath.CurrentWorkingDirectory / "second" / "test.file");
         }
@@ -56,7 +56,7 @@ public class PathUtilTest
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeFile("test.file");
-            (AbsolutePath path, string errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
+            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
             errorMessage.Should().BeNull();
             path.Should().BeEquivalentTo(AbsolutePath.CurrentWorkingDirectory / "test.file");
         }
@@ -70,7 +70,7 @@ public class PathUtilTest
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeFile("nonexistent.file");
-            (AbsolutePath path, string errorMessage) = analyzeDirectory.GetPath(shouldExist: false, false);
+            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: false, false);
             errorMessage.Should().BeNull();
             path.Should().NotBeNull();
         }
@@ -84,7 +84,7 @@ public class PathUtilTest
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeFile(null);
-            (AbsolutePath path, string errorMessage) = analyzeDirectory.GetPath(shouldExist: false, false);
+            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: false, false);
             errorMessage.Should().NotBeNull();
             path.Should().BeEquivalentTo(default(AbsolutePath));
         }
@@ -104,7 +104,7 @@ public class PathUtilTest
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeDirectory("existing", AbsolutePath.CurrentWorkingDirectory);
-            (AbsolutePath path, string errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
+            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
             errorMessage.Should().BeNull();
             path.Should().BeEquivalentTo(testdirectory);
         }
@@ -118,7 +118,7 @@ public class PathUtilTest
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeDirectory("nonexistent",AbsolutePath.CurrentWorkingDirectory / "test");
-            (AbsolutePath path, string errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
+            (_, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
             errorMessage.Should().NotBeNull();
             errorMessage.Should().Contain("does not exist");
         }
@@ -132,7 +132,7 @@ public class PathUtilTest
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeDirectory("", AbsolutePath.CurrentWorkingDirectory / "test");
-            (AbsolutePath path, string errorMessage) = analyzeDirectory.GetPath(shouldExist: false, true);
+            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: false, true);
             errorMessage.Should().BeNull();
             path.Should().BeEquivalentTo(AbsolutePath.CurrentWorkingDirectory / "test");
         }

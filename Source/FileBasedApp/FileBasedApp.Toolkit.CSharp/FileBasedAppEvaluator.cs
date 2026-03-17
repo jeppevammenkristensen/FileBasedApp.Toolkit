@@ -1,0 +1,56 @@
+using System.IO.Abstractions;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using TruePath;
+using static FileBasedApp.Toolkit.CSharp.CsharpRegex;
+
+namespace FileBasedApp.Toolkit.CSharp;
+
+/// <summary>
+/// Evaluates if a file is a file-based app by inspecting its leading Roslyn trivia
+/// for file-based directives such as <c>#:package</c>, <c>#:property</c>, <c>#:sdk</c>, or <c>#:project</c>.
+/// </summary>
+public class FileBasedAppEvaluator
+{
+    private readonly IFileSystem _fileSystem;
+
+    public FileBasedAppEvaluator() : this(new FileSystem())
+    {
+    }
+
+    public FileBasedAppEvaluator(IFileSystem fileSystem)
+    {
+        _fileSystem = fileSystem;
+    }
+ 
+
+    /// <summary>
+    /// Returns <see langword="true"/> if the file at <paramref name="path"/> is a file-based app,
+    /// determined by the presence of a file-based directive in the leading trivia of a top-level script.
+    /// </summary>
+    /// <param name="path">The path to the file to evaluate.</param>
+    /// <param name="requireGlobalStatement">Require that the first statement is a Global statement (lines of code) <br/>
+    /// <![CDATA[Console.WriteLine("Hello")]]></param>
+    public bool IsFileBasedApp(AbsolutePath path, bool requireGlobalStatement = true)
+    {
+        var compilationUnit = SyntaxFactory.ParseCompilationUnit(_fileSystem.File.ReadAllText(path.Value));
+
+        // Only top-level (script-style) files qualify
+        if (requireGlobalStatement && compilationUnit.Members.FirstOrDefault() is not GlobalStatementSyntax)
+            return false;
+
+        return compilationUnit.GetLeadingTrivia().Any(x => HasFileBasedDirectiveRegex.IsMatch(x.ToString()));
+    }
+   
+    public async Task<bool> IsFileBasedAppAsync(AbsolutePath path, bool requireGlobalStatement = true,CancellationToken token = default)
+    {
+        var compilationUnit = SyntaxFactory.ParseCompilationUnit(await _fileSystem.File.ReadAllTextAsync(path.Value, token));
+
+        // Only top-level (script-style) files qualify
+        if (requireGlobalStatement && compilationUnit.Members.FirstOrDefault() is not GlobalStatementSyntax)
+            return false;
+
+        return compilationUnit.GetLeadingTrivia()
+            .Any(x => HasFileBasedDirectiveRegex.IsMatch(x.ToString()));
+    }
+}

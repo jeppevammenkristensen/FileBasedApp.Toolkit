@@ -10,6 +10,7 @@ using Xunit;
 
 namespace FileBasedApp.Toolkit.Tests;
 
+[Collection("Sequential")]
 [TestSubject(typeof(ExtendedCommandSettings))]
 public class ExtendedCommandSettingsTest : IDisposable
 {

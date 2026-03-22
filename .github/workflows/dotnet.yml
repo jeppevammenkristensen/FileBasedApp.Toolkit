@@ -25,7 +25,7 @@ jobs:
       run: dotnet nuget add source "https://nuget.pkg.github.com/jeppevammenkristensen/index.json" --name "github" --username jeppevammenkristensen --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
     - name: Test
       shell: pwsh
-      run: dotnet run (Join-Path Scripts build-and-run-test.cs)
+      run: dotnet run (Join-Path Scripts build-and-run-test.cs) --run-all-test
     - name: Upload build artifact
       if: failure()
       uses: actions/upload-artifact@v7

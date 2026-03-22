@@ -13,7 +13,6 @@
   <Folder Name="/Truepath/">
     <Project Path="TruePath.TestableIO/TruePath.TestableIO.System.IO/TruePath.TestableIO.System.IO.csproj" />
   </Folder>
-  <Project Path="TruePath.TestableIO/TruePath.Playground/TruePath.Playground.csproj" />
   <Folder Name="/Tools/">
     <!-- <File Path="../Scripts/build-and-publish-nuget-packages.cs" /> -->
     <Project Path="Tools/GetFileSystemSourceAndParse/GetFileSystemSourceAndParse.csproj" />

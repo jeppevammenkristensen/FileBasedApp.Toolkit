@@ -1,8 +1,8 @@
 using System.IO.Abstractions;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using TruePath;
-using static FileBasedApp.Toolkit.CSharp.CsharpRegex;
 
 namespace FileBasedApp.Toolkit.CSharp;
 
@@ -49,7 +49,28 @@ public class FileBasedAppEvaluator
         if (requireGlobalStatement && compilationUnit.Members.FirstOrDefault() is not GlobalStatementSyntax)
             return false;
 
-        return compilationUnit.GetLeadingTrivia().Any(x => HasFileBasedDirectiveRegex.IsMatch(x.ToString()));
+        if (compilationUnit.GetLeadingTrivia().Count == 0)
+        {
+            return compilationUnit.Members.FirstOrDefault() is GlobalStatementSyntax;
+        }
+        
+        return compilationUnit.GetLeadingTrivia()
+            .Any(IsSupportedFileBaseTrivia);
+    }
+
+    private bool IsSupportedFileBaseTrivia(SyntaxTrivia trivia)
+    {
+        if (!trivia.IsKind(SyntaxKind.IgnoredDirectiveTrivia))
+        {
+            return false;
+        }
+
+        if (trivia.GetStructure() is IgnoredDirectiveTriviaSyntax { } ignored)
+        {
+            return CsharpRegex.HasFileBasedDirectiveRegex.IsMatch(ignored.Content.Text);
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -70,7 +91,6 @@ public class FileBasedAppEvaluator
         if (requireGlobalStatement && compilationUnit.Members.FirstOrDefault() is not GlobalStatementSyntax)
             return false;
 
-        return compilationUnit.GetLeadingTrivia()
-            .Any(x => HasFileBasedDirectiveRegex.IsMatch(x.ToString()));
+        return compilationUnit.GetLeadingTrivia().Any(t => t.IsKind(SyntaxKind.IgnoredDirectiveTrivia));
     }
 }

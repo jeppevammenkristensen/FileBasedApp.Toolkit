@@ -13,7 +13,7 @@ public static partial class CsharpRegex
 
 
 #if NET10_0
-    [GeneratedRegex("^#:(package|property|sdk|project)")]
+    [GeneratedRegex("^(package|property|sdk|project)")]
         public static partial Regex HasFileBasedDirectiveRegex { get; }
 #else
     public static Regex HasFileBasedDirectiveRegex => _hasFileBasedDirectiveRegex();

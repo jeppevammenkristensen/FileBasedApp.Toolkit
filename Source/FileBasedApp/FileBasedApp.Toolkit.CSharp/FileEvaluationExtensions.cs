@@ -1,4 +1,7 @@
 ﻿using System.IO.Abstractions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using TruePath;
 
 namespace FileBasedApp.Toolkit.CSharp;
@@ -22,6 +25,26 @@ public static class FileEvaluationExtensions
         IFileSystem? fileSystem = null)
     {
         return new FileBasedAppEvaluator(fileSystem ?? new FileSystem()).IsFileBasedApp(path, requireGlobalStatement);
+    }
+
+    /// <summary>
+    /// Parses and loads a C# source file from the specified path into a compilation unit syntax tree.
+    /// </summary>
+    /// <param name="path">The path to the C# file to parse.</param>
+    /// <param name="strict">If <see langword="true"/>, throws an exception when parsing diagnostics are encountered; otherwise, returns the syntax tree with diagnostics.</param>
+    /// <param name="fileSystem">Optional file system abstraction for file operations. If not provided, uses the default file system.</param>
+    /// <returns>A <see cref="CompilationUnitSyntax"/> representing the parsed C# file.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when <paramref name="strict"/> is <see langword="true"/> and the file contains parsing diagnostics.</exception>
+    public static CompilationUnitSyntax LoadCsharpFile(this AbsolutePath path, bool strict,
+        IFileSystem? fileSystem = null)
+    {
+        var result = SyntaxFactory.ParseCompilationUnit(path.ReadAllText(fileSystem));
+        if (strict && result.GetDiagnostics().Any(x => x.Severity == DiagnosticSeverity.Error))
+        {
+            throw new InvalidOperationException(result.GetDiagnostics().StringJoin(x => x.GetMessage(), ","));
+        }
+
+        return result;
     }
 
     /// <summary>

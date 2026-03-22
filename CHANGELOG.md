@@ -26,6 +26,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 - New project added
 - Added `FileBasedAppEvaluator` — uses Roslyn to detect file-based apps by inspecting leading trivia for `#:package`, `#:property`, `#:sdk`, or `#:project` directives
+- Renamed `CsharpProjectLoader` to `CsharpProjectAnalysis` and changed from abstract to concrete class
+- Added `IDisposable` and `IAsyncDisposable` to `CsharpProjectAnalysis` to properly dispose `MSBuildWorkspace`
+- Added fluent `Load` extension method on `CsharpProjectAnalysis` for method chaining
+- Added public `Project`, `Workspace`, and `Compilation` properties with initialization guards
+- Added file existence validation in `InternalLoad`
 
 ### FileBasedApp.Toolkit.Recipes
 

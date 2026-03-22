@@ -16,6 +16,13 @@ using FileBasedApp.Toolkit.CSharp;
 using TruePath.TestableIO.System.IO;
 
 var commandApp = new CommandApp<RunCommand>();
+#if DEBUG
+commandApp.Configure(ctx =>
+{
+	ctx.PropagateExceptions();
+});
+#endif
+
 return await commandApp.RunAsync(args);
 
 public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you can use Command (and have Execute instead of ExecuteAsync
@@ -41,7 +48,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 					.RunAsync(token: cancellationToken);
 			}
 
-			(string output, string error)  = await SimpleExecRunner.Init("dotnet")
+			(string output, string _)  = await SimpleExecRunner.Init("dotnet")
 				.AddArguments("nuget", "list", "source")
 				.ReadAsync(token: cancellationToken);
 			
@@ -51,7 +58,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 
 			while (line != null)
 			{
-				if (this.NugetSourceRegex.Match(line) is {Success: true} match && match.Groups["status"].Value == "Enabled")
+				if (NugetSourceRegex.Match(line) is {Success: true} match && match.Groups["status"].Value == "Enabled")
 				{
 					sources.Add(match.Groups["name"].Value);
 				}
@@ -114,6 +121,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 					{
 						IsValidFile = true;
 						Path = [filePath];
+						return base.DoValidate();
 					}
 					else
 					{

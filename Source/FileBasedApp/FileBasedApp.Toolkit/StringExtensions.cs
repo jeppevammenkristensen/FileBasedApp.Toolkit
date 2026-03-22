@@ -15,6 +15,19 @@ public static class StringExtensions
         string.Join(separator, strings);
 
     /// <summary>
+    /// Converts each element in a collection to a string using a specified converter function and joins them into a single string using the specified separator.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the source collection.</typeparam>
+    /// <param name="source">The collection of elements to convert and join.</param>
+    /// <param name="converter">A function that converts each element to a string.</param>
+    /// <param name="seperator">The string to use as a separator between elements.</param>
+    /// <returns>A string that consists of the converted elements in the collection delimited by the separator string. If the collection is empty, the method returns an empty string.</returns>
+    public static string StringJoin<T>(this IEnumerable<T> source, Func<T, string> converter, string seperator)
+    {
+        return source.Select(converter).StringJoin(seperator);
+    }
+
+    /// <summary>
     /// Determines whether the specified string is null, empty, or consists only of white-space characters.
     /// </summary>
     /// <param name="value">The string to test.</param>

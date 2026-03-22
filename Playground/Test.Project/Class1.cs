@@ -1,6 +1,11 @@
 ﻿namespace Test.Project;
 
-public class Class1
+public class Someclass : ISomeInterface 
 {
 
+}
+
+public interface ISomeInterface
+{
+    
 }

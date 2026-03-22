@@ -1,6 +1,7 @@
 #:package FileBasedApp.Toolkit@0.16.0
-#:property PublishAot=false 
+#:property PublishAot=false
 
+using System.ComponentModel;
 using Spectre.Console.Cli;
 using TruePath;
 using Spectre.Console;
@@ -49,11 +50,14 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 			try
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Building filebased app {fileBased.FileName}[/]");
-				await new SimpleExecRunner("dotnet").AddArgument("build").AddArgument(fileBased).RunAsync(token: cancellationToken);
+				var runner = new SimpleExecRunner("dotnet")
+					.AddArgument("build").AddArgument(fileBased);
+				
+				await runner.RunAsync(token: cancellationToken);
 			}
 			catch (Exception e)
 			{
-				throw new InvalidOperationException($"Failed to build {fileBased}");
+				throw new InvalidOperationException($"Failed to build {fileBased}", e);
 			}
 		}
 		
@@ -66,11 +70,17 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 		foreach (var absolutePath in settings.ParentFolder.EnumerateFiles("*.csproj", SearchOption.AllDirectories).Where(x => TestsRegex().IsMatch(x.FileName)))
 		{
 			AnsiConsole.MarkupLineInterpolated($"[green]Running tests for [bold]{absolutePath.RelativeTo(settings.ParentFolder)}[/][/]");
-			List<string> testParameters = ["test", absolutePath.Value, $"--logger:trx;LogFileName={(testReports / (absolutePath.GetFilenameWithoutExtension() + ".trx")).Value}"];
 			
-			await new SimpleExecRunner("dotnet")
+			var runner = new SimpleExecRunner("dotnet")
 				.AddArgument("test").AddArgument(absolutePath)
-				.AddArgument($"--logger:trx;LogFileName={(testReports / (absolutePath.GetFilenameWithoutExtension() + ".trx")).Value}").RunAsync(token: cancellationToken);
+				.AddArgument($"--logger:trx;LogFileName={(testReports / (absolutePath.GetFilenameWithoutExtension() + ".trx")).Value}");
+
+			if (!settings.RunAllTest)
+			{
+				runner.AddArgumentPair("--filter", "Category!=slow");
+			}
+			
+			await runner.RunAsync(token: cancellationToken);
 			
 		}
 
@@ -79,6 +89,12 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 
 	public class Settings : ExtendedCommandSettings
 	{
+		[CommandOption("--run-all-test")]
+		[Description("If not set. Tests with trait slow are not fun")]
+		[DefaultValue(false)]
+		public bool RunAllTest { get; set; }
+		
+		
 		protected override ValidationResult DoValidate()
 		{
 			ParentFolder = PathUtil.GetExecutionFolder() / ".." ;

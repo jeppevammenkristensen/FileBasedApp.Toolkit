@@ -67,7 +67,7 @@ public class FileBasedAppEvaluatorTest
     #region IsFileBasedApp — returns false
 
     [Fact]
-    public void IsFileBasedApp_WithNoDirectives_ReturnsFalse()
+    public void IsFileBasedApp_WithNoDirectivesButTopLevelStatement_ReturnsFalse()
     {
         const string content = """
             Console.WriteLine("hello");
@@ -81,7 +81,7 @@ public class FileBasedAppEvaluatorTest
 
         var sut = new FileBasedAppEvaluator(fileSystem);
 
-        sut.IsFileBasedApp(path).Should().BeFalse();
+        sut.IsFileBasedApp(path).Should().BeTrue();
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public class FileBasedAppEvaluatorTest
     }
 
     [Fact]
-    public void IsFileBasedApp_WithDirectiveInBodyNotLeadingTrivia_ReturnsFalse()
+    public void IsFileBasedApp_FirstMemberIsGlobalStatement_ReturnsTrue()
     {
         // Directive appears after real code — not in leading trivia of the compilation unit
         const string content = """
@@ -124,7 +124,7 @@ public class FileBasedAppEvaluatorTest
 
         var sut = new FileBasedAppEvaluator(fileSystem);
 
-        sut.IsFileBasedApp(path).Should().BeFalse();
+        sut.IsFileBasedApp(path).Should().BeTrue();
     }
 
     [Fact]

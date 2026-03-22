@@ -16,6 +16,7 @@ public static class CsharpProjectLoaderExtensions
     /// <typeparam name="T"></typeparam>
     extension<T>(T cls) where T : CsharpProjectAnalysis
     {
+        
         /// <summary>
         /// Adds or updates a MSBuild property that will be used during project loading.
         /// If the property already exists, its value will be updated; otherwise, a new property will be added.

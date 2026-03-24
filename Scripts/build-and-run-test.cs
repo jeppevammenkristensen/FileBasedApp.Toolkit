@@ -93,7 +93,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 		[Description("If not set. Tests with trait slow are not fun")]
 		[DefaultValue(false)]
 		public bool RunAllTest { get; set; }
-		
+			
 		
 		protected override ValidationResult DoValidate()
 		{

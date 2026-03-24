@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using FluentAssertions;
 using JetBrains.Annotations;
+using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using TruePath;
 using Xunit;
 
@@ -44,7 +48,11 @@ public class IOExtensionsTest
             // ancestors[4].Value.Should().Be("/");
         }
     }
-
+    /// <summary>
+    /// This is low practical way to ensure that the created path works on both Windows and Linux.
+    /// </summary>
+    /// <param name="relativePath"></param>
+    /// <returns></returns>
     private static AbsolutePath TestPath(string relativePath) =>
         AbsolutePath.CurrentWorkingDirectory / relativePath;
 
@@ -176,5 +184,68 @@ public class IOExtensionsTest
         var result = new[] { filePath }.FindInFiles(regex, IO.FileSearchStrategy.ByLine, fs).ToList();
 
         result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void SafeDeleteDirectory_HandleNonExistentDirectory()
+    {
+        var nonExistentPath = TestPath("nonexistent");
+
+        var fs = new MockFileSystem(new Dictionary<string, MockFileData>
+        {
+        });
+
+        nonExistentPath.SafeDeleteDirectory(fileSystem:fs);
+    }
+
+    [Fact]
+    public void SafeDeleteDirectory_NonExistentDirectory_DoesNotInvokeHandler()
+    {
+        var dirPath = TestPath("nonexistent2");
+
+        var fs = new MockFileSystem(new Dictionary<string, MockFileData>
+        {
+        });
+
+        // The directory doesn't exist, so the guard prevents deletion and no exception is raised
+        Exception? captured = null;
+        dirPath.SafeDeleteDirectory(exceptionHandler: ex => captured = ex, fileSystem: fs);
+
+        captured.Should().BeNull();
+    }
+
+    [Fact]
+    public void SafeDeleteDirectory_PassesExceptionToHandler()
+    {
+        var dirPath = TestPath("failing");
+
+        var fs = Substitute.For<IFileSystem>();
+        fs.Directory.Exists(dirPath.Value).Returns(true);
+        fs.Directory.When(d => d.Delete(dirPath.Value, true)).Throw(new IOException("Directory is in use"));
+
+        Exception? captured = null;
+        dirPath.SafeDeleteDirectory(exceptionHandler: ex => captured = ex, fileSystem: fs);
+
+        captured.Should().NotBeNull();
+        captured.Should().BeOfType<IOException>();
+        captured!.Message.Should().Be("Directory is in use");
+    }
+
+    [Fact]
+    public void SafeDeleteDirectory_DeletesExistingDirectory()
+    {
+        var dirPath = TestPath("toDelete");
+        var filePath = dirPath / "file.txt";
+
+        var fs = new MockFileSystem(new Dictionary<string, MockFileData>
+        {
+            { filePath.Value, new MockFileData("content") },
+        });
+
+        fs.Directory.Exists(dirPath.Value).Should().BeTrue();
+
+        dirPath.SafeDeleteDirectory(fileSystem: fs);
+
+        fs.Directory.Exists(dirPath.Value).Should().BeFalse();
     }
 }

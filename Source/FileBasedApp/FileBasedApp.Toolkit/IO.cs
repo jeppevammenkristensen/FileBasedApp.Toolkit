@@ -275,6 +275,27 @@ public static class IO
         => source.GetFiles(searchPattern, SearchOption.AllDirectories, fileSystem);
 
     /// <summary>
+    /// Attempts to delete the specified directory and its contents, suppressing any exceptions that occur during deletion.
+    /// </summary>
+    /// <param name="path">The absolute path of the directory to delete.</param>
+    /// <param name="exceptionHandler">An optional callback action to handle any exceptions that occur during the deletion operation.</param>
+    /// <param name="fileSystem">An optional file system abstraction to use for the operation. If null, the default file system is used.</param>
+    public static void SafeDeleteDirectory(this AbsolutePath path, Action<Exception>? exceptionHandler = null, IFileSystem? fileSystem = null)
+    {
+        try
+        {
+            if (path.DirectoryExists(fileSystem))
+            {
+                path.DirectoryDelete(true, fileSystem);    
+            }
+        }
+        catch (Exception ex)
+        {
+            exceptionHandler?.Invoke(ex);
+        }
+    }
+
+    /// <summary>
     /// Defines the strategy for searching file content with a regular expression pattern.
     /// ByLine checks each line individually, while AllText searches the entire file content as a single string.
     /// </summary>

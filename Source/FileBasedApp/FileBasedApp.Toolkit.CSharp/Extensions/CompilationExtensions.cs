@@ -1,13 +1,9 @@
-﻿using System.Collections.Concurrent;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 
 namespace FileBasedApp.Toolkit.CSharp.Extensions;
-
-public static class NamedTypeSymbolExtensions
-{
-    
-}
-
+/// <summary>
+/// Extension methods for compilation
+/// </summary>
 public static class CompilationExtensions
 {
     extension(Compilation compilation)
@@ -26,12 +22,30 @@ public static class CompilationExtensions
             return getNamedTypeSymbolsVisitor.VisitAsEnumerable(compilation.GlobalNamespace);
         }
 
+        /// <summary>
+        /// Retrieves all named type symbols defined in the current compilation assembly only, excluding types from referenced assemblies.
+        /// </summary>
+        /// <returns>
+        /// An enumerable collection of <see cref="INamedTypeSymbol"/> instances representing all named types
+        /// (classes, interfaces, structs, enums, delegates, and records) defined in the current assembly.
+        /// </returns>
         public IEnumerable<INamedTypeSymbol> GetNamedTypeSymbolForCurrentAssembly()
         {
             var getNamedTypeSymbolsVisitor = new GetNamedTypeSymbolsVisitor();
             return getNamedTypeSymbolsVisitor.VisitAsEnumerable(compilation.Assembly);
         }
 
+        /// <summary>
+        /// Finds and returns a type symbol by its fully qualified metadata name, throwing an exception if the type is not found or if multiple matches are found when not allowed.
+        /// </summary>
+        /// <param name="fullyQualifiedName">The fully qualified metadata name of the type to find, including namespace.</param>
+        /// <param name="failOnMultipleMatches">Determines whether to throw an exception when multiple types match the given name. If false, returns the first match when multiple types are found.</param>
+        /// <return>
+        /// An <see cref="ITypeSymbol"/> representing the found type. Returns the first match if multiple types are found and <paramref name="failOnMultipleMatches"/> is false.
+        /// </return>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when no types are found matching the specified name, or when multiple types are found and <paramref name="failOnMultipleMatches"/> is true.
+        /// </exception>
         public ITypeSymbol FindRequiredTypeByMetadataName(string fullyQualifiedName, bool failOnMultipleMatches)
         {
             var results = compilation.GetTypesByMetadataName(fullyQualifiedName);

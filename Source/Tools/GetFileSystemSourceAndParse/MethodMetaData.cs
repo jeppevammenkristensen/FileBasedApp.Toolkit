@@ -26,6 +26,9 @@ public record MethodMetaData(
     bool StringTypeIsNull,
     bool IsAsyncEnumerable)
 {
+    /// <summary>
+    /// Determines whether this method should have an extension method generated for it (has a path parameter or returns a string-like type).
+    /// </summary>
     public bool ShouldBuildMethod()
     {
         return HasPathParameter || ReturnsString;

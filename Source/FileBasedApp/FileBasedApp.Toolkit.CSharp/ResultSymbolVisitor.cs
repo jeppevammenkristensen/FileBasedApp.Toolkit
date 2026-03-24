@@ -12,7 +12,7 @@ namespace FileBasedApp.Toolkit.CSharp;
 /// <typeparam name="TResultType">The type of result emitted during symbol visitation.</typeparam>
 public abstract class BaseSymbolVisitor<TResultType> : SymbolVisitor
 {
-    protected Action<TResultType>? _callback;
+    private Action<TResultType>? _callback;
     
     /// <inheritdoc />
     public override void VisitNamespace(INamespaceSymbol symbol)
@@ -93,14 +93,22 @@ public abstract class BaseSymbolVisitor<TResultType> : SymbolVisitor
     /// Calls this to signal a "match" was found. In combination with extension methods this can be used to create
     /// an enumerable result
     /// </summary>
-    /// <param name="result"></param>
+    /// <param name="result">The data to emit</param>
+    /// <remarks>This is the mechanism to report that a new item was found used by the <see cref="VisitAsEnumerable"/></remarks>
     protected void ExecuteMatched(TResultType result) => _callback?.Invoke(result);
 
+    /// <summary>
+    /// Visits the specified symbol and its descendants asynchronously, returning matched results as an enumerable sequence.
+    /// The traversal is performed on a background task, and results are yielded as they are discovered.
+    /// </summary>
+    /// <param name="symbol">The root symbol to begin visitation from.</param>
+    /// <return>An enumerable sequence of results produced during the symbol tree traversal.</return>
+    /// <remarks>This uses a little trickery to produce an IEnumerable.</remarks>
     public IEnumerable<TResultType> VisitAsEnumerable(ISymbol symbol)
     {
         var collection = new BlockingCollection<TResultType>();
         _callback = item => collection.Add(item);
-
+        
         _ = Task.Run(() =>
         {
             try

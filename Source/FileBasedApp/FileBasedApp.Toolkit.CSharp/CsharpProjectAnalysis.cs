@@ -154,7 +154,7 @@ public class CsharpProjectAnalysis : IDisposable, IAsyncDisposable
     /// Initializes the MSBuild workspace and loads the C# project at the specified path.
     /// </summary>
     /// <param name="path">The absolute path to the <c>.csproj</c> file to load.</param>
-    /// <param name="loadCompilation"></param>
+    
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous load operation.</returns>
     /// <exception cref="InvalidOperationException">

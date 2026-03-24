@@ -4,8 +4,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace GetFileSystemSourceAndParse;
 
+/// <summary>
+/// A syntax rewriter that replaces <see langword="string"/> and <c>ReadOnlySpan&lt;char&gt;</c> type references with <c>AbsolutePath</c>.
+/// </summary>
 public class TypeRewriter() : CSharpSyntaxRewriter
 {
+    /// <inheritdoc />
     public override SyntaxNode? VisitPredefinedType(PredefinedTypeSyntax node)
     {
         if (node.Keyword.IsKind(SyntaxKind.StringKeyword))
@@ -16,6 +20,7 @@ public class TypeRewriter() : CSharpSyntaxRewriter
         return base.VisitPredefinedType(node);
     }
     
+    /// <inheritdoc />
     public override SyntaxNode? VisitGenericName(GenericNameSyntax node)
     {
         // Rewrite ReadOnlySpan<char> (also matches System.ReadOnlySpan<char>, global::System.ReadOnlySpan<char>, etc.)
@@ -32,8 +37,12 @@ public class TypeRewriter() : CSharpSyntaxRewriter
   
 }
 
+/// <summary>
+/// A syntax rewriter that replaces the type of parameters whose names match the given set with <c>AbsolutePath</c>.
+/// </summary>
 public class ParameterRewriter(HashSet<string> parameters) : CSharpSyntaxRewriter
 {
+    /// <inheritdoc />
     public override SyntaxNode? VisitParameter(ParameterSyntax node)
     {
         if (parameters.Contains(node.Identifier.Text))

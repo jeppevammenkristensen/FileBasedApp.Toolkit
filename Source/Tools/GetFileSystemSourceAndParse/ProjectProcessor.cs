@@ -10,11 +10,17 @@ using Spectre.Console;
 namespace GetFileSystemSourceAndParse;
 
 
+/// <summary>
+/// A syntax rewriter that removes duplicate method declarations based on their signature (name, arity, and parameter types).
+/// </summary>
 public sealed class RemoveDuplicatesRewriter : CSharpSyntaxRewriter
 {
     // Keep one instance per syntax tree rewrite so the set tracks what we've already seen.
     private readonly HashSet<MethodSignatureKey> _seen = new();
 
+    /// <summary>
+    /// Visits a method declaration and removes it if a method with the same signature has already been seen.
+    /// </summary>
     public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
     {
         // Visit children first (safe default; not strictly required for duplicate removal)
@@ -55,6 +61,9 @@ public sealed class RemoveDuplicatesRewriter : CSharpSyntaxRewriter
     }
 }
 
+/// <summary>
+/// Processes a Roslyn <see cref="Project"/> to generate extension methods that wrap interface members with strongly-typed path parameters.
+/// </summary>
 public partial class ProjectProcessor
 {
     /// <summary>
@@ -65,6 +74,9 @@ public partial class ProjectProcessor
     public static partial Regex PathMatcher();
 
 
+    /// <summary>
+    /// Generates extension methods for the specified interface type and copies the result to the clipboard.
+    /// </summary>
     public async Task Process(Project project, Compilation compilation, INamedTypeSymbol typeByMetadataName,
         CancellationToken cancellationToken)
     {

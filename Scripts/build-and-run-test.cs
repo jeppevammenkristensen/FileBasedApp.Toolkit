@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.16.0
+#:package FileBasedApp.Toolkit@0.17.0-alpha-01
 #:property PublishAot=false
 
 using System.ComponentModel;
@@ -8,9 +8,9 @@ using Spectre.Console;
 using FileBasedApp.Toolkit;
 using System.IO.Abstractions;
 using System.Text.RegularExpressions;
+using FileBasedApp.Toolkit.CommandCli;
 using FileBasedApp.Toolkit.SimpleExec;
 using TruePath.TestableIO.System.IO;
-using static SimpleExec.Command;
 
 var commandApp = new CommandApp<RunCommand>();
 #if DEBUG

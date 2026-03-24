@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.16.0
+#:package FileBasedApp.Toolkit@0.17.0-alpha-01
 #:package Microsoft.CodeAnalysis.CSharp@*
 #:package TextCopy@*
 #:property PublishAot=false 
@@ -8,11 +8,11 @@ using TruePath;
 using Spectre.Console;
 using FileBasedApp.Toolkit;
 using System.IO.Abstractions;
-using TruePath.TestableIO.System.IO;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
+using FileBasedApp.Toolkit.CommandCli;
 
 var commandApp = new CommandApp<RunCommand>()
 	.WithDescription("Locates filebase apps and list them so their paths can be copied. It uses Roslyn in combination with regex to find file based directives like for instance :package to determine if the files are files based apps");

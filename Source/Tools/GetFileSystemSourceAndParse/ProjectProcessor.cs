@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using FileBasedApp.Toolkit.CSharp.Extensions;
 using GetFileSystemSourceAndParse.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;

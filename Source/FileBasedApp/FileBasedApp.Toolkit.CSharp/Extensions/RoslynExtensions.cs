@@ -1,7 +1,7 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Roslynator;
 
-namespace GetFileSystemSourceAndParse.Extensions;
+namespace FileBasedApp.Toolkit.CSharp.Extensions;
 
 /// <summary>
 /// Extension methods for Roslyn <see cref="ITypeSymbol"/> to classify types as string-like, task-like, or enumerable.
@@ -15,22 +15,22 @@ public static class RoslynExtensions
     public static StringInfo IsStringLike(this ITypeSymbol? typeSymbol, Compilation compilation)
     {
         var isNullable = typeSymbol?.NullableAnnotation == NullableAnnotation.Annotated;
-        
-        
+
+
         if (typeSymbol?.IsString() == true)
         {
             return StringInfo.CreateString.SetNull(isNullable);
         }
-        
+
         if (typeSymbol is not INamedTypeSymbol {IsGenericType: true} namedType)
         {
             return StringInfo.CreateNotAString;
         }
-        
+
         var readOnlySpanType = compilation.GetTypeByMetadataName("System.ReadOnlySpan`1");
         if (readOnlySpanType is null)
             return StringInfo.CreateNotAString;
-        
+
         if (!namedType.ConstructedFrom.Equals(readOnlySpanType, SymbolEqualityComparer.Default))
         {
             return StringInfo.CreateNotAString;
@@ -40,7 +40,7 @@ public static class RoslynExtensions
             ? StringInfo.CreateReadOnlySpan.SetNull(isNullable)
             : StringInfo.CreateNotAString;
     }
-    
+
 
     /// <summary>
     /// Determines whether the type symbol represents a Task-like type (Task, Task&lt;T&gt;, ValueTask, or ValueTask&lt;T&gt;).
@@ -75,7 +75,7 @@ public static class RoslynExtensions
 
         return false;
     }
-    
+
     /// <summary>
     /// Attempts to extract the element type from an enumerable or async enumerable type symbol.
     /// </summary>
@@ -88,7 +88,7 @@ public static class RoslynExtensions
 
         if (type == null)
             return EnumerableInfo.False;
-        
+
         if (type is IArrayTypeSymbol arrayType)
         {
             elementType = arrayType.ElementType;
@@ -109,7 +109,7 @@ public static class RoslynExtensions
                 namedType.IsGenericType)
             {
                 elementType = namedType.TypeArguments[0];
-            
+
                 if (SymbolEqualityComparer.Default.Equals(
                         namedType.OriginalDefinition,
                         ienumerableOfT))
@@ -122,7 +122,7 @@ public static class RoslynExtensions
                     return new EnumerableInfo(true, elementType, true);
                 }
             }
-            
+
             return EnumerableInfo.False;
         }
 
@@ -130,8 +130,8 @@ public static class RoslynExtensions
         {
             return result;
         }
-        
-        
+
+
         foreach (var iface in type.AllInterfaces)
         {
             if (TryGetEnumerableOrAsyncEnumerable(iface) is {IsEnumerable: true} ifaceResult)

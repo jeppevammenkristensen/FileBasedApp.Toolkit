@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.IO.Abstractions;
 using FileBasedApp.Toolkit;
 using FileBasedApp.Toolkit.CommandCli;

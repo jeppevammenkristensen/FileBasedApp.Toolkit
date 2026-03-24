@@ -1,7 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.IO.Abstractions;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters;
 using TruePath;
 
 namespace FileBasedApp.Toolkit;

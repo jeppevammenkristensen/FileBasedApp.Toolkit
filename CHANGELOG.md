@@ -13,7 +13,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Added `FindInFiles` extension methods for stream-predicate and regex-based file content search
 - Added `Replace` extension method for in-place file text transformation
 - Added `FileSearchStrategy` enum (ByLine, AllText)
+- Added `SafeDeleteDirectory` extension method for safely deleting directories with optional exception handling
 - Added `SimpleExecRunner.Init` static factory method
+- Made `StringExtensions` public (was internal) and added `StringJoin<T>`, `IsNullOrWhitespace`, and `IsNullOrEmpty` convenience methods
 - Renamed test file from AbsolutePathExtensionsTest to IOExtensionsTest
 - Added `CommandCli` namespace with `ExtendedCommandSettings`, an abstract base for Spectre.Console `CommandSettings` with convenience methods for resolving file/directory paths, loading settings from files, and reading values from environment variables
 - Added `IDeserializer` interface for synchronous and asynchronous stream deserialization
@@ -26,11 +28,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 - New project added
 - Added `FileBasedAppEvaluator` — uses Roslyn to detect file-based apps by inspecting leading trivia for `#:package`, `#:property`, `#:sdk`, or `#:project` directives
+- Added `FileEvaluationExtensions` for batch-evaluating files and directories for file-based app detection
 - Renamed `CsharpProjectLoader` to `CsharpProjectAnalysis` and changed from abstract to concrete class
 - Added `IDisposable` and `IAsyncDisposable` to `CsharpProjectAnalysis` to properly dispose `MSBuildWorkspace`
 - Added fluent `Load` extension method on `CsharpProjectAnalysis` for method chaining
 - Added public `Project`, `Workspace`, and `Compilation` properties with initialization guards
 - Added file existence validation in `InternalLoad`
+- Added `CompilationExtensions` with `FindImplementationOfInterface` methods and `GetNamedTypeSymbols` visitor
+- Wrapped `Compilation` in `CompilationWrapper` with named type symbol caching
+- Added `ResultSymbolVisitor` for visiting and collecting symbol results from compilations
+- Added `RoslynExtensions` with `IsStringLike`, `IsTaskLike`, and `TryGetEnumerableElementType` type classification helpers
+- Added `StringInfo` and `EnumerableInfo` records for describing string-like and enumerable type symbols
 
 ### FileBasedApp.Toolkit.Recipes
 

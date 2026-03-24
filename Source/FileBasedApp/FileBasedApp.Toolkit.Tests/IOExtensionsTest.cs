@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using FluentAssertions;
 using JetBrains.Annotations;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using TruePath;
 using Xunit;
 

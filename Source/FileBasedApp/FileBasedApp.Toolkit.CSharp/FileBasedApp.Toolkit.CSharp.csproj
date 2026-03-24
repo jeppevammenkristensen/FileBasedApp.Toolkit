@@ -10,7 +10,7 @@
         <Description>Roslyn-based helpers for detecting and working with file-based .NET apps.</Description>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp.Toolkit.CSharp</RepositoryUrl>
+        <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FileBasedApp.Toolkit.CSharp</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReleaseNotes>            
 - Added FileBasedAppEvaluator: uses Roslyn to detect file-based apps by inspecting leading trivia for #:package, #:property, #:sdk, or #:project directives

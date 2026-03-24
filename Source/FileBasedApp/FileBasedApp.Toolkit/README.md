@@ -6,6 +6,10 @@ A collection of opinionated helpers and extensions for building file-based appli
 
 * Provides a `PathUtil` class for working with paths and validating string paths
 * Provides an IO class to provide methods and extension methods for `TruePath`
+  * `FindInFiles` — filter files by stream predicate or regex (with `ByLine` / `AllText` strategies)
+  * `Replace` — in-place file text transformation
+  * `SafeDeleteDirectory` — safely delete directories with optional exception handling
+* Provides `StringExtensions` with `StringJoin`, `IsNullOrWhitespace`, and `IsNullOrEmpty` convenience methods
 * Provides an extension of the `CommandSettings` from the `Spectre.Console.Cli` providing validation of file and directory paths
 * Provides a `SimpleExecRunner` fluent builder for constructing and executing system commands via the `SimpleExec` library, with support for secrets redaction and `TruePath` integration
 * Includes the following libraries

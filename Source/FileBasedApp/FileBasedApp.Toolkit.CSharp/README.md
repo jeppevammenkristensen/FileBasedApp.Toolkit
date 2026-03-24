@@ -8,6 +8,11 @@ Roslyn-based helpers for detecting and working with file-based .NET apps.
 * Detects file-based directives in leading trivia: `#:package`, `#:property`, `#:sdk`, `#:project`
 * Supports `IFileSystem` injection for testable file reads
 * Includes both synchronous and asynchronous evaluation
+* Provides `CsharpProjectAnalysis` for loading and analysing C# projects via MSBuild/Roslyn workspaces
+* Provides `CompilationExtensions` for querying compilations — find type symbols, enumerate named types, and discover interface implementations
+* Provides `CompilationWrapper` with cached type symbol lookups
+* Provides `RoslynExtensions` for classifying `ITypeSymbol` as string-like, task-like, or enumerable
+* Provides `FileEvaluationExtensions` for convenient `AbsolutePath`-based file-based app detection
 
 ## Example
 
@@ -56,6 +61,53 @@ using System.IO.Abstractions;
 
 IFileSystem fileSystem = new MockFileSystem(); // e.g. from TestableIO
 var evaluator = new FileBasedAppEvaluator(fileSystem);
+```
+
+### Loading and analysing a C# project
+
+```csharp
+using FileBasedApp.Toolkit.CSharp;
+
+await using var analysis = new CsharpProjectAnalysis();
+await analysis.Load("/path/to/MyProject.csproj");
+
+// Access the Roslyn Compilation
+var compilation = analysis.Compilation;
+```
+
+### Finding interface implementations
+
+```csharp
+using FileBasedApp.Toolkit.CSharp.Extensions;
+
+// Find all types implementing a specific interface in the current assembly
+var implementations = compilation.FindImplementationOfInterface(
+    "MyNamespace.IMyInterface", assemblyOnly: true);
+
+foreach (var type in implementations)
+{
+    Console.WriteLine(type.Name);
+}
+```
+
+### Type classification helpers
+
+```csharp
+using FileBasedApp.Toolkit.CSharp.Extensions;
+
+// Check if a type symbol is string-like (string or ReadOnlySpan<char>)
+StringInfo info = typeSymbol.IsStringLike(compilation);
+if (info.IsStringLike) { /* ... */ }
+
+// Check if a type is Task-like (Task, Task<T>, ValueTask, ValueTask<T>)
+bool isAsync = typeSymbol.IsTaskLike(compilation);
+
+// Check if a type is enumerable and get the element type
+EnumerableInfo enumInfo = typeSymbol.TryGetEnumerableElementType(compilation);
+if (enumInfo.IsEnumerable)
+{
+    Console.WriteLine($"Element type: {enumInfo.ElementType.Name}");
+}
 ```
 
 ## Bugs or things missing

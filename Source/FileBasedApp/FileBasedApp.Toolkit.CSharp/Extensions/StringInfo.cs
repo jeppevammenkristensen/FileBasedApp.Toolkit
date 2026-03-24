@@ -1,6 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
-namespace GetFileSystemSourceAndParse.Extensions;
+namespace FileBasedApp.Toolkit.CSharp.Extensions;
 
 /// <summary>
 /// Describes whether a type symbol represents a string or <see cref="ReadOnlySpan{T}"/> of <see langword="char"/>.

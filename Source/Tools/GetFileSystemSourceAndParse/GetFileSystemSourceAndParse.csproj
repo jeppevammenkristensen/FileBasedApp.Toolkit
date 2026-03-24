@@ -21,16 +21,12 @@
    
 
     <ItemGroup>
-        <PackageReference Include="FileBasedApp.Toolkit" Version="0.16.0-dev-01" />
         <PackageReference Include="Microsoft.Build" Version="18.0.2" ExcludeAssets="runtime" />
       <PackageReference Include="Microsoft.Build.Locator" Version="1.7.8" />
-      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
-      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
-      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.0.0" />
-      <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.0.0" />      
-      <PackageReference Include="Roslynator.CSharp.Workspaces" Version="4.15.0" />      
-      <PackageReference Include="Testably.Abstractions.FileSystem.Interface" Version="10.0.0" />      
-      <PackageReference Include="TextCopy" Version="6.2.1" />   
+      <PackageReference Include="Roslynator.CSharp.Workspaces" Version="4.15.0" />
+      <PackageReference Include="Testably.Abstractions.FileSystem.Interface" Version="10.0.0" />
+      <PackageReference Include="TextCopy" Version="6.2.1" />
+      <ProjectReference Include="..\..\FileBasedApp\FileBasedApp.Toolkit.CSharp\FileBasedApp.Toolkit.CSharp.csproj" />   
     </ItemGroup>
 
 </Project>

@@ -22,16 +22,27 @@ commandApp.Configure(ctx =>
 
 return await commandApp.RunAsync(args);
 
-public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
+
+public abstract class BuildCommand<TSetting> : AsyncCommand<TSetting> where TSetting : ExtendedCommandSettings
+{
+	protected (AbsolutePath codePath, AbsolutePath sourcePath, AbsolutePath artifactFolder) GetSourcePathAndOutput()
+	{
+		var codePath = PathUtil.GetExecutionFolder();
+		var sourcePath =  codePath / ".." / "Source";
+		AnsiConsole.MarkupLineInterpolated($"[green]Source path: [bold]{sourcePath}[/][/]");
+		AnsiConsole.MarkupLineInterpolated($"[green]Code path: [bold]{codePath}[/][/]");
+		return (codePath, sourcePath, codePath / "Artifacts");
+	}
+}
+
+public class BuildTemplateCommand : BuildCommand<BuildTemplateCommand.Settings>
 {
 	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
 	{
 		var fileSystem = new FileSystem();
-		var codePath = PathUtil.GetExecutionFolder();
-
-		var root = codePath / "..";
-		var artifact = codePath / "TempTemplateArtifact";
-
+		
+		var (codePath, sourcePath, artifact) = GetSourcePathAndOutput();
+		
 		try
 		{
 			artifact.DirectoryDelete(true);
@@ -44,7 +55,7 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 		try
 		{
 
-			AbsolutePath projectFile = root.GetFiles("FileBasedAppTemplates.csproj", SearchOption.AllDirectories )
+			AbsolutePath projectFile = sourcePath.GetFiles("FileBasedAppTemplates.csproj", SearchOption.AllDirectories )
 				.GetSingleRequired(noMatchErrorMessage:"FileBasedAppTemplates.csproj was not found", multipleMatchesError:"Multiple matches for FileBasedAppTemplates.csproj");
 			
 			if (!fileSystem.File.Exists(projectFile)){
@@ -80,8 +91,6 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 					.AddArgument(element)
 					.AddArgumentPair("--source",source!)
 					.AddArgument("--skip-duplicate");
-
-				var secrets = new List<string>();
 				
 				if (!string.IsNullOrWhiteSpace(settings.NugetApiKey))
 				{
@@ -90,7 +99,6 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 				
 				try
 				{
-
 					await simpleExecRunner.RunAsync(token: cancellationToken);
 				}
 				catch (ExitCodeReadException)
@@ -135,17 +143,12 @@ public class BuildTemplateCommand : AsyncCommand<BuildTemplateCommand.Settings>
 }
 
 
-public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
+public class BuildCodeCommand : BuildCommand<BuildCodeCommand.Settings>
 {
 
 	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
-	{		
-		var fileSystem = new FileSystem();
-
-		var codePath = PathUtil.GetExecutionFolder();
-
-		var root = codePath / "..";
-		var artifact = codePath / "TempArtifact";
+	{	
+		var (codePath, sourcePath, artifact) = this.GetSourcePathAndOutput();
 
 		try
 		{
@@ -160,7 +163,7 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		
 		try
 		{							
-			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).GetSingleRequired(_ => true, "Could not find a solution file");
+			AbsolutePath solutionFile = sourcePath.GetFiles("*.slnx", SearchOption.AllDirectories).GetSingleRequired(_ => true, noMatchErrorMessage: "Could not find a solution file", multipleMatchesError: "Found more than one solution file");
 
 			await new SimpleExecRunner("dotnet")
 				.AddArgument("pack").AddArgument(solutionFile)

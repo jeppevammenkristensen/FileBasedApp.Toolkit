@@ -5,7 +5,6 @@ using GetFileSystemSourceAndParse.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator;
 using Spectre.Console;
 
 namespace GetFileSystemSourceAndParse;

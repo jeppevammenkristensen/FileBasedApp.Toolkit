@@ -156,6 +156,8 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 			// ignore
 		}
 
+		artifact.CreateDirectory();
+		
 		try
 		{							
 			AbsolutePath solutionFile = root.GetFiles("*.slnx", SearchOption.AllDirectories).GetSingleRequired(_ => true, "Could not find a solution file");
@@ -230,7 +232,11 @@ public class BuildCodeCommand : AsyncCommand<BuildCodeCommand.Settings>
 		{
 			if (!settings.SkipDeploy)
 			{
-				artifact.DirectoryDelete(true);				
+				if (artifact.DirectoryExists())
+				{
+					artifact.DirectoryDelete(true);	
+				}
+								
 			}
 			
 

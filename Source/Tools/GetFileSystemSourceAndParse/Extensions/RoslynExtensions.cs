@@ -3,9 +3,15 @@ using Roslynator;
 
 namespace GetFileSystemSourceAndParse.Extensions;
 
+/// <summary>
+/// Extension methods for Roslyn <see cref="ITypeSymbol"/> to classify types as string-like, task-like, or enumerable.
+/// </summary>
 public static class RoslynExtensions
 {
 
+    /// <summary>
+    /// Determines whether the type symbol represents a string-like type (<see cref="string"/> or <see cref="ReadOnlySpan{T}"/> of <see langword="char"/>).
+    /// </summary>
     public static StringInfo IsStringLike(this ITypeSymbol? typeSymbol, Compilation compilation)
     {
         var isNullable = typeSymbol?.NullableAnnotation == NullableAnnotation.Annotated;
@@ -36,6 +42,9 @@ public static class RoslynExtensions
     }
     
 
+    /// <summary>
+    /// Determines whether the type symbol represents a Task-like type (Task, Task&lt;T&gt;, ValueTask, or ValueTask&lt;T&gt;).
+    /// </summary>
     public static bool IsTaskLike(this ITypeSymbol? typeSymbol, Compilation compilation)
     {
         if (typeSymbol is null)
@@ -67,6 +76,9 @@ public static class RoslynExtensions
         return false;
     }
     
+    /// <summary>
+    /// Attempts to extract the element type from an enumerable or async enumerable type symbol.
+    /// </summary>
     public static EnumerableInfo TryGetEnumerableElementType(
         this ITypeSymbol? type,
         Compilation compilation)

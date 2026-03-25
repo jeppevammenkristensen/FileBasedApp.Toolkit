@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.17.0-dev-02]
+
+### TruePath.TestableIO.System.IO
+
+- Added `FileMove`, `FileCopy`, and `FileReplace` extension methods on `AbsolutePath` for file move, copy, and replace operations via `IFileSystem`
+- Added `Move`, `Copy` extension methods on `IFile` for `AbsolutePath`-based file operations
+- Added `DirectoryMove` extension method on `AbsolutePath` for directory move operations via `IFileSystem`
+- Added `Move` extension method on `IDirectory` for `AbsolutePath`-based directory move
+- Added `MoveTo` extension method on `IDirectoryInfo` for `AbsolutePath`-based directory move
+
 ## [0.17.0-dev-01]
 
 ### FileBasedApp.Toolkit

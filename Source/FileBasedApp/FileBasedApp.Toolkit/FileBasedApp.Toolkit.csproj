@@ -12,10 +12,12 @@
     <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FileBasedApp.Toolkit</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>    
     <PackageReleaseNotes>
-- Added SimpleExecRunner: a fluent builder for constructing and executing system commands via SimpleExec (Run, RunAsync, ReadAsync)
-- Added ISimpleExecCommandWrapper and SimpleExecCommand for testable wrapping of SimpleExec's static Command class
-- Updated TruePath dependency to 1.12.0
-      - Decoupled direct dependency on TruePath.TestableIO.System.IO (Now a package reference instead of project reference in code)
+- Added CommandCli namespace with ExtendedCommandSettings, IDeserializer, JsonDeserializer, and FlexibleFilePath for cross-platform path resolution
+- Added FindInFiles extension methods for stream-predicate and regex-based file content search
+- Added Replace extension method for in-place file text transformation
+- Added SafeDeleteDirectory extension method for safely deleting directories
+- Added SimpleExecRunner.Init static factory method
+- Made StringExtensions public and added StringJoin, IsNullOrWhitespace, and IsNullOrEmpty convenience methods
     </PackageReleaseNotes>
     <LangVersion>14</LangVersion>    
   </PropertyGroup>

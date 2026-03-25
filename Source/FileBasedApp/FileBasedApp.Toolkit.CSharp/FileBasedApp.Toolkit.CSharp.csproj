@@ -12,9 +12,18 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FileBasedApp.Toolkit.CSharp</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReleaseNotes>            
+        <PackageReleaseNotes>
 - Added FileBasedAppEvaluator: uses Roslyn to detect file-based apps by inspecting leading trivia for #:package, #:property, #:sdk, or #:project directives
-- Added CsharpProjectLoader for loading a csharp project            
+- Added FileEvaluationExtensions for batch-evaluating files and directories for file-based app detection
+- Renamed CsharpProjectLoader to CsharpProjectAnalysis and changed from abstract to concrete class
+- Added IDisposable and IAsyncDisposable to CsharpProjectAnalysis for proper MSBuildWorkspace disposal
+- Added fluent Load extension method on CsharpProjectAnalysis for method chaining
+- Added public Project, Workspace, and Compilation properties with initialization guards
+- Added CompilationExtensions with FindImplementationOfInterface methods and GetNamedTypeSymbols visitor
+- Wrapped Compilation in CompilationWrapper with named type symbol caching
+- Added ResultSymbolVisitor for visiting and collecting symbol results from compilations
+- Added RoslynExtensions with IsStringLike, IsTaskLike, and TryGetEnumerableElementType type classification helpers
+- Added StringInfo and EnumerableInfo records for describing string-like and enumerable type symbols
         </PackageReleaseNotes>       
                 
     </PropertyGroup>

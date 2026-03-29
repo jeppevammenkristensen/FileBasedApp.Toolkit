@@ -45,15 +45,4 @@ This project uses FileBasedApp.Toolkit itself to power its own CI/CD pipeline. T
 
 - [wrapper.cs](Samples/wrapper.cs) - Generates an interface and a wrapper class for a given static or public class. It was used to generate `ISimpleExecCommandWrapper` and `SimpleExecCommand` from the SimpleExec library's static `Command` class.
 
-## AI
 
-I have used AI when developing this library. But the most important aspects have been "handwritten". Generating the wrappers for both TruePath and SimpleExec has been done by writing custom tools based on Roslyn to process existing and generate the wrappers.
-
-I have used AI to speed up trivial development tasks. 
-* Like adding summaries. 
-* Generating unit tests. 
-* Fixing yml pipelines.
-* Generating commit messages
-* Smaller code generations/extensions on logic I have allready started. For instance the SimpleExecRunner it aided with adding the different parameters after I had added Arguments and Secrets and WorkingDirectory.
-
-NEVER to autogenerate new code. And I have reviewed the code it has generated, and stand by it.

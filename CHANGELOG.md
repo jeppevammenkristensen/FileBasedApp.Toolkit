@@ -4,9 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [Unreleased]
-
-## [0.17.0-dev-02]
+## [0.17.0]
 
 ### TruePath.TestableIO.System.IO
 
@@ -15,8 +13,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Added `DirectoryMove` extension method on `AbsolutePath` for directory move operations via `IFileSystem`
 - Added `Move` extension method on `IDirectory` for `AbsolutePath`-based directory move
 - Added `MoveTo` extension method on `IDirectoryInfo` for `AbsolutePath`-based directory move
-
-## [0.17.0-dev-01]
 
 ### FileBasedApp.Toolkit
 
@@ -49,10 +45,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Added `ResultSymbolVisitor` for visiting and collecting symbol results from compilations
 - Added `RoslynExtensions` with `IsStringLike`, `IsTaskLike`, and `TryGetEnumerableElementType` type classification helpers
 - Added `StringInfo` and `EnumerableInfo` records for describing string-like and enumerable type symbols
-
-### FileBasedApp.Toolkit.Recipes
-
-- New project added
 
 ## [0.16.0]
 

@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.16.0
+#:package FileBasedApp.Toolkit@0.17.0
 #:property PublishAot=false 
 
 using Spectre.Console.Cli;
@@ -8,8 +8,18 @@ using FileBasedApp.Toolkit;
 using FileBasedApp.Toolkit.SimpleExec;
 using System.IO.Abstractions;
 using TruePath.TestableIO.System.IO;
+using FileBasedApp.Toolkit.CommandCli;
 
-var commandApp = new CommandApp<RunCommand>();
+var commandApp = new CommandApp<RunCommand>()
+	.WithDescription("Enter the description here");
+
+commandApp.Configure(ctx => {	
+
+	#if DEBUG		
+	ctx.PropagateExceptions();	
+	#endif
+});
+	
 return await commandApp.RunAsync(args);
 
 public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you can use Command (and have Execute instead of ExecuteAsync
@@ -24,7 +34,6 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 		settings.SomePathAbsolute.DirectoryGetParent()!.GetAbsolutePath();
 
 		var parentDirectory = settings.SomePathAbsolute / "..";
-		
 		
 		AnsiConsole.Status().Start("Checking for .cs files", ctx =>
 		{

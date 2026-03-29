@@ -4,17 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [0.17.0]
+## FileBasedApp 
 
-### TruePath.TestableIO.System.IO
+### [0.17.0]
 
-- Added `FileMove`, `FileCopy`, and `FileReplace` extension methods on `AbsolutePath` for file move, copy, and replace operations via `IFileSystem`
-- Added `Move`, `Copy` extension methods on `IFile` for `AbsolutePath`-based file operations
-- Added `DirectoryMove` extension method on `AbsolutePath` for directory move operations via `IFileSystem`
-- Added `Move` extension method on `IDirectory` for `AbsolutePath`-based directory move
-- Added `MoveTo` extension method on `IDirectoryInfo` for `AbsolutePath`-based directory move
-
-### FileBasedApp.Toolkit
+#### FileBasedApp.Toolkit
 
 - Added `FindInFiles` extension methods for stream-predicate and regex-based file content search
 - Added `Replace` extension method for in-place file text transformation
@@ -30,7 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Added `LoadSetting<T>` methods on `ExtendedCommandSettings` for deserializing settings objects from files
 - Fixed stream leak in `LoadSetting<T>` overloads — the deserialization stream is now properly disposed
 
-### FileBasedApp.Toolkit.CSharp
+#### FileBasedApp.Toolkit.CSharp
 
 - New project added
 - Added `FileBasedAppEvaluator` — uses Roslyn to detect file-based apps by inspecting leading trivia for `#:package`, `#:property`, `#:sdk`, or `#:project` directives
@@ -46,9 +40,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Added `RoslynExtensions` with `IsStringLike`, `IsTaskLike`, and `TryGetEnumerableElementType` type classification helpers
 - Added `StringInfo` and `EnumerableInfo` records for describing string-like and enumerable type symbols
 
-## [0.16.0]
+### [0.16.0]
 
-### FileBasedApp.Toolkit
+#### FileBasedApp.Toolkit
 
 - Added SimpleExecRunner: a fluent builder for constructing and executing system commands via SimpleExec (Run, RunAsync, ReadAsync)
 - Added ISimpleExecCommandWrapper and SimpleExecCommand for testable wrapping of SimpleExec's static Command class
@@ -56,3 +50,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Decoupled direct dependency on TruePath.TestableIO.System.IO (now a package reference instead of project reference)
 - Added overloads for AddArguments
 - Added convenience methods
+
+## TruePath.TestableIO.System.IO
+
+### [0.16.0]
+
+- Added `FileMove`, `FileCopy`, and `FileReplace` extension methods on `AbsolutePath` for file move, copy, and replace operations via `IFileSystem`
+- Added `Move`, `Copy` extension methods on `IFile` for `AbsolutePath`-based file operations
+- Added `DirectoryMove` extension method on `AbsolutePath` for directory move operations via `IFileSystem`
+- Added `Move` extension method on `IDirectory` for `AbsolutePath`-based directory move
+- Added `MoveTo` extension method on `IDirectoryInfo` for `AbsolutePath`-based directory move

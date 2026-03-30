@@ -13,9 +13,9 @@
         <ContentTargetFolders>content</ContentTargetFolders>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReleaseNotes>Fixed template to correctly return error code</PackageReleaseNotes>
-        <NoWarn>$(NoWarn);NU5128</NoWarn>
-        <VersionSuffix>rc-01</VersionSuffix>
+        <PackageReleaseNotes>Upgraded to use FileBasedApp.Toolkit version 0.17.0</PackageReleaseNotes>
+        <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit</RepositoryUrl>
+        <NoWarn>$(NoWarn);NU5128</NoWarn>       
         
     </PropertyGroup>
 

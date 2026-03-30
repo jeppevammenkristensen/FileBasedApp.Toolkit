@@ -28,7 +28,7 @@ jobs:
       packages: write
 
     env:
-      NUGET_SOURCE: ${{ inputs.environment == 'production' && 'nuget.org' || 'https://nuget.pkg.github.com/jeppevammenkristensen/index.json' }}
+      NUGET_SOURCE: ${{ inputs.environment == 'production' && 'nuget.org' || 'github' }}
       NUGET_API_KEY: ${{ inputs.environment == 'production' && secrets.NUGET_API_KEY || secrets.GITHUB_TOKEN }}
 
     steps:

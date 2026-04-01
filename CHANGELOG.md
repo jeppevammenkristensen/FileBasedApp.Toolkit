@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### [0.18.0]
 
-#### FileBasedApp.Toolkit.CSHarp
+#### FileBasedApp.Toolkit.CSharp
 
 - Breaking changes compared to 0.17.0
 - Added CsharpSolutionAnalysis

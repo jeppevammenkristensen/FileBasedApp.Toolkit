@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Text;
-using System.Text.Unicode;
 using FileBasedApp.Toolkit.CommandCli;
 using FluentAssertions;
 using JetBrains.Annotations;

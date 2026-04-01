@@ -3,9 +3,9 @@
 namespace FileBasedApp.Toolkit.CSharp;
 
 /// <summary>
-/// Regexes related to Csharp/Roslyn
+/// Regexes related to CSharp/Roslyn
 /// </summary>
-public static partial class CsharpRegex
+public static partial class CSharpRegex
 {
     /// <summary>
     /// Matches file-based app directives in leading trivia, e.g. <c>#:package</c>, <c>#:property</c>, <c>#:sdk</c>, <c>#:project</c>.

@@ -19,26 +19,26 @@ namespace FileBasedApp.Toolkit.CSharp;
 /// per instance. Thread safety considerations should be taken into account when using this
 /// class in concurrent scenarios.
 /// </remarks>
-public sealed class CsharpSolutionAnalysis : BaseAnalysis<CsharpSolutionAnalysis>
+public sealed class CSharpSolutionAnalysis : BaseAnalysis<CSharpSolutionAnalysis>
 {
     private readonly IFileSystem _fileSystem;
     private readonly IAnsiConsole _console;
 
-    internal CsharpSolutionAnalysis() : this(new FileSystem(), AnsiConsole.Console)
+    internal CSharpSolutionAnalysis() : this(new FileSystem(), AnsiConsole.Console)
     {
     }
     
-    internal CsharpSolutionAnalysis(IFileSystem fileSystem, IAnsiConsole console)
+    internal CSharpSolutionAnalysis(IFileSystem fileSystem, IAnsiConsole console)
     {
         _fileSystem = fileSystem;
         _console = console;
     }
     
     /// <summary>
-    /// Initalises a new instance of <see cref="CsharpProjectAnalysis"/> 
+    /// Initalises a new instance of <see cref="CSharpProjectAnalysis"/> 
     /// </summary>
     /// <remarks>A typical simple call would be <![CDATA[await CsharpProjectAnalysis.Init.LoadAsync(..somepath)]]></remarks>
-    public static CsharpSolutionAnalysis Init => new CsharpSolutionAnalysis();
+    public static CSharpSolutionAnalysis Init => new CSharpSolutionAnalysis();
     
     
     /// <summary>

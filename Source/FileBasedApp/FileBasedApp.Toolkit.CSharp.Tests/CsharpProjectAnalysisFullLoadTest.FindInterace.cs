@@ -6,7 +6,7 @@ using Xunit;
 
 namespace FileBasedApp.Toolkit.CSharp.Tests;
 
-public partial class CsharpProjectAnalysisFullLoadTest
+public partial class CSharpProjectAnalysisFullLoadTest
 {
 
     [Fact]

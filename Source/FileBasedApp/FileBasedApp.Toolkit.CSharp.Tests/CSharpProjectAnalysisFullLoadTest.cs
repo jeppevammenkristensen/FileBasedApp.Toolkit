@@ -11,11 +11,11 @@ using Xunit;
 
 namespace FileBasedApp.Toolkit.CSharp.Tests;
 
-[TestSubject(typeof(CsharpProjectAnalysis))]
+[TestSubject(typeof(CSharpProjectAnalysis))]
 // [Trait("Category", "Slow")]
-public partial class CsharpProjectAnalysisFullLoadTest : IAsyncLifetime
+public partial class CSharpProjectAnalysisFullLoadTest : IAsyncLifetime
 {
-    private CsharpProjectAnalysis _analysis;
+    private CSharpProjectAnalysis _analysis;
 
     [Fact]
     public void PropertiesLoadedCorrectOnExistingProject()
@@ -83,7 +83,7 @@ public partial class CsharpProjectAnalysisFullLoadTest : IAsyncLifetime
             throw new FileNotFoundException("Could not find test project at path", project.Value);
         }
 
-        _analysis = await CsharpProjectAnalysis.Init.Load(project);
+        _analysis = await CSharpProjectAnalysis.Init.Load(project);
         
     }
 

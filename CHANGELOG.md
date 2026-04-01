@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## FileBasedApp 
+## FileBasedApp
+
+### [0.18.0]
+
+#### FileBasedApp.Toolkit.CSHarp
+
+- Breaking changes compared to 0.17.0
+- Added CsharpSolutionAnalysis
+- Fix inconsistent naming. Csharp has been renamed CSharp
 
 ### [0.17.0]
 

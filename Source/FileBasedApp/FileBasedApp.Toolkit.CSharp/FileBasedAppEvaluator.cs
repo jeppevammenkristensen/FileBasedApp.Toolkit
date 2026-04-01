@@ -67,7 +67,7 @@ public class FileBasedAppEvaluator
 
         if (trivia.GetStructure() is IgnoredDirectiveTriviaSyntax { } ignored)
         {
-            return CsharpRegex.HasFileBasedDirectiveRegex.IsMatch(ignored.Content.Text);
+            return CSharpRegex.HasFileBasedDirectiveRegex.IsMatch(ignored.Content.Text);
         }
 
         return false;

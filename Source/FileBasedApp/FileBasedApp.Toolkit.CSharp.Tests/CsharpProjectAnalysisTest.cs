@@ -13,7 +13,6 @@ public class CsharpProjectAnalysisTest
         var csharpProjectAnalysis = CsharpProjectAnalysis.Init;
         Assert.Throws<InvalidOperationException>(() => csharpProjectAnalysis.Project);
         Assert.Throws<InvalidOperationException>(() => csharpProjectAnalysis.Compilation);
-        Assert.Throws<InvalidOperationException>(() => csharpProjectAnalysis.MsBuildWorkspace);
-        
+        Assert.Throws<InvalidOperationException>(() => csharpProjectAnalysis.Workspace);
     }
 }

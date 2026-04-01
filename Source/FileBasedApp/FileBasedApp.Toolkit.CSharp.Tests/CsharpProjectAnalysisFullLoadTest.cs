@@ -12,7 +12,7 @@ using Xunit;
 namespace FileBasedApp.Toolkit.CSharp.Tests;
 
 [TestSubject(typeof(CsharpProjectAnalysis))]
-[Trait("Category", "Slow")]
+// [Trait("Category", "Slow")]
 public partial class CsharpProjectAnalysisFullLoadTest : IAsyncLifetime
 {
     private CsharpProjectAnalysis _analysis;
@@ -22,7 +22,7 @@ public partial class CsharpProjectAnalysisFullLoadTest : IAsyncLifetime
     {
         _analysis.Compilation.Should().NotBeNull();
         _analysis.Project.Should().NotBeNull();
-        _analysis.MsBuildWorkspace.Should().NotBeNull();
+        _analysis.Workspace.Should().NotBeNull();
     }
 
     public const int UniqueNamedTypesInTestProject = 2;

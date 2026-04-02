@@ -10,14 +10,11 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TargetFrameworks>net10.0;net8.0</TargetFrameworks>
     <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FileBasedApp.Toolkit</RepositoryUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>    
+    <PackageLicenseExpression>MIT</PackageLicenseExpression> 
+    <VersionPrefix>0.17.1</VersionPrefix>
+    <VersionSuffix>alpha-01</VersionSuffix>
     <PackageReleaseNotes>
-- Added CommandCli namespace with ExtendedCommandSettings, IDeserializer, JsonDeserializer, and FlexibleFilePath for cross-platform path resolution
-- Added FindInFiles extension methods for stream-predicate and regex-based file content search
-- Added Replace extension method for in-place file text transformation
-- Added SafeDeleteDirectory extension method for safely deleting directories
-- Added SimpleExecRunner.Init static factory method
-- Made StringExtensions public and added StringJoin, IsNullOrWhitespace, and IsNullOrEmpty convenience methods
+      - Adjusted package references
     </PackageReleaseNotes>
     <LangVersion>14</LangVersion>    
   </PropertyGroup>
@@ -25,8 +22,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <!-- Ensure PDBs are produced and carried along for local debug deploy/publish -->
     <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <!-- “Summary” (XML docs) output next to the assembly -->    
+    <DebugSymbols>true</DebugSymbols>        
   </PropertyGroup>
 
   <ItemGroup>

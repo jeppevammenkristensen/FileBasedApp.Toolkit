@@ -30,7 +30,7 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 		AnsiConsole.MarkupLineInterpolated($"[green]RootPath is {settings.RootPathAbsolute.Value}[/]");
 		
 		Dictionary<string, string> NameVersion = new Dictionary<string, string>();
-		NameVersion.Add("FileBasedApp.Toolkit", "0.17.1-alpha-02");
+		NameVersion.Add("FileBasedApp.Toolkit", "0.17.1-rc-01");
 		NameVersion.Add("FileBasedApp.Toolkit.CSharp", "0.18.0-alpha-11");
 		
 		

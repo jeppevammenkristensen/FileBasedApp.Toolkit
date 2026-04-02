@@ -41,4 +41,11 @@ public static class StringExtensions
     /// <param name="value">The string to test.</param>
     /// <returns>True if the value parameter is null or an empty string; otherwise, false.</returns>
     public static bool IsNullOrEmpty(this string? value) => string.IsNullOrEmpty(value);
+
+    /// <summary>
+    /// Converts an empty string to null while preserving non-empty strings and null values.
+    /// </summary>
+    /// <param name="value">The string to evaluate.</param>
+    /// <returns>Null if the string is null or empty; otherwise, the original string value.</returns>
+    public static string? NullIfEmpty(this string? value) => string.IsNullOrWhiteSpace(value) ? null : value;
 }

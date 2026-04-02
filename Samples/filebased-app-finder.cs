@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit.CSharp@0.18.0-alpha-07
+#:package FileBasedApp.Toolkit.CSharp@0.18.0-alpha-11
 #:package Dumpify@*
 
 #:property PublishAot=false 
@@ -13,7 +13,7 @@ using FileBasedApp.Toolkit.CommandCli;
 using FileBasedApp.Toolkit.CSharp;
 using Dumpify;
 
-
+	
 var commandApp = new CommandApp<RunCommand>()
 	.WithDescription("Enter the description here");
 
@@ -31,14 +31,22 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 		
 		foreach (var csFile in settings.RootPathAbsolute.EnumerateAllFiles("*.cs"))
 		{	
-			if (csFile.IsFileBasedApp())
+			if (await csFile.IsFileBasedAppAsync(token:cancellationToken))
 			{			
 				AnsiConsole.MarkupLineInterpolated($"{csFile.FileName}");
 				
 				var fileBasedWrapper = new FileBasedAppWrapper(csFile);
-				foreach (var item in fileBasedWrapper.PackageDirectives)
+				foreach (var item in fileBasedWrapper.PackageDirectives.Where(x => x.PackageInfo?.Name == "FileBasedApp.Toolkit"))
 				{
-				
+					if (item.PackageInfo!.Version.Value != "0.17.1-alpha-02")
+					{
+						item.PackageInfo.Version.Value = "0.17.1-alpha-02";
+						var compilationUnitSyntax = item.Update(fileBasedWrapper.CompilationUnitSyntax);		
+						Console.WriteLine(compilationUnitSyntax.ToFullString());
+						fileBasedWrapper.CompilationUnitSyntax = compilationUnitSyntax;
+						//fileBasedWrapper.Save();
+						"Saved".Dump();
+					}
 					item.PackageInfo.DumpConsole();
 				}
 				//fileBasedWrapper.Path.Value.DumpConsole();

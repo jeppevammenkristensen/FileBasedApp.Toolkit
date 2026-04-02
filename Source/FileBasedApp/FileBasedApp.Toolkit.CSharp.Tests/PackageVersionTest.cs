@@ -115,6 +115,7 @@ public class PackageVersionTest
     {
         var sut = new PackageVersion("1.2.3");
         sut.VersionPrefix.Should().Be("1.2.3");
+        sut.VersionSuffix.Should().BeNull();
     }
 
     [Fact]
@@ -122,6 +123,7 @@ public class PackageVersionTest
     {
         var sut = new PackageVersion("1.2.3.4");
         sut.VersionPrefix.Should().Be("1.2.3.4");
+        sut.VersionSuffix.Should().BeNull();
     }
 
     [Fact]

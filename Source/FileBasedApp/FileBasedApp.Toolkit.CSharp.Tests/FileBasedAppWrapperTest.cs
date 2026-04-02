@@ -92,4 +92,50 @@ public class FileBasedAppWrapperTest
 
         wrapper.PackageDirectives.Should().BeEmpty();
     }
+
+    [Fact]
+    public void Update_ChangePackageVersion_UpdatesSyntaxTree()
+    {
+        var wrapper = CreateWrapper("""
+            #:package FileBasedApp.Toolkit@1.0.0
+            #:package Microsoft.CodeAnalysis.CSharp@4.0.0
+            Console.WriteLine("Hello");
+            """);
+
+        foreach (var item in wrapper.PackageDirectives.Where(x => x.PackageInfo?.Name == "FileBasedApp.Toolkit"))
+        {
+            item.PackageInfo!.Version.Value.Should().Be("1.0.0");
+
+            item.PackageInfo.Version.Value = "0.17.1-alpha-02";
+
+            var updated = item.Update(wrapper.CompilationUnitSyntax);
+            wrapper.CompilationUnitSyntax = updated;
+        }
+
+        var result = wrapper.CompilationUnitSyntax.ToFullString();
+
+        result.Should().Contain("FileBasedApp.Toolkit@0.17.1-alpha-02");
+        result.Should().Contain("Microsoft.CodeAnalysis.CSharp@4.0.0");
+    }
+
+    [Fact]
+    public void Update_VersionAlreadyCorrect_NoChange()
+    {
+        var wrapper = CreateWrapper("""
+            #:package FileBasedApp.Toolkit@0.17.1-alpha-02
+            Console.WriteLine("Hello");
+            """);
+
+        var directive = wrapper.PackageDirectives
+            .Single(x => x.PackageInfo?.Name == "FileBasedApp.Toolkit");
+
+        directive.PackageInfo!.Version.Value.Should().Be("0.17.1-alpha-02");
+
+        var originalText = wrapper.CompilationUnitSyntax.ToFullString();
+
+        // No update needed — version already matches
+        var result = directive.Update(wrapper.CompilationUnitSyntax).ToFullString();
+
+        result.Should().Be(originalText);
+    }
 }

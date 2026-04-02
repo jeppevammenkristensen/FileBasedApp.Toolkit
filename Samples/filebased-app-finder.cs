@@ -29,6 +29,11 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 	{	
 		AnsiConsole.MarkupLineInterpolated($"[green]RootPath is {settings.RootPathAbsolute.Value}[/]");
 		
+		Dictionary<string, string> NameVersion = new Dictionary<string, string>();
+		NameVersion.Add("FileBasedApp.Toolkit", "0.17.1-alpha-02");
+		NameVersion.Add("FileBasedApp.Toolkit.CSharp", "0.18.0-alpha-11");
+		
+		
 		foreach (var csFile in settings.RootPathAbsolute.EnumerateAllFiles("*.cs"))
 		{	
 			if (await csFile.IsFileBasedAppAsync(token:cancellationToken))
@@ -36,18 +41,19 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 				AnsiConsole.MarkupLineInterpolated($"{csFile.FileName}");
 				
 				var fileBasedWrapper = new FileBasedAppWrapper(csFile);
-				foreach (var item in fileBasedWrapper.PackageDirectives.Where(x => x.PackageInfo?.Name == "FileBasedApp.Toolkit"))
+				foreach (var item in fileBasedWrapper.PackageDirectives.Where(x => NameVersion.ContainsKey(x.PackageInfo?.Name ?? string.Empty)))
 				{
-					if (item.PackageInfo!.Version.Value != "0.17.1-alpha-02")
+					var version = NameVersion[item.PackageInfo.Name];					
+					
+					if (item.PackageInfo!.Version.Value != version)
 					{
-						item.PackageInfo.Version.Value = "0.17.1-alpha-02";
-						var compilationUnitSyntax = item.Update(fileBasedWrapper.CompilationUnitSyntax);		
-						Console.WriteLine(compilationUnitSyntax.ToFullString());
+						item.PackageInfo.Version.Value = version;
+						var compilationUnitSyntax = item.Update(fileBasedWrapper.CompilationUnitSyntax);								
 						fileBasedWrapper.CompilationUnitSyntax = compilationUnitSyntax;
-						//fileBasedWrapper.Save();
-						"Saved".Dump();
+						fileBasedWrapper.Save();
+						AnsiConsole.MarkupLineInterpolated($"[green]Saved: {item.PackageInfo.Version}[/]");
 					}
-					item.PackageInfo.DumpConsole();
+					
 				}
 				//fileBasedWrapper.Path.Value.DumpConsole();
 			}

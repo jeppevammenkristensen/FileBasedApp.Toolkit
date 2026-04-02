@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit.CSharp@0.18.0-alpha-06
+#:package FileBasedApp.Toolkit.CSharp@0.18.0-alpha-07
 #:package Dumpify@*
 
 #:property PublishAot=false 

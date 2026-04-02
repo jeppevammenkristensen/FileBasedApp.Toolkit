@@ -81,7 +81,7 @@ public class PackageVersionTest
         sut.Major.Should().Be("3");
         sut.Minor.Should().Be("14");
         sut.Patch.Should().Be("159");
-        sut.Revision.Should().BeEmpty();
+        sut.Revision.Should().BeNull();
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class PackageVersionTest
     public void VersionSuffix_NoPrerelease_ReturnsEmpty()
     {
         var sut = new PackageVersion("1.2.3");
-        sut.VersionSuffix.Should().BeEmpty();
+        sut.VersionSuffix.Should().BeNull();
     }
 
     [Theory]

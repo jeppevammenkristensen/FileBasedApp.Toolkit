@@ -25,7 +25,7 @@
 - Added PackageInfo record for parsing package name and version from directives
         </PackageReleaseNotes>
         <VersionPrefix>0.18.0</VersionPrefix>
-        <VersionSuffix>alpha-06</VersionSuffix>                
+        <VersionSuffix>alpha-08</VersionSuffix>                
     </PropertyGroup>
 
     <ItemGroup>

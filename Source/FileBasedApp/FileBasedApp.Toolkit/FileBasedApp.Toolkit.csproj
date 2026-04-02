@@ -12,9 +12,10 @@
     <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FileBasedApp.Toolkit</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression> 
     <VersionPrefix>0.17.1</VersionPrefix>
-    <VersionSuffix>alpha-02</VersionSuffix>
+    <VersionSuffix>rc-01</VersionSuffix>
     <PackageReleaseNotes>
       - Adjusted package references
+      - Added NullIfEmpty extension method for string to simplify null/empty checks in directive parsing
     </PackageReleaseNotes>
     <LangVersion>14</LangVersion>    
   </PropertyGroup>

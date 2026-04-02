@@ -162,4 +162,78 @@ public class FileBasedAppEvaluatorTest
     }
 
     #endregion
+
+    #region IsFileBasedApp — shebang directives
+
+    [Fact]
+    public void IsFileBasedApp_WithShebangAndDirective_ReturnsTrue()
+    {
+        const string content = """
+            #!/usr/bin/env dotnet run
+            #:package FileBasedApp.Toolkit@0.16.0
+
+            Console.WriteLine("hello");
+            """;
+
+        var path = TestPath("app.cs");
+        var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+        {
+            [path.Value] = new(content)
+        });
+
+        var sut = new FileBasedAppEvaluator(fileSystem);
+
+        sut.IsFileBasedApp(path).Should().BeTrue();
+    }
+
+    [Fact]
+    public void IsFileBasedApp_WithShebangOnly_ReturnsTrue()
+    {
+        const string content = """
+            #!/usr/bin/env dotnet run
+
+            Console.WriteLine("hello");
+            """;
+
+        var path = TestPath("app.cs");
+        var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+        {
+            [path.Value] = new(content)
+        });
+
+        var sut = new FileBasedAppEvaluator(fileSystem);
+
+        sut.IsFileBasedApp(path).Should().BeTrue();
+    }
+
+    [Fact]
+    public void IsFileBasedApp_String_WithShebangAndGlobalStatement_ReturnsTrue()
+    {
+        const string content = """
+            #!/usr/bin/env dotnet run
+
+            Console.WriteLine("hello");
+            """;
+
+        var sut = new FileBasedAppEvaluator();
+
+        sut.IsFileBasedApp(content).Should().BeTrue();
+    }
+
+    [Fact]
+    public void IsFileBasedApp_String_WithShebangAndClassDeclaration_ReturnsFalse()
+    {
+        const string content = """
+            #!/usr/bin/env dotnet run
+            namespace MyApp;
+
+            public class Foo { }
+            """;
+
+        var sut = new FileBasedAppEvaluator();
+
+        sut.IsFileBasedApp(content).Should().BeFalse();
+    }
+
+    #endregion
 }

@@ -1,5 +1,4 @@
-﻿using System.IO.Abstractions;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Spectre.Console;
 using TruePath;
 
@@ -21,21 +20,9 @@ namespace FileBasedApp.Toolkit.CSharp;
 /// </remarks>
 public sealed class CSharpSolutionAnalysis : BaseAnalysis<CSharpSolutionAnalysis>
 {
-    private readonly IFileSystem _fileSystem;
-    private readonly IAnsiConsole _console;
-
-    internal CSharpSolutionAnalysis() : this(new FileSystem(), AnsiConsole.Console)
-    {
-    }
-    
-    internal CSharpSolutionAnalysis(IFileSystem fileSystem, IAnsiConsole console)
-    {
-        _fileSystem = fileSystem;
-        _console = console;
-    }
     
     /// <summary>
-    /// Initalises a new instance of <see cref="CSharpProjectAnalysis"/> 
+    /// Initializes a new instance of <see cref="CSharpProjectAnalysis"/> 
     /// </summary>
     /// <remarks>A typical simple call would be <![CDATA[await CsharpProjectAnalysis.Init.LoadAsync(..somepath)]]></remarks>
     public static CSharpSolutionAnalysis Init => new CSharpSolutionAnalysis();
@@ -49,7 +36,7 @@ public sealed class CSharpSolutionAnalysis : BaseAnalysis<CSharpSolutionAnalysis
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous load operation.</returns>
     /// <exception cref="InvalidOperationException">
-    /// Thrown if <see cref="Loaded"/> has already been called on this instance.
+    /// Thrown if <see cref="BaseAnalysis{CSharpSolutionAnalysis}.Loaded"/> has already been called on this instance.
     /// </exception>
     /// <remarks>When this has been successfully loaded</remarks>
     protected internal override async Task InternalLoad(AbsolutePath path, 
@@ -58,7 +45,7 @@ public sealed class CSharpSolutionAnalysis : BaseAnalysis<CSharpSolutionAnalysis
     {
         ValidateAndInitializeWorkspace(path);
 
-        InternalSolution = await _console.Status().StartAsync("[green]Loading solution[/]",
+        InternalSolution = await Console.Status().StartAsync("[green]Loading solution[/]",
             async _ => await InternalMsBuildWorkspace.OpenSolutionAsync(path.Value,cancellationToken: cancellationToken));
         Loaded = true;
     }

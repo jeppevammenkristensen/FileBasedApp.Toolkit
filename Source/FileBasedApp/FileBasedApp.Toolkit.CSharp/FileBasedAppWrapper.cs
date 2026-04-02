@@ -1,4 +1,5 @@
 ﻿using System.IO.Abstractions;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using TruePath;
@@ -51,5 +52,23 @@ public class FileBasedAppWrapper
     public IEnumerable<PackageDirectiveWrapper> PackageDirectives => GetFileBasedDirectives()
         .Where(x => x.Directive == FileBasedDirectiveType.Package)
         .Select(x => new PackageDirectiveWrapper(x));
+
+    /// <summary>
+    /// Saves the current compilation unit syntax to the file system.
+    /// </summary>
+    /// <param name="fileSystem">Optional file system abstraction for writing the file. Defaults to the real file system.</param>
+    public void Save(IFileSystem? fileSystem = null) => Save(CompilationUnitSyntax, fileSystem);
+    
+    /// <summary>
+    /// Saves the specified compilation unit syntax to the file system and updates the current syntax tree representation.
+    /// </summary>
+    /// <param name="compilationUnitSyntax">The compilation unit syntax to save.</param>
+    /// <param name="fileSystem">Optional file system abstraction for writing the file. Defaults to the real file system.</param>
+    public void Save(CompilationUnitSyntax compilationUnitSyntax, IFileSystem? fileSystem = null)
+    {
+        fileSystem ??= new FileSystem();
+        CompilationUnitSyntax = compilationUnitSyntax;
+        fileSystem.File.WriteAllText(Path.Value, compilationUnitSyntax.ToFullString());
+    }
 
 }

@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.17.1-alpha-02
+#:package FileBasedApp.Toolkit@0.17.1-rc-01
 #:package FileBasedApp.Toolkit.CSharp@0.18.0-alpha-11
 #:property PublishAot=false
 #:property VersionPrefix=0.0.4

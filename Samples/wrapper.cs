@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.17.1-alpha-02
+#:package FileBasedApp.Toolkit@0.17.1-rc-01
 #:package Microsoft.CodeAnalysis.CSharp@5.3.0
 #:package TextCopy@6.2.1
 #:package Roslynator.CSharp@4.15.0

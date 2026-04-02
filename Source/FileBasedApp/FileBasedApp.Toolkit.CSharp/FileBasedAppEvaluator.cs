@@ -1,5 +1,4 @@
 using System.IO.Abstractions;
-using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -7,15 +6,6 @@ using Roslynator.CSharp;
 using TruePath;
 
 namespace FileBasedApp.Toolkit.CSharp;
-
-public enum FileBasedDirectiveType
-{
-    Package,
-    Property,
-    Sdk,
-    Project,
-    Unknown
-}
 
 /// <summary>
 /// Evaluates if a file is a file-based app by inspecting its leading Roslyn trivia
@@ -94,7 +84,7 @@ public class FileBasedAppEvaluator
     }
 
     /// <summary>
-    /// Asynchronously returns <see langword="true"/> if the <see cref="csharpText"/> is a file-based app,
+    /// Asynchronously returns <see langword="true"/> if the csharpText is a file-based app,
     /// determined by the presence of a file-based directive in the leading trivia of a top-level script.
     /// </summary>
     /// <param name="csharpText"></param>
@@ -116,104 +106,5 @@ public class FileBasedAppEvaluator
         
         return compilationUnit.GetLeadingTrivia()
             .Any(IsSupportedFileBaseTrivia);
-    }
-}
-
-public class FileBasedAppWrapper
-{
-    public AbsolutePath Path { get; private set; }
-    public CompilationUnitSyntax CompilationUnitSyntax { get; set; }
-
-    public FileBasedAppWrapper(AbsolutePath path, IFileSystem? fileSystem = null)
-    {
-        var isFileBasedApp = path.IsFileBasedApp(true, fileSystem);
-        if (!isFileBasedApp)
-        {
-            throw new ArgumentException("The file is not a file-based app");
-        }
-
-        Path = path;
-        CompilationUnitSyntax = SyntaxFactory.ParseCompilationUnit(path.ReadAllText(fileSystem));
-    }
-    
-    private IEnumerable<IgnoredDirectiveWrapper> GetFileBasedDirectives()
-    {
-        return CompilationUnitSyntax.GetLeadingTrivia()
-            .SelectMany(IgnoredDirectiveWrapper.FromSyntaxTriva);
-    }
-}
-
-internal record IgnoredDirectiveWrapper(FileBasedDirectiveType Directive, string Content, SyntaxTrivia trivia)
-{
-    public static IEnumerable<IgnoredDirectiveWrapper> FromSyntaxTriva(SyntaxTrivia trivia)
-    {
-        if (trivia.IsKind(SyntaxKind.IgnoredDirectiveTrivia))
-        {
-            if (trivia.GetStructure() is IgnoredDirectiveTriviaSyntax ignoredDirectiveTriviaSyntax)
-            {
-                if (CSharpRegex.HasFileBasedDirectiveRegex.Match(ignoredDirectiveTriviaSyntax.Content.Text) is
-                    {Success: true} match)
-                {
-                    FileBasedDirectiveType directive = match.Groups["type"].Value switch
-                    {
-                        "package" => FileBasedDirectiveType.Package,
-                        "property" => FileBasedDirectiveType.Property,
-                        "sdk" => FileBasedDirectiveType.Sdk,
-                        "project" => FileBasedDirectiveType.Project,
-                        _ => FileBasedDirectiveType.Unknown
-                    };
-                    yield return new IgnoredDirectiveWrapper(directive, ignoredDirectiveTriviaSyntax.Content.Text, trivia);
-                }
-            }
-        }
-    }
-}
-
-
-public class PackageDirectiveWrapper
-{
-    private readonly IgnoredDirectiveWrapper _wrapper;
-    public PackageInfo? PackageInfo { get; set; }
-
-    internal PackageDirectiveWrapper(IgnoredDirectiveWrapper wrapper)
-    {
-        if (wrapper.Directive != FileBasedDirectiveType.Package)
-        {
-            throw new ArgumentException("The provided wrapper does not contain a package directive");
-        }
-        _wrapper = wrapper;
-        PackageInfo = PackageInfo.SafeParse(_wrapper.Content);
-    }
-
-    /// <summary>
-    /// Updates the compilation unit syntax with the values based on the package directive
-    /// </summary>
-    /// <param name="compilationUnitSyntax"></param>
-    /// <returns></returns>
-    public CompilationUnitSyntax Update(CompilationUnitSyntax compilationUnitSyntax)
-    {
-        var syntaxTriviaList = SyntaxFactory.ParseLeadingTrivia($"#:{_wrapper.Content}{Environment.NewLine}");
-        return compilationUnitSyntax.ReplaceTrivia(_wrapper.trivia, syntaxTriviaList);
-    }
-}
-
-/// <summary>
-/// Represents a NuGet package reference with its name and version information parsed from a file-based app directive.
-/// </summary>
-/// <param name="Name">The package name identifier.</param>
-/// <param name="Version">The package version string.</param>
-public partial record PackageInfo(string Name, string Version)
-{
-    [GeneratedRegex(@"^(?<packageName>.+)@(?<version>.+)$")]
-    public static partial Regex PackageDirectiveRegex { get; }
-        
-    public static PackageInfo? SafeParse(string candidate)
-    {
-        if (PackageDirectiveRegex.Match(candidate) is {Success: true} match)
-        {
-            return new PackageInfo(match.Groups["packageName"].Value, match.Groups["version"].Value);
-        }
-
-        return null;
     }
 }

@@ -24,9 +24,15 @@
 - Added ResultSymbolVisitor for visiting and collecting symbol results from compilations
 - Added RoslynExtensions with IsStringLike, IsTaskLike, and TryGetEnumerableElementType type classification helpers
 - Added StringInfo and EnumerableInfo records for describing string-like and enumerable type symbols
-        </PackageReleaseNotes>       
+        </PackageReleaseNotes>
+        <VersionPrefix>0.18.0</VersionPrefix>
+        <VersionSuffix>alpha-01</VersionSuffix>
                 
     </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="FileBasedApp.Toolkit.CSharp.Tests" />
+    </ItemGroup>
 
     <ItemGroup>
         <!-- Package 'Microsoft.IO.Redist' 6.0.0 has a known high severity vulnerability -->

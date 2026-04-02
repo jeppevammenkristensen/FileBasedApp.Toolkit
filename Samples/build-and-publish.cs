@@ -1,7 +1,9 @@
-#:package FileBasedApp.Toolkit@0.17.0-dev-01
-#:package FileBasedApp.Toolkit.CSharp@0.17.0-dev-01
+#:package FileBasedApp.Toolkit@0.17.0
+#:package FileBasedApp.Toolkit.CSharp@0.17.0
 #:property PublishAot=false
-#:property VersionPrefix=0.0.1
+#:property VersionPrefix=0.0.4
+#:property PackageId=FileBasedApp.BuildAndPublish
+
 
 using System.Collections.Immutable;
 using Spectre.Console.Cli;
@@ -16,12 +18,11 @@ using FileBasedApp.Toolkit.CSharp;
 using TruePath.TestableIO.System.IO;
 
 var commandApp = new CommandApp<RunCommand>();
-#if DEBUG
+
 commandApp.Configure(ctx =>
 {
 	ctx.PropagateExceptions();
 });
-#endif
 
 return await commandApp.RunAsync(args);
 
@@ -36,7 +37,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 		AnsiConsole.MarkupLineInterpolated($"[green]Creating temporary {temporaryDirectory}[/]");
 		
 		try
-		{
+		{		
 			foreach (var path in settings.Path)
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Building [bold]{path.RelativeTo(PathUtil.GetCurrentWorkingFolder())}[/][/]");
@@ -113,6 +114,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 				{
 					IsValidFile = true;
 					Path = [filePath];
+					return base.DoValidate();					
 				}
 				else if (filePath.GetExtensionWithoutDot() == "cs")
 				{
@@ -140,6 +142,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 					{
 						if (_directlyBuildableTypes.Contains(path.GetExtensionWithoutDot()))
 						{
+							IsValidFile= true;
 							return true;
 						}
 
@@ -163,6 +166,11 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 
 					Path = [..buildablePaths];
 				}
+			}
+			
+			if (Path == null)
+			{
+				throw new InvalidOperationException($"Path {PathCandidate} is not correct");
 			}
     
 			return base.DoValidate();

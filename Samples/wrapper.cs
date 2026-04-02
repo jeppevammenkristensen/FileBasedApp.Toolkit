@@ -8,12 +8,13 @@
 using System.Text;
 using Spectre.Console.Cli;
 using Spectre.Console;
-using FileBasedApp.Toolkit;
+using FileBasedApp.Toolkit.CommandCli;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CSharp;
 using Roslynator.CSharp.Syntax;
+
 using TextCopy;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 

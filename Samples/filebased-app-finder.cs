@@ -55,6 +55,18 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 					}
 					
 				}
+				
+				if (PathUtil.GetExecutionFile().Equals(csFile))
+				{
+					AnsiConsole.MarkupLineInterpolated($"[yellow]Skipping build of {csFile.FileName} since it's the execution file[/]");
+					continue;
+				}
+				
+				await SimpleExecRunner.Init("dotnet")
+					.AddArgumentPair("build", csFile)
+					.AddArgument("--no-cache")
+					.RunAsync();
+				
 				//fileBasedWrapper.Path.Value.DumpConsole();
 			}
 		}

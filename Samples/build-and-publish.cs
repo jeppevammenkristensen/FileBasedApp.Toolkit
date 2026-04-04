@@ -1,7 +1,7 @@
 #:package FileBasedApp.Toolkit@0.17.1-rc-01
 #:package FileBasedApp.Toolkit.CSharp@0.18.0-alpha-11
 #:property PublishAot=false
-#:property VersionPrefix=0.0.4
+#:property VersionPrefix=0.0.6
 #:property PackageId=FileBasedApp.BuildAndPublish
 
 
@@ -67,16 +67,28 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 				line = await reader.ReadLineAsync(cancellationToken);
 			}
 			
-			var source = await AnsiConsole.PromptAsync(new SelectionPrompt<string>().Title("Select source").AddChoices(sources), cancellationToken);
+			string source = settings.Source;
+			
+			if (source.IsNullOrWhitespace())
+			{
+				source = await AnsiConsole.PromptAsync(new SelectionPrompt<string>().Title("Select source").AddChoices(sources), cancellationToken);
+			}			
+			
+			
 			foreach (var absolutePath in temporaryDirectory.GetFiles("*.nupkg").OrderBy(x => x.GetExtensionWithoutDot().StartsWith("s", StringComparison.OrdinalIgnoreCase) ? 1 : 0))
 			{
 				AnsiConsole.MarkupLineInterpolated($"[dim]{absolutePath.RelativeTo(temporaryDirectory)}[/]");
 				
-				await SimpleExecRunner.Init("dotnet")
+				var runner = SimpleExecRunner.Init("dotnet")
 					.AddArgument("nuget")
 					.AddArgumentPair("push", absolutePath)
-					.AddArgumentPair("--source", source)
-					.RunAsync(token: cancellationToken);
+					.AddArgumentPair("--source", source);
+					
+				if (!settings.ApiKey.IsNullOrWhitespace())
+				{
+					runner.AddArgumentPair("--api-key", settings.ApiKey!, true);
+				}
+				await runner.RunAsync(token: cancellationToken);
 			}
 		}
 		finally
@@ -96,7 +108,13 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 	{
 		[CommandArgument(0, "[PathToUse]")]
 		public string? PathCandidate { get; set; }
-
+		
+		[CommandOption("--api-key")]
+		public string? ApiKey {get;set;}
+		
+		[CommandOption("--source")]
+		public string? Source {get;set;}
+		
 		private readonly HashSet<string> _directlyBuildableTypes =
 			new(["csproj", "slnx", "sln"], StringComparer.OrdinalIgnoreCase);
 		

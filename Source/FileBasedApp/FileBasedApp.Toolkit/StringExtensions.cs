@@ -1,4 +1,6 @@
-﻿namespace FileBasedApp.Toolkit;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace FileBasedApp.Toolkit;
 
 /// <summary>
 /// Provides extension methods for string manipulation and validation operations.
@@ -28,19 +30,37 @@ public static class StringExtensions
     }
 
     /// <summary>
+    /// Determines whether the string value satisfies the specified null check condition.
+    /// </summary>
+    /// <param name="value">The string value to check.</param>
+    /// <param name="check">The type of null check to perform.</param>
+    /// <returns>True if the string satisfies the specified check condition; otherwise, false.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when an invalid check value is specified.</exception>
+    public static bool NullCheck([NotNullWhen(false)] this string? value, StringNullCheck check)
+    {
+        return check switch
+        {
+            StringNullCheck.Null => value is null,
+            StringNullCheck.NullOrEmpty => string.IsNullOrEmpty(value),
+            StringNullCheck.NullOrWhitespace => string.IsNullOrWhiteSpace(value),
+            _ => throw new ArgumentOutOfRangeException(nameof(check), check, null)
+        };
+    }
+    
+    /// <summary>
     /// Determines whether the specified string is null, empty, or consists only of white-space characters.
     /// </summary>
     /// <param name="value">The string to test.</param>
     /// <returns>True if the value parameter is null, empty, or contains only white-space characters; otherwise, false.</returns>
     /// <remarks>This is a convenience method to call IsNullOrWhitespace</remarks>
-    public static bool IsNullOrWhitespace(this string? value) => string.IsNullOrWhiteSpace(value);
+    public static bool IsNullOrWhitespace([NotNullWhen(false)] this string? value) => string.IsNullOrWhiteSpace(value);
 
     /// <summary>
     /// Determines whether the specified string is null or empty.
     /// </summary>
     /// <param name="value">The string to test.</param>
     /// <returns>True if the value parameter is null or an empty string; otherwise, false.</returns>
-    public static bool IsNullOrEmpty(this string? value) => string.IsNullOrEmpty(value);
+    public static bool IsNullOrEmpty([NotNullWhen(false)] this string? value) => string.IsNullOrEmpty(value);
 
     /// <summary>
     /// Converts an empty string to null while preserving non-empty strings and null values.
@@ -48,4 +68,25 @@ public static class StringExtensions
     /// <param name="value">The string to evaluate.</param>
     /// <returns>Null if the string is null or empty; otherwise, the original string value.</returns>
     public static string? NullIfEmpty(this string? value) => string.IsNullOrWhiteSpace(value) ? null : value;
+}
+
+/// <summary>
+/// Checks only if the string reference is null, without validating whether it is empty or contains only whitespace characters.
+/// </summary>
+public enum StringNullCheck
+{
+    /// <summary>
+    /// Checks only if the string reference is null, without validating whether it is empty or contains
+    /// </summary>
+    Null,
+
+    /// <summary>
+    /// Checks if the string reference is null or an empty string.
+    /// </summary>
+    NullOrEmpty,
+
+    /// <summary>
+    /// Checks if the string reference is null or contains only whitespace characters.
+    /// </summary>
+    NullOrWhitespace
 }

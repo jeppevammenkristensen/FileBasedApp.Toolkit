@@ -38,7 +38,7 @@ public class FileBasedAppWrapperTest
         packages.Should().HaveCount(1);
         packages[0].PackageInfo.Should().NotBeNull();
         packages[0].PackageInfo!.Name.Should().Be("My.Package");
-        packages[0].PackageInfo!.Version.Should().Be("1.0.0");
+        packages[0].PackageInfo!.Version.Should().Be(new PackageVersion("1.0.0"));
     }
 
     [Fact]
@@ -55,11 +55,11 @@ public class FileBasedAppWrapperTest
 
         packages.Should().HaveCount(3);
         packages[0].PackageInfo!.Name.Should().Be("First.Package");
-        packages[0].PackageInfo!.Version.Should().Be("1.0.0");
+        packages[0].PackageInfo!.Version.Should().Be(new PackageVersion("1.0.0"));
         packages[1].PackageInfo!.Name.Should().Be("Second.Package");
-        packages[1].PackageInfo!.Version.Should().Be("2.0.0");
+        packages[1].PackageInfo!.Version.Should().Be(new PackageVersion("2.0.0"));
         packages[2].PackageInfo!.Name.Should().Be("Third.Package");
-        packages[2].PackageInfo!.Version.Should().Be("3.0.0");
+        packages[2].PackageInfo!.Version.Should().Be(new PackageVersion("3.0.0"));
     }
 
     [Fact]

@@ -1,4 +1,5 @@
 ﻿using FileBasedApp.Toolkit.SimpleExec;
+using NuGet.Versioning;
 
 namespace FileBasedApp.Toolkit.Dotnet;
 
@@ -45,7 +46,7 @@ public static class PackageRequestExtension
         {
             return request.FlattenedPackages
                 .Where(x => x.Package.Id.Equals(item, StringComparison.OrdinalIgnoreCase))
-                .OrderByDescending(x => x.Package.LatestVersion)
+                .OrderByDescending(x => NuGetVersion.Parse(x.Package.LatestVersion))
                 .Select(x => x.Package)
                 .FirstOrDefault() ?? throw new InvalidOperationException($"No package found with id {item}");
         }

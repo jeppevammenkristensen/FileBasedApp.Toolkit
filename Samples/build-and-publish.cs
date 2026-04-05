@@ -1,6 +1,6 @@
 #:package FileBasedApp.Toolkit@0.18.0-alpha-09
 #:package FileBasedApp.Toolkit.CSharp@0.18.0-alpha-11
-#:package FileBasedApp.Toolkit.Dotnet@0.18.0-alpha-08
+#:package FileBasedApp.Toolkit.Dotnet@0.18.0-alpha-09
 #:property PublishAot=false
 #:property VersionPrefix=0.0.8
 #:property PackageId=FileBasedApp.BuildAndPublish
@@ -16,7 +16,7 @@ using System.Text.RegularExpressions;
 using FileBasedApp.Toolkit.CommandCli;
 using FileBasedApp.Toolkit.CSharp;
 using TruePath.TestableIO.System.IO;
-using FilebasedApp.Toolkit.Dotnet;
+using FileBasedApp.Toolkit.Dotnet;
 
 // You can use this app to install itself
 // Run dotnet run build-and-publish.cs -- build-and-publish.cs 

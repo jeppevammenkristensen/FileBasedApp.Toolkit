@@ -36,7 +36,7 @@ public partial class PackageVersion
     /// </summary>
     public string Value
     {
-        get => field;
+        get;
         set
         {
             field = value;

@@ -1,8 +1,10 @@
 #:package FileBasedApp.Toolkit.CSharp@0.18.0-alpha-11
+#:package FileBasedApp.Toolkit.Dotnet@0.18.0-alpha-08
 #:package Dumpify@*
 
-#:property PublishAot=false 
+#:property PublishAot=false
 
+using System.ComponentModel;
 using Spectre.Console.Cli;
 using TruePath;
 using Spectre.Console;
@@ -12,8 +14,9 @@ using System.IO.Abstractions;
 using FileBasedApp.Toolkit.CommandCli;
 using FileBasedApp.Toolkit.CSharp;
 using Dumpify;
+using FilebasedApp.Toolkit.Dotnet;
 
-	
+
 var commandApp = new CommandApp<RunCommand>()
 	.WithDescription("Enter the description here");
 
@@ -30,14 +33,24 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 		AnsiConsole.MarkupLineInterpolated($"[green]RootPath is {settings.RootPathAbsolute.Value}[/]");
 		
 		Dictionary<string, string> NameVersion = new Dictionary<string, string>();
-		NameVersion.Add("FileBasedApp.Toolkit", "0.17.1-rc-01");
-		NameVersion.Add("FileBasedApp.Toolkit.CSharp", "0.18.0-alpha-11");
+		var result =await DotnetRecipes.GetPackageInformation("FileBasedApp.Toolkit", true);
+
+		void AddVersion(string name)
+		{
+			var highestVersion = result.GetHighestVersion(name);
+			AnsiConsole.MarkupLineInterpolated($"[blue]Adding version for {name} {highestVersion.LatestVersion}[/]");
+			NameVersion.Add(name, highestVersion.LatestVersion);	
+		}
 		
+		AddVersion("FileBasedApp.Toolkit");
+		AddVersion("FileBasedApp.Toolkit.CSharp");
+		AddVersion("FileBasedApp.Toolkit.Dotnet");
 		
 		foreach (var csFile in settings.RootPathAbsolute.EnumerateAllFiles("*.cs"))
 		{	
 			if (await csFile.IsFileBasedAppAsync(token:cancellationToken))
 			{			
+				AnsiConsole.Write(new Rule(csFile.FileName).LeftJustified());
 				AnsiConsole.MarkupLineInterpolated($"{csFile.FileName}");
 				
 				var fileBasedWrapper = new FileBasedAppWrapper(csFile);
@@ -77,6 +90,7 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 	public class Settings : ExtendedCommandSettings
 	{
 		[CommandArgument(0, "[RootFolder]")]
+		[DefaultValue("..")]
 		public string? RootFolder { get; set; }
 
 		/// <summary></summary>

@@ -1,8 +1,64 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using TruePath;
 
 namespace FileBasedApp.Toolkit.SimpleExec;
+
+public static class BaseSimpleExecRunnerExtensions
+{
+    extension<TSelf>(BaseSimpleExecRunner<TSelf> self) where TSelf : BaseSimpleExecRunner<TSelf>
+    {
+        /// <summary>
+        /// Executes the command, reads the standard output, and deserializes the JSON output into an object of type T.
+        /// </summary>
+        /// <param name="options">The JSON type information used for deserialization.</param>
+        /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+        /// <typeparam name="T">The type to deserialize the JSON output into.</typeparam>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the deserialized object of type T.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the command produces standard error output or when deserialization returns null.</exception>
+        /// <remarks>
+        /// You declare a <see cref="options"/> like this
+        /// <code>
+        /// [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+        /// [JsonSerializable(typeof(SomeDataStructure))]
+        /// internal partial class AppJsonContext : JsonSerializerContext
+        /// {
+        /// }
+        /// </code>
+        ///
+        /// and then pass it as AppJsonContext.Default.SomeDataStructure. This ensures that reflection is not used to deserialize
+        /// </remarks>
+        public async Task<T> ReadAndParseJson<T>(JsonTypeInfo<T> options,
+            CancellationToken cancellationToken = default)
+        {
+            var (standardOutput, standardError) = await self.ReadAsync(token: cancellationToken);
+            if (!standardError.IsNullOrWhitespace())
+            {
+                throw new InvalidOperationException($"Command failed with error: {standardError}");
+            }
+
+            var bytes = Encoding.UTF8.GetBytes(standardOutput);
+            using var stream = new MemoryStream(bytes);
+            
+            return await JsonSerializer.DeserializeAsync<T>(stream, options, cancellationToken) ?? throw new InvalidOperationException("Deserialization returned null");
+        }
+    }
+}
+//         /// <summary>
+//         /// Adds multiple arguments to the command's argument list in a single call.
+//         /// </summary>
+//         /// <param name="arguments">The arguments to append.</param>
+//         /// <returns>The current <see cref="SimpleExecRunner"/> instance for chaining.</returns>
+//         /// <remarks>isSecret is only relevant to set if you call Run or RunAsync</remarks>
+//         public TSelf AddArguments(IEnumerable<string> arguments)
+//         {
+//             
+//             return (TSelf)self;
+//         }
+//     }
+// }
 
 /// <summary>
 /// Defines a factory interface for creating instances of simple exec runners. Implementers must provide a static factory method to initialize a new runner instance with a specified command name.
@@ -42,38 +98,38 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     /// <summary>
     /// Arguments for the command. Can be set with AddArgument
     /// </summary>
-    public ImmutableArray<string> Arguments { get; private set; } = [];
+    public ImmutableArray<string> Arguments { get; protected set; } = [];
     
     /// <summary>
     /// Secrets for the command
     /// </summary>
     /// <remarks>Only relevant if calling Run or RunAsync</remarks>
-    public ImmutableArray<string> Secrets { get; private set; } = [];
+    public ImmutableArray<string> Secrets { get; protected set; } = [];
 
     /// <summary>
     /// The working directory in which the command will be executed.
     /// When <see langword="null"/>, the current process working directory is used.
     /// </summary>
-    protected AbsolutePath? WorkingDirectory { get; private set; }
+    protected AbsolutePath? WorkingDirectory { get;  set; }
 
     /// <summary>
     /// An optional action that configures environment variables for the command execution.
     /// This delegate receives the current environment variable dictionary and can add, modify, or remove variables before the command runs.
     /// </summary>
-    protected Action<IDictionary<string, string?>>? ConfigureEnvironment { get; private set; }
+    protected Action<IDictionary<string, string?>>? ConfigureEnvironment { get; set; }
 
     /// <summary>
     /// Whether to ignore the process tree when cancelling the command.
     /// If set to <see langword="true"/>, when the command is cancelled, any child processes created
     /// by the command are left running after the command is cancelled.
     /// </summary>
-    protected bool CancellationIgnoresProcessTree { get; private set; }
+    protected bool CancellationIgnoresProcessTree { get; set; }
 
     /// <summary>
     /// Whether to run the command without creating a new window.
     /// </summary>
     /// <remarks>Only used by <see cref="Run"/> and <see cref="RunAsync"/>.</remarks>
-    protected bool CreateNoWindow { get; private set; }
+    protected bool CreateNoWindow { get; set; }
 
     ///<inheritdoc cref="SimpleExecRunner.Init"/>
     public BaseSimpleExecRunner(string name)
@@ -124,6 +180,35 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     }
 
     /// <summary>
+    /// Adds an argument to the command if the specified condition is satisfied.
+    /// </summary>
+    /// <param name="argument">The argument to add.</param>
+    /// <param name="condition">A bool indicating if this should be added</param>
+    /// <param name="isSecret">Indicates whether the argument should be treated as a secret and masked in output.</param>
+    /// <returns>The current instance for chaining.</returns>
+    public TSelf AddArgumentConditionally(string argument, bool condition, bool isSecret = false)
+    {
+        return AddArgumentConditionally(argument, _ => condition, isSecret);
+    }
+
+    /// <summary>
+    /// Adds an argument to the command if the specified condition is satisfied.
+    /// </summary>
+    /// <param name="argument">The argument to add.</param>
+    /// <param name="condition">The condition function that determines whether to add the argument.</param>
+    /// <param name="isSecret">Indicates whether the argument should be treated as a secret and masked in output.</param>
+    /// <returns>The current instance for chaining.</returns>
+    public TSelf AddArgumentConditionally(string argument, Func<string, bool> condition, bool isSecret = false)
+    {
+        if (condition(argument))
+        {
+            return AddArgument(argument, isSecret);
+        }
+
+        return (TSelf) this;
+    }
+
+    /// <summary>
     /// Appends the string representation of an <see cref="AbsolutePath"/> as a single argument.
     /// </summary>
     /// <param name="path">The absolute path to append as an argument.</param>
@@ -155,10 +240,11 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     /// </summary>
     /// <param name="argument">The argument name to add.</param>
     /// <param name="value">The argument value to add if not null or empty.</param>
+    /// <param name="nullCheck"></param>
     /// <param name="isSecret">Indicates whether the value should be treated as a secret and hidden from logs.</param>
     /// <returns>The current instance for method chaining.</returns>
-    public TSelf AddArgumentPairIfValueNotEmpty(string argument, string value, bool isSecret = false) =>
-        AddArgumentPairConditionally(argument, value, s => s != null, isSecret);
+    public TSelf AddArgumentPairIfValueNotEmpty(string argument, string? value, StringNullCheck nullCheck = StringNullCheck.Null, bool isSecret = false) =>
+        AddArgumentPairConditionally(argument, value, s => s.NullCheck(nullCheck), isSecret);
     
     /// <summary>
     /// Conditionally adds an argument pair (argument and value) to the command arguments if the specified condition is satisfied.
@@ -173,7 +259,7 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     {
         if (condition(value))
         {
-            return AddArgumentPair(argument, value, isSecret);
+            return AddArgumentPair(argument, value!, isSecret);
         }
 
         return (TSelf)this;

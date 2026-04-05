@@ -13,6 +13,9 @@
         <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FilebasedApp.Toolkit.Dotnet</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>floppy-disc.png</PackageIcon>
+        <VersionPrefix>0.18.1</VersionPrefix>
+        <PackageReleaseNotes>Add better parsing of nuget version</PackageReleaseNotes>
+        
         <PackageReleaseNotes>
 - Initial release
 - Added DotnetBaseRunner — abstract base for fluent dotnet CLI runners with --configuration and --verbosity
@@ -31,6 +34,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FileBasedApp.Toolkit\FileBasedApp.Toolkit.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="NuGet.Versioning" Version="7.3.0" />
     </ItemGroup>
 
 </Project>

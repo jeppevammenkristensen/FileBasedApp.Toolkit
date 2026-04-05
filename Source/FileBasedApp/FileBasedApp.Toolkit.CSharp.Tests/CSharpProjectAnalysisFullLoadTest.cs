@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +16,9 @@ namespace FileBasedApp.Toolkit.CSharp.Tests;
 // [Trait("Category", "Slow")]
 public partial class CSharpProjectAnalysisFullLoadTest : IAsyncLifetime
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private CSharpProjectAnalysis _analysis;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     [Fact]
     public void PropertiesLoadedCorrectOnExistingProject()
@@ -54,7 +57,7 @@ public partial class CSharpProjectAnalysisFullLoadTest : IAsyncLifetime
         var matches = _analysis.Compilation.GetNamedTypeSymbolForCurrentAssembly()
             .ToList();
 
-        var @if = matches.SingleOrDefault(x => x.Name == "ISomeInterface");
+        var @if = matches.SingleOrDefault(x => x.Name == "ISomeInterface") ?? throw new InvalidOperationException("Failed to find ISomeInterface");
 
         matches
             .Where(x => !x.Equals(@if, SymbolEqualityComparer.Default))

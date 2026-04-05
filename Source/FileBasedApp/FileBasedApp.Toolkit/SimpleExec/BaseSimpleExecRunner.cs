@@ -6,6 +6,9 @@ using TruePath;
 
 namespace FileBasedApp.Toolkit.SimpleExec;
 
+/// <summary>
+/// Extension methods for <see cref="BaseSimpleExecRunner{TSelf}"/> providing additional fluent operations such as JSON deserialization of command output.
+/// </summary>
 public static class BaseSimpleExecRunnerExtensions
 {
     extension<TSelf>(BaseSimpleExecRunner<TSelf> self) where TSelf : BaseSimpleExecRunner<TSelf>
@@ -19,7 +22,7 @@ public static class BaseSimpleExecRunnerExtensions
         /// <returns>A task that represents the asynchronous operation. The task result contains the deserialized object of type T.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the command produces standard error output or when deserialization returns null.</exception>
         /// <remarks>
-        /// You declare a <see cref="options"/> like this
+        /// You declare a <paramref name="options"/> like this
         /// <code>
         /// [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
         /// [JsonSerializable(typeof(SomeDataStructure))]
@@ -46,26 +49,19 @@ public static class BaseSimpleExecRunnerExtensions
         }
     }
 }
-//         /// <summary>
-//         /// Adds multiple arguments to the command's argument list in a single call.
-//         /// </summary>
-//         /// <param name="arguments">The arguments to append.</param>
-//         /// <returns>The current <see cref="SimpleExecRunner"/> instance for chaining.</returns>
-//         /// <remarks>isSecret is only relevant to set if you call Run or RunAsync</remarks>
-//         public TSelf AddArguments(IEnumerable<string> arguments)
-//         {
-//             
-//             return (TSelf)self;
-//         }
-//     }
-// }
+
 
 /// <summary>
 /// Defines a factory interface for creating instances of simple exec runners. Implementers must provide a static factory method to initialize a new runner instance with a specified command name.
 /// </summary>
 /// <typeparam name="TSelf">The concrete type that implements this factory interface, enabling fluent API patterns and type-safe factory methods.</typeparam>
-public interface ISimpleExecRunnerFactory<TSelf> where TSelf : ISimpleExecRunnerFactory<TSelf>
+public interface ISimpleExecRunnerFactory<out TSelf> where TSelf : ISimpleExecRunnerFactory<TSelf>
 {
+    /// <summary>
+    /// Initializes a new instance of a simple exec runner with the specified command name.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     static abstract TSelf Init(string name);
 }
 
@@ -75,8 +71,14 @@ public interface ISimpleExecRunnerFactory<TSelf> where TSelf : ISimpleExecRunner
 /// <typeparam name="TSelf"></typeparam>
 public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecRunner<TSelf>
 {
+    /// <summary>
+    /// The command wrapper used for execution. Returns the test wrapper if set, otherwise the default <see cref="SimpleExecCommand.Instance"/>.
+    /// </summary>
     protected ISimpleExecCommandWrapper Wrapper => _testWrapper ?? SimpleExecCommand.Instance;
-    
+
+    /// <summary>
+    /// An optional test wrapper that overrides the default command execution. Set via <see cref="WithSimpleExecWrapper"/>.
+    /// </summary>
     protected ISimpleExecCommandWrapper? _testWrapper;
     
     /// <summary>

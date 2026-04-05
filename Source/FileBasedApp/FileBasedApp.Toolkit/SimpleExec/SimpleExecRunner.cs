@@ -7,6 +7,10 @@
 /// </summary>
 public class SimpleExecRunner : BaseSimpleExecRunner<SimpleExecRunner>, ISimpleExecRunnerFactory<SimpleExecRunner>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SimpleExecRunner"/> class with the specified command name.
+    /// </summary>
+    /// <param name="name">The name of the command or executable to run.</param>
     public SimpleExecRunner(string name) : base(name)
     {
     }

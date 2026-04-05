@@ -2,6 +2,8 @@
 
 [![FileBasedApp.Toolkit](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.svg?style=flat-square&label=FileBasedApp.Toolkit)](https://www.nuget.org/packages/FileBasedApp.Toolkit)
 [![TruePath.TestableIO.System.IO](https://img.shields.io/nuget/v/TruePath.TestableIO.System.IO.svg?style=flat-square&label=TruePath.TestableIO.System.IO)](https://www.nuget.org/packages/TruePath.TestableIO.System.IO)
+[![FileBasedApp.Toolkit.CSharp](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.CSharp.svg?style=flat-square&label=FileBasedApp.Toolkit.CSharp)](https://www.nuget.org/packages/FileBasedApp.Toolkit.CSharp)
+[![FileBasedApp.Toolkit.Dotnet](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.Dotnet.svg?style=flat-square&label=FileBasedApp.Toolkit.Dotnet)](https://www.nuget.org/packages/FileBasedApp.Toolkit.Dotnet)
 [![FileBasedApp.Toolkit.Template](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.Template.svg?style=flat-square&label=FileBasedApp.Toolkit.Template)](https://www.nuget.org/packages/FileBasedApp.Toolkit.Template)
 
 A toolkit for building file-based applications in .NET.  (see  [more](https://learn.microsoft.com/en-us/dotnet/core/sdk/file-based-apps))
@@ -10,6 +12,8 @@ A toolkit for building file-based applications in .NET.  (see  [more](https://le
 
 - [FileBasedApp.Toolkit](Source/FileBasedApp/FileBasedApp.Toolkit/README.md) - Core toolkit with helpers and extensions.
 - [TruePath.TestableIO.System.IO](Source/TruePath.TestableIO/TruePath.TestableIO.System.IO/README.md) - Bridges TruePath and TestableIO.
+- [FileBasedApp.Toolkit.CSharp](Source/FileBasedApp/FileBasedApp.Toolkit.CSharp/README.md) - Roslyn-based helpers for detecting and working with file-based .NET apps.
+- [FileBasedApp.Toolkit.Dotnet](Source/FileBasedApp/FileBasedApp.Toolkit.Dotnet/README.md) - Fluent builders and recipes for dotnet CLI commands (pack, nuget push, package search).
 - [FileBasedApp.Toolkit.Template](Source/FileBasedApp/Templates/README.md) - Item template for creating a file based app that uses the FileBasedApp.Toolkit.
 
 It takes some inspiration based on experiences with brilliant tools like Cake and Nuke. But tries to give some of what those libraries provides but aimed at just using FileBasedApps.
@@ -44,5 +48,5 @@ This project uses FileBasedApp.Toolkit itself to power its own CI/CD pipeline. T
 ## Samples
 
 - [wrapper.cs](Samples/wrapper.cs) - Generates an interface and a wrapper class for a given static or public class. It was used to generate `ISimpleExecCommandWrapper` and `SimpleExecCommand` from the SimpleExec library's static `Command` class.
-
-
+- [build-and-publish.cs](Samples/build-and-publish.cs) - Builds, packs, and publishes NuGet packages for file-based app projects using `FileBasedApp.Toolkit.CSharp` and `FileBasedApp.Toolkit.Dotnet`.
+- [filebased-app-finder.cs](Samples/filebased-app-finder.cs) - Discovers file-based .NET apps in a directory and retrieves the latest package versions for their dependencies.

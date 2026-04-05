@@ -23,9 +23,7 @@
 - Added IgnoredDirectiveWrapper for extracting typed directive info from Roslyn trivia
 - Added PackageDirectiveWrapper with Update method for modifying package directives in-place
 - Added PackageInfo record for parsing package name and version from directives
-        </PackageReleaseNotes>
-        <VersionPrefix>0.18.0</VersionPrefix>
-        <VersionSuffix>alpha-11</VersionSuffix>                
+        </PackageReleaseNotes>        
     </PropertyGroup>
 
     <ItemGroup>

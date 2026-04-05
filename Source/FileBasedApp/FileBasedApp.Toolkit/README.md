@@ -132,3 +132,7 @@ You can use the `FileBasedApp.Toolkit.Template` to easily create a new filebase 
 ## Bugs or things missing
 
 Feel free to create an issue or submit a pull request. 
+
+## Credits
+
+[Floppy disc icons created by IYAHICON - Flaticon](https://www.flaticon.com/free-icons/floppy-disc "floppy disc icons")

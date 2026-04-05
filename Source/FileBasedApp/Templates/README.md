@@ -24,3 +24,7 @@ The generated project will include the basic structure and boilerplate required 
 
 - [FileBasedApp.Toolkit GitHub Repository](https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit)
 - [Main Toolkit NuGet Package](https://www.nuget.org/packages/FileBasedApp.Toolkit)
+
+## Credits
+
+[Floppy disc icons created by IYAHICON - Flaticon](https://www.flaticon.com/free-icons/floppy-disc "floppy disc icons")

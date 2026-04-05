@@ -12,6 +12,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FileBasedApp.Toolkit.CSharp</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>floppy-disc.png</PackageIcon>
         <PackageReleaseNotes>
 - Renamed all Csharp prefixes to CSharp (CsharpProjectAnalysis → CSharpProjectAnalysis, CsharpRegex → CSharpRegex, etc.)
 - Extracted BaseAnalysis base class from CSharpProjectAnalysis for shared MSBuild workspace logic
@@ -43,6 +44,7 @@
 
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\" />
+        <None Include="..\floppy-disc.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>

@@ -64,3 +64,7 @@ foreach (var (sourceName, pkg) in result.FlattenedPackages)
 ## Bugs or things missing
 
 Feel free to create an issue or submit a pull request.
+
+## Credits
+
+[Floppy disc icons created by IYAHICON - Flaticon](https://www.flaticon.com/free-icons/floppy-disc "floppy disc icons")

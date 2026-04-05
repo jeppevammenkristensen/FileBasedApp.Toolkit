@@ -1,4 +1,4 @@
-﻿namespace FilebasedApp.Toolkit.Dotnet;
+﻿namespace FileBasedApp.Toolkit.Dotnet;
 
 /// <summary>
 /// Represents package metadata returned by the package search response.

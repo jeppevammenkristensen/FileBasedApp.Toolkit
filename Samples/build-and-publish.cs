@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.18.0-alpha-08
+#:package FileBasedApp.Toolkit@0.18.0-alpha-09
 #:package FileBasedApp.Toolkit.CSharp@0.18.0-alpha-11
 #:package FileBasedApp.Toolkit.Dotnet@0.18.0-alpha-08
 #:property PublishAot=false

@@ -1,9 +1,6 @@
-﻿using System.Text;
-using System.Text.Json;
-using FileBasedApp.Toolkit;
-using FileBasedApp.Toolkit.SimpleExec;
+﻿using FileBasedApp.Toolkit.SimpleExec;
 
-namespace FilebasedApp.Toolkit.Dotnet;
+namespace FileBasedApp.Toolkit.Dotnet;
 
 /// <summary>
 /// Higher-level helpers that compose dotnet CLI commands into common workflows.
@@ -20,10 +17,13 @@ public static class DotnetRecipes
             .AddArgument(item)
             .AddArgumentPair("--format", "json")
             .AddArgumentConditionally("--prerelease", includePrerelease)
-            .ReadAndParseJson(AppJsonContext.Default.PackageRequest);
+            .ReadAndParseJson<SimpleExecRunner, PackageRequest>(FileBasedApp.Toolkit.Dotnet.AppJsonContext.Default.PackageRequest);
     }
 }
 
+/// <summary>
+/// Extension members for <see cref="PackageRequest"/> providing convenient querying over search results.
+/// </summary>
 public static class PackageRequestExtension
 {
     extension(PackageRequest request)

@@ -7,7 +7,7 @@
   <Folder Name="/FilebasedApp/">
     <Project Path="FileBasedApp/FileBasedApp.Toolkit.CSharp.Tests/FileBasedApp.Toolkit.CSharp.Tests.csproj" />
     <Project Path="FileBasedApp/FileBasedApp.Toolkit.CSharp/FileBasedApp.Toolkit.CSharp.csproj" />
-    <Project Path="FileBasedApp/FilebasedApp.Toolkit.Dotnet/FilebasedApp.Toolkit.Dotnet.csproj" />
+    <Project Path="FileBasedApp/FileBasedApp.Toolkit.Dotnet/FileBasedApp.Toolkit.Dotnet.csproj" />
     <Project Path="FileBasedApp/FileBasedApp.Toolkit.Tests/FileBasedApp.Toolkit.Tests.csproj" />
     <Project Path="FileBasedApp/FileBasedApp.Toolkit/FileBasedApp.Toolkit.csproj" />
   </Folder>

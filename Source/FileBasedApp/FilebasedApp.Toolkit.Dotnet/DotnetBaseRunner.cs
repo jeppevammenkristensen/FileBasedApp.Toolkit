@@ -8,6 +8,9 @@ namespace FileBasedApp.Toolkit.Dotnet;
 /// </summary>
 public abstract class DotnetBaseRunner<TSelf> : BaseSimpleExecRunner<TSelf> where TSelf : DotnetBaseRunner<TSelf>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DotnetBaseRunner{TSelf}"/> class with the command name set to "dotnet".
+    /// </summary>
     protected DotnetBaseRunner() : base("dotnet")
     {
     }

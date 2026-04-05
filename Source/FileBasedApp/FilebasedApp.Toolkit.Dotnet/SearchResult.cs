@@ -1,4 +1,4 @@
-﻿namespace FilebasedApp.Toolkit.Dotnet;
+﻿namespace FileBasedApp.Toolkit.Dotnet;
 
 /// <summary>
 /// Represents a search source and the packages returned from it.

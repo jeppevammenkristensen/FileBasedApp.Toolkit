@@ -1,6 +1,6 @@
 ﻿using FileBasedApp.Toolkit.SimpleExec;
 
-namespace FilebasedApp.Toolkit.Dotnet;
+namespace FileBasedApp.Toolkit.Dotnet;
 
 
 /// <summary>

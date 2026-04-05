@@ -1,7 +1,6 @@
-﻿using FileBasedApp.Toolkit;
-using TruePath;
+﻿using TruePath;
 
-namespace FilebasedApp.Toolkit.Dotnet;
+namespace FileBasedApp.Toolkit.Dotnet;
 
 /// <summary>
 /// Fluent wrapper around <c>dotnet nuget push</c> — pushes a NuGet package to a server and publishes it.
@@ -9,6 +8,9 @@ namespace FilebasedApp.Toolkit.Dotnet;
 /// <remarks>May not be exhaustive. Remember you can use existing logic like AddArgument etc. to add</remarks>
 public class DotnetNugetPushSimpleRunner : DotnetBaseRunner<DotnetNugetPushSimpleRunner>
 {
+    /// <summary>
+    /// Creates a new <c>dotnet nuget push</c> runner instance.
+    /// </summary>
     public static DotnetNugetPushSimpleRunner Init() => new DotnetNugetPushSimpleRunner().AddArguments("nuget","push");
 
     /// <summary>
@@ -33,7 +35,10 @@ public class DotnetNugetPushSimpleRunner : DotnetBaseRunner<DotnetNugetPushSimpl
     public DotnetNugetPushSimpleRunner WithApiKey(string apiKey, bool isSecret = true) => 
         AddArgumentPair("--api-key", apiKey, isSecret);
     
-    public DotnetNugetPushSimpleRunner WithConditionalApiKey(string? apiKey, bool isSecret = true) => 
+    /// <summary>
+    /// Sets the API key for the server if the value is not null (<c>--api-key</c>).
+    /// </summary>
+    public DotnetNugetPushSimpleRunner WithConditionalApiKey(string? apiKey, bool isSecret = true) =>
         AddArgumentPairIfValueNotEmpty("--api-key", apiKey, StringNullCheck.Null, isSecret);
 
     /// <summary>
@@ -75,6 +80,9 @@ public class DotnetNugetPushSimpleRunner : DotnetBaseRunner<DotnetNugetPushSimpl
 /// </summary>
 public class DotnetPackSimpleRunner : DotnetBaseRunner<DotnetPackSimpleRunner>
 {
+    /// <summary>
+    /// Creates a new <c>dotnet pack</c> runner instance.
+    /// </summary>
     public static DotnetPackSimpleRunner Init() => new DotnetPackSimpleRunner().AddArgument("pack");
 
     /// <summary>

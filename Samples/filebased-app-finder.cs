@@ -1,5 +1,5 @@
 #:package FileBasedApp.Toolkit.CSharp@0.18.0-alpha-11
-#:package FileBasedApp.Toolkit.Dotnet@0.18.0-alpha-08
+#:package FileBasedApp.Toolkit.Dotnet@0.18.0-alpha-09
 #:package Dumpify@*
 
 #:property PublishAot=false
@@ -12,7 +12,7 @@ using FileBasedApp.Toolkit;
 using FileBasedApp.Toolkit.SimpleExec;
 using FileBasedApp.Toolkit.CommandCli;
 using FileBasedApp.Toolkit.CSharp;
-using FilebasedApp.Toolkit.Dotnet;
+using FileBasedApp.Toolkit.Dotnet;
 
 
 var commandApp = new CommandApp<RunCommand>()

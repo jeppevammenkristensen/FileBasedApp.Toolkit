@@ -8,6 +8,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### [0.18.0]
 
+#### FileBasedApp.Toolkit.Dotnet
+
+- New project added
+- Added `DotnetBaseRunner<TSelf>` — abstract base class for fluent `dotnet` CLI command runners with `--configuration` and `--verbosity` options
+- Added `DotnetPackSimpleRunner` — fluent wrapper around `dotnet pack` with options for output, symbols, versioning, runtime, and more
+- Added `DotnetNugetPushSimpleRunner` — fluent wrapper around `dotnet nuget push` with options for source, API key, skip-duplicate, timeout, and more
+- Added `DotnetRecipes` — higher-level helpers composing dotnet CLI commands (e.g. `GetPackageInformation` for JSON-based NuGet package search)
+- Added `PackageRequest`, `SearchResult`, and `Package` records for deserializing `dotnet package search --format json` output
+- Added `PackageRequestExtension` with `FlattenedPackages` and `GetHighestVersion` helpers
+
+#### FileBasedApp.Toolkit
+
+- Extracted `BaseSimpleExecRunner<TSelf>` from `SimpleExecRunner` to enable reusable fluent command runner base classes
+
 #### FileBasedApp.Toolkit.CSharp
 
 - Breaking changes compared to 0.17.0

@@ -4,11 +4,30 @@
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>                
-        <Description>Helpers for dotnet specific operations</Description>
+        <Nullable>enable</Nullable>
+        <IsPackable>true</IsPackable>
+        <Title>Dotnet CLI helpers for FileBasedApps</Title>
+        <Description>Fluent builders and recipes for dotnet CLI commands (pack, nuget push, package search).</Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FilebasedApp.Toolkit.Dotnet</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReleaseNotes>
+- Initial release
+- Added DotnetBaseRunner — abstract base for fluent dotnet CLI runners with --configuration and --verbosity
+- Added DotnetPackSimpleRunner — fluent wrapper around dotnet pack
+- Added DotnetNugetPushSimpleRunner — fluent wrapper around dotnet nuget push
+- Added DotnetRecipes with GetPackageInformation for JSON-based NuGet package search
+- Added PackageRequest, SearchResult, and Package records for dotnet package search deserialization
+- Added PackageRequestExtension with FlattenedPackages and GetHighestVersion helpers
+        </PackageReleaseNotes>
     </PropertyGroup>
 
-    <ItemGroup>      
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\FileBasedApp.Toolkit\FileBasedApp.Toolkit.csproj" />
     </ItemGroup>
 

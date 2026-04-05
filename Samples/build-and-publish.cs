@@ -2,7 +2,7 @@
 #:package FileBasedApp.Toolkit.CSharp@0.18.0-alpha-11
 #:package FileBasedApp.Toolkit.Dotnet@0.18.0-alpha-08
 #:property PublishAot=false
-#:property VersionPrefix=0.0.7
+#:property VersionPrefix=0.0.8
 #:property PackageId=FileBasedApp.BuildAndPublish
 
 using System.Collections.Immutable;
@@ -17,6 +17,13 @@ using FileBasedApp.Toolkit.CommandCli;
 using FileBasedApp.Toolkit.CSharp;
 using TruePath.TestableIO.System.IO;
 using FilebasedApp.Toolkit.Dotnet;
+
+// You can use this app to install itself
+// Run dotnet run build-and-publish.cs -- build-and-publish.cs 
+// and select a relevant nuget source. Most likely a local source is preferable
+// then afterwards you can install/update it with dotnet tool install FileBasedApp.BuildAndPublish -g
+// remember to bump the VersionPrefix 
+// then you can call build-and-publish.exe from everywhere
 
 var commandApp = new CommandApp<RunCommand>();
 
@@ -84,6 +91,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 				var runner = DotnetNugetPushSimpleRunner
 					.Init()
 					.WithPackage(absolutePath)
+					.WithSkipDuplicate()
 					.WithSource(source);
 
 				if (!settings.ApiKey.IsNullOrWhitespace())

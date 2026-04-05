@@ -39,9 +39,12 @@ public class PackageDirectiveWrapper
         var content = PackageInfo is not null
             ? $"package {PackageInfo.Name}@{PackageInfo.Version.Value}"
             : _wrapper.Content;
-        var originalText = _wrapper.trivia.ToFullString();
+
+        var existingTrivia = compilationUnitSyntax.GetLeadingTrivia().Single(x => x.Equals(_wrapper.trivia));
+
+        var originalText = existingTrivia.ToFullString();
         var lineEnding = originalText.EndsWith("\r\n") ? "\r\n" : "\n";
         var syntaxTriviaList = SyntaxFactory.ParseLeadingTrivia($"#:{content}{lineEnding}");
-        return compilationUnitSyntax.ReplaceTrivia(_wrapper.trivia, syntaxTriviaList);
+        return compilationUnitSyntax.ReplaceTrivia(existingTrivia, syntaxTriviaList);
     }
 }

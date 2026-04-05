@@ -1,9 +1,9 @@
-#:package FileBasedApp.Toolkit@0.17.1-rc-01
+#:package FileBasedApp.Toolkit@0.18.0-alpha-08
 #:package FileBasedApp.Toolkit.CSharp@0.18.0-alpha-11
+#:package FileBasedApp.Toolkit.Dotnet@0.18.0-alpha-08
 #:property PublishAot=false
-#:property VersionPrefix=0.0.6
+#:property VersionPrefix=0.0.7
 #:property PackageId=FileBasedApp.BuildAndPublish
-
 
 using System.Collections.Immutable;
 using Spectre.Console.Cli;
@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using FileBasedApp.Toolkit.CommandCli;
 using FileBasedApp.Toolkit.CSharp;
 using TruePath.TestableIO.System.IO;
+using FilebasedApp.Toolkit.Dotnet;
 
 var commandApp = new CommandApp<RunCommand>();
 
@@ -42,11 +43,12 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Building [bold]{path.RelativeTo(PathUtil.GetCurrentWorkingFolder())}[/][/]");
 				
-				await SimpleExecRunner.Init("dotnet")
-					.AddArgumentPair("pack", path)
-					.AddArgumentPair("-c", "Release")
-					.AddArgumentPair("-o", temporaryDirectory)
-					.RunAsync(token: cancellationToken);
+				await DotnetPackSimpleRunner
+					.Init()
+					.WithProject(path)
+					.WithConfiguration("Release")
+					.WithOutput(temporaryDirectory)
+					.RunAsync(token: cancellationToken);					
 			}
 
 			(string output, string _)  = await SimpleExecRunner.Init("dotnet")
@@ -67,7 +69,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 				line = await reader.ReadLineAsync(cancellationToken);
 			}
 			
-			string source = settings.Source;
+			string? source = settings.Source;
 			
 			if (source.IsNullOrWhitespace())
 			{
@@ -79,15 +81,16 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 			{
 				AnsiConsole.MarkupLineInterpolated($"[dim]{absolutePath.RelativeTo(temporaryDirectory)}[/]");
 				
-				var runner = SimpleExecRunner.Init("dotnet")
-					.AddArgument("nuget")
-					.AddArgumentPair("push", absolutePath)
-					.AddArgumentPair("--source", source);
-					
+				var runner = DotnetNugetPushSimpleRunner
+					.Init()
+					.WithPackage(absolutePath)
+					.WithSource(source);
+
 				if (!settings.ApiKey.IsNullOrWhitespace())
 				{
-					runner.AddArgumentPair("--api-key", settings.ApiKey!, true);
+					runner.WithApiKey(settings.ApiKey);
 				}
+
 				await runner.RunAsync(token: cancellationToken);
 			}
 		}
@@ -97,12 +100,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 		}
 		
 		return 0; // 0 for success
-	}
-	
-	
-
-
-	
+	}	
 	
 	public class Settings : ExtendedCommandSettings
 	{

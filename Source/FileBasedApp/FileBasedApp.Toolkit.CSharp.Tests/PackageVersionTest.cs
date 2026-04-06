@@ -19,6 +19,8 @@ public class PackageVersionTest
     [InlineData("1.0.0-alpha.1")]
     [InlineData("1.2.3.4")]
     [InlineData("1.2.3.4-rc.1")]
+    [InlineData("1.0")]
+    [InlineData("1")]
     public void Type_SemVerVersion_ReturnsSemVer(string version)
     {
         var sut = new PackageVersion(version);
@@ -34,8 +36,7 @@ public class PackageVersionTest
 
     [Theory]
     [InlineData("abc")]
-    [InlineData("1.0")]
-    [InlineData("1")]
+    
     [InlineData("")]
     [InlineData(null)]
     public void Type_InvalidVersion_ReturnsUnknown(string? version)
@@ -81,7 +82,7 @@ public class PackageVersionTest
         sut.Major.Should().Be("3");
         sut.Minor.Should().Be("14");
         sut.Patch.Should().Be("159");
-        sut.Revision.Should().BeNull();
+        sut.Revision.Should().Be("0");
     }
 
     [Fact]

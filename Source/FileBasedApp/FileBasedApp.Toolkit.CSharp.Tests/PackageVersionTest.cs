@@ -2,6 +2,7 @@ using System;
 using FileBasedApp.Toolkit.CSharp;
 using FluentAssertions;
 using JetBrains.Annotations;
+using NuGet.Versioning;
 using Xunit;
 
 namespace FileBasedApp.Toolkit.CSharp.Tests;
@@ -165,14 +166,14 @@ public class PackageVersionTest
     #region Value reassignment
 
     [Fact]
-    public void Value_Reassigned_UpdatesParsedProperties()
+    public void WithValue_Reassigned_UpdatesParsedProperties()
     {
         var sut = new PackageVersion("1.0.0");
 
         sut.Major.Should().Be("1");
         sut.Type.Should().Be(PackageVersionType.SemVer);
 
-        sut.Value = "2.5.0-beta";
+        sut.WithValue("2.5.0-beta");
 
         sut.Major.Should().Be("2");
         sut.Minor.Should().Be("5");
@@ -187,11 +188,89 @@ public class PackageVersionTest
         var sut = new PackageVersion("1.0.0");
         sut.Type.Should().Be(PackageVersionType.SemVer);
 
-        sut.Value = "*";
+        sut.WithValue("*");
 
         sut.Type.Should().Be(PackageVersionType.Star);
         sut.Major.Should().BeNull();
         sut.IsCatchAll.Should().BeTrue();
+    }
+
+    #endregion
+
+    #region WithNugetVersion
+
+    [Fact]
+    public void WithNugetVersion_UpdatesVersionAndType()
+    {
+        var sut = new PackageVersion("1.0.0");
+        var newVersion = new NuGetVersion(2, 5, 0);
+
+        sut.WithNugetVersion(newVersion);
+
+        sut.Type.Should().Be(PackageVersionType.SemVer);
+        sut.Value.Should().Be("2.5.0");
+        sut.Major.Should().Be("2");
+        sut.Minor.Should().Be("5");
+        sut.Patch.Should().Be("0");
+    }
+
+    [Fact]
+    public void WithNugetVersion_WithPrerelease_UpdatesSuffix()
+    {
+        var sut = new PackageVersion("1.0.0");
+        var newVersion = NuGetVersion.Parse("3.1.4-beta.2");
+
+        sut.WithNugetVersion(newVersion);
+
+        sut.Value.Should().Be("3.1.4-beta.2");
+        sut.VersionPrefix.Should().Be("3.1.4");
+        sut.VersionSuffix.Should().Be("beta.2");
+    }
+
+    [Fact]
+    public void WithNugetVersion_FromStar_BecomeSemVer()
+    {
+        var sut = new PackageVersion("*");
+        sut.Type.Should().Be(PackageVersionType.Star);
+
+        sut.WithNugetVersion(new NuGetVersion(1, 0, 0));
+
+        sut.Type.Should().Be(PackageVersionType.SemVer);
+        sut.Value.Should().Be("1.0.0");
+    }
+
+    [Fact]
+    public void WithNugetVersion_ReturnsSameInstance()
+    {
+        var sut = new PackageVersion("1.0.0");
+
+        var result = sut.WithNugetVersion(new NuGetVersion(2, 0, 0));
+
+        result.Should().BeSameAs(sut);
+    }
+
+    [Fact]
+    public void WithNugetVersion_WithRevision_ParsedCorrectly()
+    {
+        var sut = new PackageVersion("1.0.0");
+        var newVersion = new NuGetVersion(1, 2, 3, 4);
+
+        sut.WithNugetVersion(newVersion);
+
+        sut.Major.Should().Be("1");
+        sut.Minor.Should().Be("2");
+        sut.Patch.Should().Be("3");
+        sut.Revision.Should().Be("4");
+    }
+
+    [Fact]
+    public void WithNugetVersion_OverwritesPreviousVersion()
+    {
+        var sut = new PackageVersion("1.0.0-alpha");
+        sut.WithNugetVersion(new NuGetVersion(2, 0, 0));
+
+        sut.VersionSuffix.Should().BeNull();
+        sut.Value.Should().Be("2.0.0");
     }
 
     #endregion

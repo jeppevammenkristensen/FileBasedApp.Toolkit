@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## FileBasedApp
 
+### [Unreleased]
+
+#### FileBasedApp.Toolkit
+
+- Added `ParseExtensions` with `TryParseTo`, `SafeParseToStruct`, `SafeParseToClass`, and `RequiredParse` extension methods for parsing strings into types implementing `IParsable<T>`
+- Added extension methods for NugetVersion
+
+#### FileBasedApp.Toolkit.Dotnet
+
+- Enhanced PackageVersion to use NugetVersion class from Nuget.Version package
+
 ### [0.18.0]
 
 #### FileBasedApp.Toolkit.Dotnet

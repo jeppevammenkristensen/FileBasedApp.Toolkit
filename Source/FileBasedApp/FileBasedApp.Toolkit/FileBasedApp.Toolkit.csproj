@@ -16,6 +16,7 @@
     <PackageReleaseNotes>
       - Adjusted package references
       - Added NullIfEmpty extension method for string to simplify null/empty checks in directive parsing
+      - Added ParseExtensions with TryParseTo, SafeParseToStruct, SafeParseToClass, and RequiredParse for IParsable types
     </PackageReleaseNotes>
     <LangVersion>14</LangVersion>    
   </PropertyGroup>

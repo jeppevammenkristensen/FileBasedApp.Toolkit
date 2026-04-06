@@ -7,8 +7,8 @@ using Xunit;
 
 namespace FileBasedApp.Toolkit.Tests;
 
-[TestSubject(typeof(Parse))]
-public class ParseTest
+[TestSubject(typeof(ParseExtensions))]
+public class ParseExtensionsTest
 {
 
     [Theory]
@@ -123,7 +123,7 @@ public class ParseTest
     [InlineData("0", 0)]
     public void SafeParseToStruct_ValidInt_ReturnsValue(string input, int expected)
     {
-        var result = Parse.SafeParseToStruct<int>(input);
+        var result = ParseExtensions.SafeParseToStruct<int>(input);
         result.Should().Be(expected);
     }
 
@@ -133,7 +133,7 @@ public class ParseTest
     [InlineData(null)]
     public void SafeParseToStruct_InvalidInt_ReturnsNull(string? input)
     {
-        var result = Parse.SafeParseToStruct<int>(input);
+        var result = ParseExtensions.SafeParseToStruct<int>(input);
         result.Should().BeNull();
     }
 
@@ -142,7 +142,7 @@ public class ParseTest
     [InlineData("false", false)]
     public void SafeParseToStruct_ValidBool_ReturnsValue(string input, bool expected)
     {
-        var result = Parse.SafeParseToStruct<bool>(input);
+        var result = ParseExtensions.SafeParseToStruct<bool>(input);
         result.Should().Be(expected);
     }
 
@@ -150,7 +150,7 @@ public class ParseTest
     public void SafeParseToStruct_WithFormatProvider_ParsesCorrectly()
     {
         var danish = new CultureInfo("da-DK");
-        var result = Parse.SafeParseToStruct<decimal>("1.234,56", danish);
+        var result = ParseExtensions.SafeParseToStruct<decimal>("1.234,56", danish);
         result.Should().Be(1234.56m);
     }
 
@@ -158,7 +158,7 @@ public class ParseTest
     public void SafeParseToStruct_WithFormatProvider_WrongCultureReturnsNull()
     {
         var danish = new CultureInfo("da-DK");
-        var result = Parse.SafeParseToStruct<decimal>("1,234.56", danish);
+        var result = ParseExtensions.SafeParseToStruct<decimal>("1,234.56", danish);
         result.Should().BeNull();
     }
 
@@ -167,7 +167,7 @@ public class ParseTest
     [Fact]
     public void SafeParseToClass_ValidInput_ReturnsValue()
     {
-        var result = Parse.SafeParseToClass<ParsableTestClass>("valid:hello");
+        var result = ParseExtensions.SafeParseToClass<ParsableTestClass>("valid:hello");
         result.Should().NotBeNull();
         result!.Value.Should().Be("hello");
     }
@@ -178,14 +178,14 @@ public class ParseTest
     [InlineData(null)]
     public void SafeParseToClass_InvalidInput_ReturnsNull(string? input)
     {
-        var result = Parse.SafeParseToClass<ParsableTestClass>(input);
+        var result = ParseExtensions.SafeParseToClass<ParsableTestClass>(input);
         result.Should().BeNull();
     }
 
     [Fact]
     public void SafeParseToClass_WithFormatProvider_PassesProvider()
     {
-        var result = Parse.SafeParseToClass<ParsableTestClass>("valid:world", CultureInfo.InvariantCulture);
+        var result = ParseExtensions.SafeParseToClass<ParsableTestClass>("valid:world", CultureInfo.InvariantCulture);
         result.Should().NotBeNull();
         result!.Value.Should().Be("world");
     }

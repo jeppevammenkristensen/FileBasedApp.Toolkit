@@ -4,6 +4,7 @@ using System.Linq;
 using FileBasedApp.Toolkit.CSharp;
 using FluentAssertions;
 using JetBrains.Annotations;
+using NuGet.Versioning;
 using TruePath;
 using Xunit;
 
@@ -106,7 +107,7 @@ public class FileBasedAppWrapperTest
         {
             item.PackageInfo!.Version.Value.Should().Be("1.0.0");
 
-            item.PackageInfo.Version.Value = "0.17.1-alpha-02";
+            item.PackageInfo.Version.WithNugetVersion(new NuGetVersion("0.17.1-alpha-02"));
 
             var updated = item.Update(wrapper.CompilationUnitSyntax);
             wrapper.CompilationUnitSyntax = updated;

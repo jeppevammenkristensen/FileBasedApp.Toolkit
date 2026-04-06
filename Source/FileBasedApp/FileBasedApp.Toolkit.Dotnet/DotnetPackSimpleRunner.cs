@@ -167,6 +167,7 @@ public class DotnetPackSimpleRunner : DotnetBaseRunner<DotnetPackSimpleRunner>
     /// Sets the version of the package to create (<c>--version</c>).
     /// </summary>
     public DotnetPackSimpleRunner WithVersion(string version) => AddArgumentPair("--version", version);
+    
 
     /// <summary>
     /// Skips building the project before packing. Implies <c>--no-restore</c> (<c>--no-build</c>).

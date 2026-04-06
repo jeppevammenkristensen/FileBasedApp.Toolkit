@@ -12,8 +12,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FilebasedApp.Toolkit.Dotnet</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageIcon>floppy-disc.png</PackageIcon>
-        <VersionPrefix>0.18.1</VersionPrefix>
+        <PackageIcon>floppy-disc.png</PackageIcon>        
         <PackageReleaseNotes>Add better parsing of nuget version</PackageReleaseNotes>
         
         <PackageReleaseNotes>

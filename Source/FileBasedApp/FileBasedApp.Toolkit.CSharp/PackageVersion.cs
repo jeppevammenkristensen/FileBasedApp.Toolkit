@@ -39,6 +39,10 @@ public partial class PackageVersion
         private set;
     }
 
+    /// <summary>
+    /// Gets the NuGet semantic version, throwing an exception if the version is not a valid semantic version.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the version is not a semantic version (e.g., wildcard or unknown format).</exception>
     public NuGetVersion RequiredNugetVersion => NugetVersion ?? throw new InvalidOperationException("This version is not a semantic version");
 
     /// <summary>

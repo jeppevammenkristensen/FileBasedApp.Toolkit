@@ -17,7 +17,7 @@ public class PackageDirectiveWrapper
     /// Gets or sets the parsed package name and version information from the directive content.
     /// Returns <see langword="null"/> if the content could not be parsed.
     /// </summary>
-    public PackageInfo? PackageInfo { get; set; }
+    public PackageInfo? PackageInfo { get; private set; }
 
     internal PackageDirectiveWrapper(IgnoredDirectiveWrapper wrapper)
     {

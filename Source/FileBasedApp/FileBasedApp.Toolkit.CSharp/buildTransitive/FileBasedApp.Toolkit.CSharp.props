@@ -1,0 +1,10 @@
+<Project>
+  <!--
+    Microsoft.CodeAnalysis.Workspaces.MSBuild uses reflection-based JSON serialization
+    for its BuildHost RPC communication. .NET 10+ disables this by default, so we must
+    re-enable it for any project consuming this package.
+  -->
+  <PropertyGroup>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+  </PropertyGroup>
+</Project>

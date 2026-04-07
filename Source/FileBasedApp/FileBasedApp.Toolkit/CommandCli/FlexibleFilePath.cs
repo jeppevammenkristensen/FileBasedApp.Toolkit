@@ -1,7 +1,15 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using TruePath;
 
 namespace FileBasedApp.Toolkit.CommandCli;
+
+// [JsonSerializable(typeof(FlexibleFilePath))]
+// [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+// public partial class AppContext : JsonSerializerContext
+// {
+// }
 
 /// <summary>
 /// Represents a flexible file path that can be used across different operating systems.

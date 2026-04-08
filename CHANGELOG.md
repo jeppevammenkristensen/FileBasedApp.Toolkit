@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### [Unreleased]
 
+#### FileBasedApp.Toolkit.CSharp
+
+- Fixed `PackageDirectiveWrapper.Update()` failing when updating multiple package directives sequentially on the same syntax tree
+
 #### FileBasedApp.Toolkit
 
 - Added `ParseExtensions` with `TryParseTo`, `SafeParseToStruct`, `SafeParseToClass`, and `RequiredParse` extension methods for parsing strings into types implementing `IParsable<T>`

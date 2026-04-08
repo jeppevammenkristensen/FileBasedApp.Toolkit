@@ -6,7 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## FileBasedApp
 
-### [Unreleased]
+### [0.19.1]
+
+#### FileBasedApp.Toolkit
+- Fixed bug with AddArgumentPairIfValueNotEmpty 
+
+### [0.19.0]
 
 #### FileBasedApp.Toolkit.CSharp
 

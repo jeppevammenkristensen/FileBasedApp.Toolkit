@@ -12,11 +12,10 @@
     <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FileBasedApp.Toolkit</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>floppy-disc.png</PackageIcon>
+    <VersionPrefix>0.19.1</VersionPrefix>
     
     <PackageReleaseNotes>
-      - Adjusted package references
-      - Added NullIfEmpty extension method for string to simplify null/empty checks in directive parsing
-      - Added ParseExtensions with TryParseTo, SafeParseToStruct, SafeParseToClass, and RequiredParse for IParsable types
+      - Fixed bug with AddArgumentPairIfValueNotEmpty
     </PackageReleaseNotes>
     <LangVersion>14</LangVersion>    
   </PropertyGroup>

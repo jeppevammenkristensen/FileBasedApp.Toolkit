@@ -375,6 +375,128 @@ public class SimpleExecRunnerTest
         runner.Secrets.Should().Contain("s2");
     }
 
+    [Fact]
+    public void AddArgumentPairConditionally_ConditionTrue_AddsBothArguments()
+    {
+        var runner = CreateRunner()
+            .AddArgumentPairConditionally("--output", "/tmp", _ => true);
+
+        runner.Arguments.Should().BeEquivalentTo(["--output", "/tmp"]);
+    }
+
+    [Fact]
+    public void AddArgumentPairConditionally_ConditionFalse_AddsNothing()
+    {
+        var runner = CreateRunner()
+            .AddArgumentPairConditionally("--output", "/tmp", _ => false);
+
+        runner.Arguments.Should().BeEmpty();
+    }
+
+    [Theory]
+    [InlineData("value", true)]
+    [InlineData("", false)]
+    [InlineData(null, false)]
+    public void AddArgumentPairConditionally_ConditionReceivesValue(string? value, bool expectedAdded)
+    {
+        var runner = CreateRunner()
+            .AddArgumentPairConditionally("--flag", value, v => !string.IsNullOrEmpty(v));
+
+        if (expectedAdded)
+        {
+            runner.Arguments.Should().BeEquivalentTo(["--flag", value!]);
+        }
+        else
+        {
+            runner.Arguments.Should().BeEmpty();
+        }
+    }
+
+    [Fact]
+    public void AddArgumentPairConditionally_WithSecret_MarksValueAsSecret()
+    {
+        var runner = CreateRunner()
+            .AddArgumentPairConditionally("--token", "secret", _ => true, isSecret: true);
+
+        runner.Arguments.Should().BeEquivalentTo(["--token", "secret"]);
+        runner.Secrets.Should().Contain("secret");
+        runner.Secrets.Should().NotContain("--token");
+    }
+
+    [Fact]
+    public void AddArgumentPairConditionally_WithSecret_ConditionFalse_NoSecretAdded()
+    {
+        var runner = CreateRunner()
+            .AddArgumentPairConditionally("--token", "secret", _ => false, isSecret: true);
+
+        runner.Arguments.Should().BeEmpty();
+        runner.Secrets.Should().BeEmpty();
+    }
+
+    [Theory]
+    [InlineData("hello", StringNullCheck.Null, true)]
+    [InlineData(null, StringNullCheck.Null, false)]
+    [InlineData("hello", StringNullCheck.NullOrEmpty, true)]
+    [InlineData("", StringNullCheck.NullOrEmpty, false)]
+    [InlineData(null, StringNullCheck.NullOrEmpty, false)]
+    [InlineData("hello", StringNullCheck.NullOrWhitespace, true)]
+    [InlineData("  ", StringNullCheck.NullOrWhitespace, false)]
+    [InlineData("", StringNullCheck.NullOrWhitespace, false)]
+    [InlineData(null, StringNullCheck.NullOrWhitespace, false)]
+    public void AddArgumentPairIfValueNotEmpty_AddsOnlyWhenValuePasses(string? value, StringNullCheck nullCheck, bool expectedAdded)
+    {
+        var runner = CreateRunner()
+            .AddArgumentPairIfValueNotEmpty("--key", value, nullCheck);
+
+        if (expectedAdded)
+        {
+            runner.Arguments.Should().BeEquivalentTo(["--key", value!]);
+        }
+        else
+        {
+            runner.Arguments.Should().BeEmpty();
+        }
+    }
+
+    [Fact]
+    public void AddArgumentPairIfValueNotEmpty_DefaultNullCheck_IsNull()
+    {
+        // Default nullCheck is StringNullCheck.Null, so empty string should still be added
+        var runner = CreateRunner()
+            .AddArgumentPairIfValueNotEmpty("--key", "");
+
+        runner.Arguments.Should().BeEquivalentTo(["--key", ""]);
+    }
+
+    [Fact]
+    public void AddArgumentPairIfValueNotEmpty_DefaultNullCheck_NullIsSkipped()
+    {
+        var runner = CreateRunner()
+            .AddArgumentPairIfValueNotEmpty("--key", null);
+
+        runner.Arguments.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void AddArgumentPairIfValueNotEmpty_WithSecret_MarksValueAsSecret()
+    {
+        var runner = CreateRunner()
+            .AddArgumentPairIfValueNotEmpty("--api-key", "my-secret", isSecret: true);
+
+        runner.Arguments.Should().BeEquivalentTo(["--api-key", "my-secret"]);
+        runner.Secrets.Should().Contain("my-secret");
+    }
+
+    [Fact]
+    public void AddArgumentPairIfValueNotEmpty_WithSecret_NullValue_NoSecretAdded()
+    {
+        var runner = CreateRunner()
+            .AddArgumentPairIfValueNotEmpty("--api-key", null, isSecret: true);
+
+        runner.Arguments.Should().BeEmpty();
+        runner.Secrets.Should().BeEmpty();
+    }
+
     #endregion
 
     #region Wrapper resolution

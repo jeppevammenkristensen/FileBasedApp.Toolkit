@@ -246,7 +246,7 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     /// <param name="isSecret">Indicates whether the value should be treated as a secret and hidden from logs.</param>
     /// <returns>The current instance for method chaining.</returns>
     public TSelf AddArgumentPairIfValueNotEmpty(string argument, string? value, StringNullCheck nullCheck = StringNullCheck.Null, bool isSecret = false) =>
-        AddArgumentPairConditionally(argument, value, s => s.NullCheck(nullCheck), isSecret);
+        AddArgumentPairConditionally(argument, value, s => !s.NullCheck(nullCheck), isSecret);
     
     /// <summary>
     /// Conditionally adds an argument pair (argument and value) to the command arguments if the specified condition is satisfied.

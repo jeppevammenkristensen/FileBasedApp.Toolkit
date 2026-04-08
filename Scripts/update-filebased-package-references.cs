@@ -1,5 +1,5 @@
-#:package FileBasedApp.Toolkit.CSharp@0.19.0-alpha-06
-#:package FileBasedApp.Toolkit.Dotnet@0.19.0-alpha-06
+#:package FileBasedApp.Toolkit.CSharp@0.19.0-alpha-12
+#:package FileBasedApp.Toolkit.Dotnet@0.19.0-alpha-12
 #:package Dumpify@*
 
 #:property PublishAot=false
@@ -44,8 +44,21 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 		AddVersion("FileBasedApp.Toolkit.CSharp");
 		AddVersion("FileBasedApp.Toolkit.Dotnet");
 		
-		foreach (var csFile in settings.RootPathAbsolute.EnumerateAllFiles("*.cs"))
+		foreach (var csFile in settings.RootPathAbsolute
+			         .EnumerateAllFiles("*.cs"))
 		{	
+			if (settings.Excludes is {Length:> 0} && settings.Excludes.Any(x => csFile.Value.Contains(x, StringComparison.OrdinalIgnoreCase)))
+			{
+				AnsiConsole.MarkupLineInterpolated($"[yellow]Excluding {csFile}[/]");
+				continue;
+			}
+			
+			if (settings.Include is {Length:> 0} && !settings.Include.Any(x => csFile.Value.Contains(x, StringComparison.OrdinalIgnoreCase)))
+			{
+				AnsiConsole.MarkupLineInterpolated($"[yellow]Not including {csFile}[/]");
+				continue;
+			}
+			
 			if (await csFile.IsFileBasedAppAsync(token:cancellationToken))
 			{			
 				AnsiConsole.Write(new Rule(csFile.FileName).LeftJustified());
@@ -90,6 +103,12 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 		[CommandArgument(0, "[RootFolder]")]
 		[DefaultValue("..")]
 		public string? RootFolder { get; set; }
+		
+		[CommandOption("--exclude")]
+		public string[] Excludes { get; set; }
+		
+		[CommandOption("--include")]
+		public string[] Include { get; set; }
 
 		/// <summary></summary>
 		public AbsolutePath RootPathAbsolute { get; private set; }

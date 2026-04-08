@@ -40,7 +40,9 @@ public class PackageDirectiveWrapper
             ? $"package {PackageInfo.Name}@{PackageInfo.Version.Value}"
             : _wrapper.Content;
 
-        var existingTrivia = compilationUnitSyntax.GetLeadingTrivia().Single(x => x.Equals(_wrapper.trivia));
+        var originalTriviaText = _wrapper.trivia.ToFullString();
+        var existingTrivia = compilationUnitSyntax.GetLeadingTrivia().GetSingleRequired(x => x.ToFullString() == originalTriviaText,
+            $"Did not find {_wrapper.trivia} in {compilationUnitSyntax.GetLeadingTrivia().ToFullString()}");
 
         var originalText = existingTrivia.ToFullString();
         var lineEnding = originalText.EndsWith("\r\n") ? "\r\n" : "\n";

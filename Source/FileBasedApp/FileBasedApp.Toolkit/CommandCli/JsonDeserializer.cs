@@ -34,10 +34,10 @@ public class JsonDeserializer : IDeserializer
     /// <returns>The deserialized object of type T, or null if deserialization fails.</returns>
     public T? Deserialize<T>(Stream stream)
     {
-        if (JsonTypeInfoRegistry.TryGet<T>(out var typeInfo))
-        {
-            return JsonSerializer.Deserialize(stream, typeInfo!);
-        }
+        // if (JsonTypeInfoRegistry.TryGet<T>(out var typeInfo))
+        // {
+        //     return JsonSerializer.Deserialize(stream, typeInfo!);
+        // }
 
         return JsonSerializer.Deserialize<T>(stream, SerializerOptions());
     }
@@ -51,10 +51,10 @@ public class JsonDeserializer : IDeserializer
     /// <returns>A ValueTask representing the asynchronous operation, containing the deserialized object of type T, or null if deserialization fails.</returns>
     public ValueTask<T?> Deserialize<T>(Stream stream, CancellationToken cancellationToken)
     {
-        if (JsonTypeInfoRegistry.TryGet<T>(out var typeInfo))
-        {
-            return JsonSerializer.DeserializeAsync(stream, typeInfo!, cancellationToken);
-        }
+        // if (JsonTypeInfoRegistry.TryGet<T>(out var typeInfo))
+        // {
+        //     return JsonSerializer.DeserializeAsync(stream, typeInfo!, cancellationToken);
+        // }
         
         Debug.WriteLine($"No registered JsonTypeInfo found for type {typeof(T).FullName}. Falling back to default deserialization with options.");
 

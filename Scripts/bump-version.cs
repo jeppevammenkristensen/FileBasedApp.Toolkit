@@ -15,7 +15,7 @@ var commandApp = new CommandApp<RunCommand>().WithDescription("Enter the descrip
 commandApp.Configure(ctx =>
 {
     ctx.PropagateExceptions();
-});
+}); 
 return await commandApp.RunAsync(args);
 public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you can use Command (and have Execute instead of ExecuteAsync
 {
@@ -38,7 +38,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
         XElement xml;
         await using (var fileSystemStream = buildProps.OpenRead())
         {
-            xml = await XElement.LoadAsync(fileSystemStream, LoadOptions.PreserveWhitespace, cancellationToken);
+            xml = await XElement.LoadAsync(fileSystemStream, LoadOptions.None, cancellationToken);
         }
             
         var versionPrefix = xml.Descendants("VersionPrefix").FirstOrDefault() ??
@@ -63,6 +63,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
             if (versionSuffix is null)
             {
                 versionSuffix = new XElement("VersionSuffix", newSuffix);
+                versionPrefix.Parent!.Add(versionSuffix);
             }
             else
             {
@@ -122,7 +123,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
         await using var fileSystemStreamWrite = buildProps.OpenWrite();
         await AnsiConsole.Status().StartAsync("Saving new version", async ctx =>
         {
-            await xml.SaveAsync(fileSystemStreamWrite, SaveOptions.DisableFormatting, cancellationToken);
+            await xml.SaveAsync(fileSystemStreamWrite, SaveOptions.None, cancellationToken);
         });
         
         AnsiConsole.MarkupLineInterpolated($"[green]Version updated successfully in {buildProps.Value}[/]");

@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.19.0-rc-01
+#:package FileBasedApp.Toolkit@0.19.0-rc-02
 #:property PublishAot=false
 
 using FileBasedApp.Toolkit;

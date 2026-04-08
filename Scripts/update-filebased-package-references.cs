@@ -1,5 +1,5 @@
-#:package FileBasedApp.Toolkit.CSharp@0.19.0-rc-01
-#:package FileBasedApp.Toolkit.Dotnet@0.19.0-rc-01
+#:package FileBasedApp.Toolkit.CSharp@0.19.0-rc-02
+#:package FileBasedApp.Toolkit.Dotnet@0.19.0-rc-02
 #:package Dumpify@*
 
 #:property PublishAot=false
@@ -28,7 +28,7 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 {
 	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
 	{	
-		AnsiConsole.MarkupLineInterpolated($"[green]RootPath is {settings.RootPathAbsolute.Value}[/]");
+		AnsiConsole.MarkupLineInterpolated($"[green bold]Find all file-based apps in {settings.RootPathAbsolute.Value} and updating to latest FileBasedApp.Toolkit package versions[/]");
 		
 		Dictionary<string, string> NameVersion = new Dictionary<string, string>();
 		var result =await DotnetRecipes.GetPackageInformation("FileBasedApp.Toolkit", true);
@@ -47,18 +47,6 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 		foreach (var csFile in settings.RootPathAbsolute
 			         .EnumerateAllFiles("*.cs"))
 		{	
-			if (settings.Excludes is {Length:> 0} && settings.Excludes.Any(x => csFile.Value.Contains(x, StringComparison.OrdinalIgnoreCase)))
-			{
-				AnsiConsole.MarkupLineInterpolated($"[yellow]Excluding {csFile}[/]");
-				continue;
-			}
-			
-			if (settings.Include is {Length:> 0} && !settings.Include.Any(x => csFile.Value.Contains(x, StringComparison.OrdinalIgnoreCase)))
-			{
-				AnsiConsole.MarkupLineInterpolated($"[yellow]Not including {csFile}[/]");
-				continue;
-			}
-			
 			if (await csFile.IsFileBasedAppAsync(token:cancellationToken))
 			{			
 				AnsiConsole.Write(new Rule(csFile.FileName).LeftJustified());
@@ -75,7 +63,7 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 						var compilationUnitSyntax = item.Update(fileBasedWrapper.CompilationUnitSyntax);								
 						fileBasedWrapper.CompilationUnitSyntax = compilationUnitSyntax;
 						fileBasedWrapper.Save();
-						AnsiConsole.MarkupLineInterpolated($"[green]Saved: {item.PackageInfo.Version}[/]");
+						AnsiConsole.MarkupLineInterpolated($"[green]Saved: {item.PackageInfo.Name} {item.PackageInfo.Version}[/]");
 					}
 					
 				}
@@ -83,6 +71,18 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 				if (PathUtil.GetExecutionFile().Equals(csFile))
 				{
 					AnsiConsole.MarkupLineInterpolated($"[yellow]Skipping build of {csFile.FileName} since it's the execution file[/]");
+					continue;
+				}
+				
+				if (settings.Excludes is {Length:> 0} && settings.Excludes.Any(x => csFile.Value.Contains(x, StringComparison.OrdinalIgnoreCase)))
+				{
+					AnsiConsole.MarkupLineInterpolated($"[yellow]Excluding build of {csFile}[/]");
+					continue;
+				}
+			
+				if (settings.Include is {Length:> 0} && !settings.Include.Any(x => csFile.Value.Contains(x, StringComparison.OrdinalIgnoreCase)))
+				{
+					AnsiConsole.MarkupLineInterpolated($"[yellow]Not including build of {csFile}[/]");
 					continue;
 				}
 				

@@ -4,10 +4,7 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Folder Name="/FilebasedApp/">
-    <Project Path="FileBasedApp/FileBasedApp.Toolkit.Analyzers/FileBasedApp.Toolkit.Analyzers.Sample/FileBasedApp.Toolkit.Analyzers.Sample.csproj" />
-    <Project Path="FileBasedApp/FileBasedApp.Toolkit.Analyzers/FileBasedApp.Toolkit.Analyzers.Tests/FileBasedApp.Toolkit.Analyzers.Tests.csproj" />
-    <Project Path="FileBasedApp/FileBasedApp.Toolkit.Analyzers/FileBasedApp.Toolkit.Analyzers/FileBasedApp.Toolkit.Analyzers.csproj" />
+  <Folder Name="/FilebasedApp/">    
     <Project Path="FileBasedApp/FileBasedApp.Toolkit.CSharp.Tests/FileBasedApp.Toolkit.CSharp.Tests.csproj" />
     <Project Path="FileBasedApp/FileBasedApp.Toolkit.CSharp/FileBasedApp.Toolkit.CSharp.csproj" />
     <Project Path="FileBasedApp/FileBasedApp.Toolkit.Dotnet/FileBasedApp.Toolkit.Dotnet.csproj" />

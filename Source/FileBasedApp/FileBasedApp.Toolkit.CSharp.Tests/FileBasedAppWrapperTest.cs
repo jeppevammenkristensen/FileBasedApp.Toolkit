@@ -120,6 +120,39 @@ public class FileBasedAppWrapperTest
     }
 
     [Fact]
+    public void Update_MultiplePackageVersions_UpdatesAllPackages()
+    {
+        var wrapper = CreateWrapper("""
+            #:package FileBasedApp.Toolkit@1.0.0
+            #:package FileBasedApp.Toolkit.CSharp@1.0.0
+            #:package FileBasedApp.Toolkit.Dotnet@1.0.0
+            Console.WriteLine("Hello");
+            """);
+
+        var nameVersions = new Dictionary<string, string>
+        {
+            ["FileBasedApp.Toolkit"] = "2.0.0",
+            ["FileBasedApp.Toolkit.CSharp"] = "2.0.0",
+            ["FileBasedApp.Toolkit.Dotnet"] = "2.0.0"
+        };
+
+        foreach (var item in wrapper.PackageDirectives
+                     .Where(x => nameVersions.ContainsKey(x.PackageInfo?.Name ?? string.Empty)))
+        {
+            var version = nameVersions[item.PackageInfo!.Name];
+            item.PackageInfo.Version.WithValue(version);
+            var updated = item.Update(wrapper.CompilationUnitSyntax);
+            wrapper.CompilationUnitSyntax = updated;
+        }
+
+        var result = wrapper.CompilationUnitSyntax.ToFullString();
+
+        result.Should().Contain("FileBasedApp.Toolkit@2.0.0");
+        result.Should().Contain("FileBasedApp.Toolkit.CSharp@2.0.0");
+        result.Should().Contain("FileBasedApp.Toolkit.Dotnet@2.0.0");
+    }
+
+    [Fact]
     public void Update_VersionAlreadyCorrect_NoChange()
     {
         var wrapper = CreateWrapper("""

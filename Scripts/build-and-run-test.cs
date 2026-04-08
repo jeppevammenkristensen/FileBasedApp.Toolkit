@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.19.0-rc-02
+#:package FileBasedApp.Toolkit@0.19.0
 #:property PublishAot=false
 
 using System.ComponentModel;

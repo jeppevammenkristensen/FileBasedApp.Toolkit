@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.19.0-rc-01
+#:package FileBasedApp.Toolkit@0.19.0-rc-02
 #:package AutoSpectre@0.12.0
 
 using AutoSpectre;
@@ -6,6 +6,7 @@ using FileBasedApp.Toolkit;
 using FileBasedApp.Toolkit.SimpleExec;
 using Spectre.Console;
 using Test;
+using TruePath;
 
 var executionFolder = PathUtil.GetExecutionFolder();
 
@@ -38,6 +39,7 @@ if (selector.UpdateVersion)
 {
     await SimpleExecRunner.Init("dotnet")
         .AddArgumentPair("run", executionFolder / "update-filebased-package-references.cs")
+        .AddArgumentPair("--exclude", PathUtil.GetExecutionFile().GetFilenameWithoutExtension())
         .RunAsync();
 }
 

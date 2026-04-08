@@ -1,5 +1,5 @@
-#:package FileBasedApp.Toolkit.CSharp@0.19.0-alpha-12
-#:package FileBasedApp.Toolkit.Dotnet@0.19.0-alpha-12
+#:package FileBasedApp.Toolkit.CSharp@0.19.0-rc-01
+#:package FileBasedApp.Toolkit.Dotnet@0.19.0-rc-01
 #:package Dumpify@*
 
 #:property PublishAot=false

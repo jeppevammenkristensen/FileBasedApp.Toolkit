@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.19.0-alpha-12
+#:package FileBasedApp.Toolkit@0.19.0-rc-01
 #:property PublishAot=false
 using System.ComponentModel;
 using Spectre.Console.Cli;
@@ -21,6 +21,10 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 {
     [GeneratedRegex(@"^alpha\-(?<alphaversion>\d+)$")]
     private partial Regex Alpha { get; }
+
+    [GeneratedRegex(@"^rc\-(?<rcversion>\d+)$")]
+
+    private partial Regex Rc { get; }
 
     public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
     {
@@ -93,7 +97,19 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
                 }
                 break;
             case RunCommand.BumpType.RC:
-                throw new NotImplementedException();
+                if (versionSuffix?.Value == null || !Rc.IsMatch(versionSuffix.Value))
+                {
+                    AddOrUpdateSuffix("rc-01");
+                }
+                else if (Rc.Match(versionSuffix.Value) is {Success: true} match)
+                {
+                    var newVersion = match.Groups["rcversion"].Value.RequiredParse<int>() + 1;
+                    AddOrUpdateSuffix($"rc-{newVersion:D2}");
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Version suffix does not match rc layout {versionSuffix.Value}");
+                }
                 break;
             case RunCommand.BumpType.Release:
                 AnsiConsole.MarkupLineInterpolated($"[dim]Removing suffix {versionSuffix?.Value} for release version[/]");

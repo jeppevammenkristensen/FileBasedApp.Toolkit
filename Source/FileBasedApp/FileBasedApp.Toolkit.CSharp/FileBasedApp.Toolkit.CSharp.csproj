@@ -14,16 +14,15 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>floppy-disc.png</PackageIcon>
         <PackageReleaseNotes>
-- Renamed all Csharp prefixes to CSharp (CsharpProjectAnalysis → CSharpProjectAnalysis, CsharpRegex → CSharpRegex, etc.)
-- Extracted BaseAnalysis base class from CSharpProjectAnalysis for shared MSBuild workspace logic
-- Added CSharpSolutionAnalysis for loading and analyzing full .sln solutions
-- Added shebang directive (#!) support to FileBasedAppEvaluator
-- Added string-based IsFileBasedApp overload for evaluating C# text without file I/O
-- Added FileBasedDirectiveType enum for classifying directives (Package, Property, Sdk, Project)
-- Added FileBasedAppWrapper for parsing and inspecting file-based app directives
-- Added IgnoredDirectiveWrapper for extracting typed directive info from Roslyn trivia
-- Added PackageDirectiveWrapper with Update method for modifying package directives in-place
-- Added PackageInfo record for parsing package name and version from directives
+- Replaced regex-based PackageVersion parsing with NuGet.Versioning (NuGetVersion) for robust version handling
+- Added NugetVersion and RequiredNugetVersion properties to PackageVersion for direct NuGet version access
+- Added WithNugetVersion and WithValue fluent methods to PackageVersion for immutable-style version updates
+- Made PackageVersion.Value setter private (breaking: use WithValue instead)
+- Made PackageInfo.PackageInfo setter private (breaking)
+- Moved PackageVersion and PackageVersionType to separate files
+- Improved MSBuild locator initialization with explicit validation and descriptive error messages
+- Added buildTransitive props to enable reflection-based JSON serialization for .NET 10+ compatibility (required by MSBuild workspaces)
+- Added NuGet.Versioning package dependency
 - Fixed PackageDirectiveWrapper.Update() failing when updating multiple package directives sequentially on the same syntax tree
         </PackageReleaseNotes>       
         

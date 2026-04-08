@@ -482,6 +482,9 @@ FodyWeavers.xsd
 
 *.trx
 
+# Test reports
+test-report/
+
 # Claude
 .claude
 .serena

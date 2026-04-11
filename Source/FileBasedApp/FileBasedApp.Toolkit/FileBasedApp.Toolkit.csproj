@@ -15,7 +15,7 @@
     <VersionPrefix>0.19.1</VersionPrefix>
     
     <PackageReleaseNotes>
-      - Fixed bug with AddArgumentPairIfValueNotEmpty
+      - Upgraded Spectre.Console.Cli from 0.53.1 to 0.55.0      
     </PackageReleaseNotes>
     <LangVersion>14</LangVersion>    
   </PropertyGroup>
@@ -41,8 +41,8 @@
 <!--    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" Version="1.1.2" />-->
 <!--    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />-->
 <!--    <PackageReference Include="NETStandard.Library" Version="2.0.3" />-->
-    <PackageReference Include="SimpleExec" Version="13.0.0" />
-    <PackageReference Include="Spectre.Console.Cli" Version="0.53.1" />
+    <PackageReference Include="SimpleExec" Version="13.0.0" />    
+    <PackageReference Include="Spectre.Console.Cli" Version="0.55.0" />
     <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="22.1.0" />
     <PackageReference Include="TruePath.TestableIO.System.IO" Version="0.16.0" />
     <PackageReference Include="TruePath" Version="1.12.0" />

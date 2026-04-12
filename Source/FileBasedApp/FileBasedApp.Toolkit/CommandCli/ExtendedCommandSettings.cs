@@ -12,15 +12,6 @@ namespace FileBasedApp.Toolkit.CommandCli;
 /// </summary>
 public abstract class ExtendedCommandSettings : CommandSettings
 {
-
-    /// <summary>
-    /// Override this method to register custom JSON type information for deserialization. With the <see cref="JsonTypeInfoRegistry"/>
-    /// </summary>
-    public virtual void RegisterJsonTypeInfos()
-    {
-        
-    }
-    
     /// <summary>
     /// Gets the deserializer used to load settings from files.
     /// </summary>

@@ -2,6 +2,9 @@
 
 namespace FileBasedApp.Toolkit;
 
+/// <summary>
+/// 
+/// </summary>
 public static class NugetVersionExtensions
 {
     extension(NuGetVersion version)

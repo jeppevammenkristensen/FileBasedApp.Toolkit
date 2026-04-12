@@ -1,4 +1,5 @@
-﻿using TruePath;
+﻿using System.Diagnostics;
+using TruePath;
 
 namespace FileBasedApp.Toolkit;
 

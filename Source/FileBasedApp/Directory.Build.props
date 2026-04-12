@@ -2,4 +2,8 @@
   <PropertyGroup>
     <VersionPrefix>0.19.0</VersionPrefix>        
   </PropertyGroup>
+  <PropertyGroup Condition="$(MSBuildProjectName.StartsWith('FileBasedApp.Toolkit'))">
+      <VersionPrefix>0.20.0</VersionPrefix>
+      <VersionSuffix>alpha-01</VersionSuffix>
+  </PropertyGroup>
 </Project>

@@ -18,7 +18,7 @@ namespace FileBasedApp.Toolkit;
 [ValueObject<string>]
 public partial class UriPathSegment
 {
-    [GeneratedRegex(@"^/?[A-Za-z0-9\-._~!$&'()*+,;=:@%]+/?$")]
+    [GeneratedRegex(@"^/?[A-Za-z0-9\-._~!$&'()*+,;=:@%/]+/?$")]
     private static partial Regex PathRegex();
     
     private static Validation Validate(string value)

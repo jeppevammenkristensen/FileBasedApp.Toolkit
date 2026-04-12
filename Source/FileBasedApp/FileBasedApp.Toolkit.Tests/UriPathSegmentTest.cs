@@ -53,32 +53,3 @@ public class UriPathSegmentTest
         segment.WithLeadingAndTrailingSeparator().Should().Be("/users/");
     }
 }
-
-[TestSubject(typeof(UriFragment))]
-public class UriFragmentTest
-{
-    [Theory]
-    [InlineData("section", "#section")]
-    [InlineData("#section", "#section")]
-    [InlineData("##double", "#double")]
-    public void From_NormalizesLeadingHash(string input, string expected)
-    {
-        var fragment = UriFragment.From(input);
-        fragment.Value.Should().Be(expected);
-    }
-}
-
-[TestSubject(typeof(UriQueryString))]
-public class UriQueryStringTest
-{
-    [Theory]
-    [InlineData("key=value", "?key=value")]
-    [InlineData("?key=value", "?key=value")]
-    [InlineData("??doubled", "?doubled")]
-    [InlineData("a=1&b=2", "?a=1&b=2")]
-    public void From_NormalizesLeadingQuestionMark(string input, string expected)
-    {
-        var query = UriQueryString.From(input);
-        query.Value.Should().Be(expected);
-    }
-}

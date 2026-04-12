@@ -136,6 +136,34 @@ public class AbsoluteWebUriTest
         result.Value.Should().Be("https://dr.dk/base/child");
     }
 
+    [Fact]
+    public void ValueWithoutTrailingSeparator_RemovesTrailingSlash()
+    {
+        var uri = AbsoluteWebUri.Create("https://dr.dk/path/");
+        uri.ValueWithoutTrailingSeparator.Should().Be("https://dr.dk/path");
+    }
+
+    [Fact]
+    public void ValueWithoutTrailingSeparator_LeavesNoTrailingSlash()
+    {
+        var uri = AbsoluteWebUri.Create("https://dr.dk/path");
+        uri.ValueWithoutTrailingSeparator.Should().Be("https://dr.dk/path");
+    }
+
+    [Fact]
+    public void ValueWithTrailingSeparator_AddsTrailingSlash()
+    {
+        var uri = AbsoluteWebUri.Create("https://dr.dk/path");
+        uri.ValueWithTrailingSeparator.Should().Be("https://dr.dk/path/");
+    }
+
+    [Fact]
+    public void ValueWithTrailingSeparator_EnsuresSingleTrailingSlash()
+    {
+        var uri = AbsoluteWebUri.Create("https://dr.dk/path/");
+        uri.ValueWithTrailingSeparator.Should().Be("https://dr.dk/path/");
+    }
+
     // --- Create / Parse / TryParse ---
 
     [Fact]

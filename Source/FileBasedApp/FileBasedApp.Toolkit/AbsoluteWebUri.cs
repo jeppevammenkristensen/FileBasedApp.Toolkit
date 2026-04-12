@@ -61,6 +61,21 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
     /// Gets the string representation of the absolute web URI, including the scheme, host, path, query, and fragment components.
     /// </summary>
     public override string Value => Uri.ToString();
+   
+    /// <summary>
+    /// Returns the full Value with a trailing slash
+    /// </summary>
+    public string ValueWithoutTrailingSeparator => Value.TrimEnd('/');
+
+    /// <summary>
+    /// Gets the string representation of the URI with a guaranteed trailing forward slash separator.
+    /// </summary>
+    /// <remarks>
+    /// This property ensures that the URI always ends with a forward slash ('/'), regardless of whether
+    /// the original URI contained one. Any existing trailing slashes are removed first, then a single
+    /// trailing slash is appended.
+    /// </remarks>
+    public string ValueWithTrailingSeparator => Value.TrimEnd('/') + "/";
 
     /// <inheritdoc />
     protected override AbsoluteWebUri CreateFromRelativeUrl(Uri uri)

@@ -24,7 +24,7 @@ public partial class UriPathSegment
     private static Validation Validate(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            return Validation.Invalid("Path segment must not be empty or whitespace.");
+            return Validation.Ok;
 
         if (!PathRegex().IsMatch(value))
         {
@@ -36,25 +36,30 @@ public partial class UriPathSegment
 
     private static string NormalizeInput(string input)
     {
-        return input.TrimEnd('/');   
+        return "/" + input.Trim('/');   
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string WithNoLeadingOrTrailingSeparator => Value.Trim('/');
 
     /// <summary>
     /// Returns the segment with a leading separator
     /// </summary>
     /// <returns></returns>
-    public string WithLeadingSeparator() => "/" + this.Value;
+    public string WithLeadingSeparator() => Value;
 
     /// <summary>
     /// Returns the segment with a trailing seperator
     /// </summary>
     /// <returns></returns>
-    public string WithTrailingSeparator() => Value + "/";
+    public string WithTrailingSeparator() => Value.TrimStart('/') + "/";
 
     /// <summary>
     /// Returns the segment with both a leading and trailing separator
     /// </summary>
     /// <return>A string representation of the segment with separators on both ends</return>
-    public string WithLeadingAndTrailingSeparator() => "/" + Value + "/";
+    public string WithLeadingAndTrailingSeparator() => "/" + Value.Trim('/') + "/";
     
 }

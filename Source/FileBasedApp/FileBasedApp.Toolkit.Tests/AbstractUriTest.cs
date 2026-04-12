@@ -235,4 +235,62 @@ public class AbstractUriTest
         original.Value.Should().Be("/path");
         result.Should().NotBeSameAs(original);
     }
+
+    // --- Fragment / PathSegment / QueryString properties ---
+
+    [Fact]
+    public void Fragment_WhenPresent_ReturnsValueObject()
+    {
+        var uri = RelativeWebUri.Create("/path#section");
+        uri.Fragment.Value.Should().Be("#section");
+    }
+
+    [Fact]
+    public void Fragment_WhenMissing_ReturnsEmptyValue()
+    {
+        var uri = RelativeWebUri.Create("/path");
+        uri.Fragment.Value.Should().Be(string.Empty);
+    }
+
+    [Fact]
+    public void Fragment_OnAbsoluteWebUri_ReturnsValueObject()
+    {
+        var uri = AbsoluteWebUri.Create("https://example.com/path#top");
+        uri.Fragment.Value.Should().Be("#top");
+    }
+
+    [Fact]
+    public void PathSegment_ReturnsPath()
+    {
+        var uri = RelativeWebUri.Create("/users");
+        uri.PathSegment.Value.Should().Be("/users");
+    }
+
+    [Fact]
+    public void PathSegment_OnAbsoluteWebUri_ReturnsPath()
+    {
+        var uri = AbsoluteWebUri.Create("https://example.com/users?q=1#frag");
+        uri.PathSegment.Value.Should().Be("/users");
+    }
+
+    [Fact]
+    public void QueryString_WhenPresent_ReturnsValueObject()
+    {
+        var uri = RelativeWebUri.Create("/path?a=1&b=2");
+        uri.QueryString.Value.Should().Be("?a=1&b=2");
+    }
+
+    [Fact]
+    public void QueryString_WhenMissing_ReturnsNormalizedQuestionMark()
+    {
+        var uri = RelativeWebUri.Create("/path");
+        uri.QueryString.Value.Should().Be("");
+    }
+
+    [Fact]
+    public void QueryString_OnAbsoluteWebUri_ReturnsValueObject()
+    {
+        var uri = AbsoluteWebUri.Create("https://example.com/path?key=value");
+        uri.QueryString.Value.Should().Be("?key=value");
+    }
 }

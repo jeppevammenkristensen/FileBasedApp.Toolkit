@@ -90,7 +90,7 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
     /// <returns></returns>
     public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out AbsoluteWebUri result)
     {
-        if (Uri.TryCreate(s, UriKind.Absolute, out var uri))
+        if (Uri.TryCreate(s, UriKind.Absolute, out var uri) && uri.IsAbsoluteUri)
         {
             result = new AbsoluteWebUri(uri);
             return true;

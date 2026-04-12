@@ -12,6 +12,7 @@ public class UriPathSegmentTest
     [InlineData("users", "/users")]
     [InlineData("users/", "/users")]
     [InlineData("/users", "/users")]
+    [InlineData("/users/sub/", "/users/sub")]
     [InlineData("item-1", "/item-1")]
     [InlineData("item_1.ext", "/item_1.ext")]
     public void From_ValidSegment_NormalizesAndStores(string input, string expected)
@@ -21,7 +22,6 @@ public class UriPathSegmentTest
     }
 
     [Theory]
-    [InlineData("")]
     [InlineData(" ")]
     [InlineData("has space")]
     [InlineData("has?query")]

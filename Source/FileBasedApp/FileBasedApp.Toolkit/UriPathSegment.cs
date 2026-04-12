@@ -48,18 +48,18 @@ public partial class UriPathSegment
     /// Returns the segment with a leading separator
     /// </summary>
     /// <returns></returns>
-    public string WithLeadingSeparator() => Value;
+    public string WithLeadingSeparator => Value;
 
     /// <summary>
     /// Returns the segment with a trailing seperator
     /// </summary>
     /// <returns></returns>
-    public string WithTrailingSeparator() => Value.TrimStart('/') + "/";
+    public string WithTrailingSeparator => Value.TrimStart('/') + "/";
 
     /// <summary>
     /// Returns the segment with both a leading and trailing separator
     /// </summary>
     /// <return>A string representation of the segment with separators on both ends</return>
-    public string WithLeadingAndTrailingSeparator() => "/" + Value.Trim('/') + "/";
+    public string WithLeadingAndTrailingSeparator => "/" + Value.Trim('/') + "/";
     
 }

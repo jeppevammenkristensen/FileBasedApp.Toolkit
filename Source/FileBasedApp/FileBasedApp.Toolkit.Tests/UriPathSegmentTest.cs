@@ -36,20 +36,20 @@ public class UriPathSegmentTest
     public void WithLeadingSeparator_PrependsSlash()
     {
         var segment = UriPathSegment.From("users");
-        segment.WithLeadingSeparator().Should().Be("/users");
+        segment.WithLeadingSeparator.Should().Be("/users");
     }
 
     [Fact]
     public void WithTrailingSeparator_AppendsSlash()
     {
         var segment = UriPathSegment.From("users");
-        segment.WithTrailingSeparator().Should().Be("users/");
+        segment.WithTrailingSeparator.Should().Be("users/");
     }
 
     [Fact]
     public void WithLeadingAndTrailingSeparator_WrapsInSlashes()
     {
         var segment = UriPathSegment.From("users");
-        segment.WithLeadingAndTrailingSeparator().Should().Be("/users/");
+        segment.WithLeadingAndTrailingSeparator.Should().Be("/users/");
     }
 }

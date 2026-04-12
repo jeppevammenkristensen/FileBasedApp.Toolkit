@@ -11,6 +11,9 @@ public partial class UriQueryString
 {
     private static string NormalizeInput(string input)
     {
+        if (string.IsNullOrWhiteSpace(input))
+            return string.Empty;
+        
         return "?" + input.TrimStart('?');
     }
 }

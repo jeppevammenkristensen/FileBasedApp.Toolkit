@@ -102,7 +102,7 @@ public class UriExtensionsTest
     public void ToPathSegment_Valid_ReturnsValueObject()
     {
         var result = "users".ToPathSegment();
-        result!.Value.Should().Be("users");
+        result!.Value.Should().Be("/users");
     }
 
     [Fact]
@@ -116,6 +116,6 @@ public class UriExtensionsTest
     public void ToRequiredPathSegment_Valid_ReturnsValueObject()
     {
         var result = "users".ToRequiredPathSegment();
-        result.Value.Should().Be("users");
+        result.Value.Should().Be("/users");
     }
 }

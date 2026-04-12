@@ -61,7 +61,7 @@ public abstract class AbstractUri<TSelf> where TSelf : IWebUri<TSelf>
     public TSelf AddPathSegment(UriPathSegment segment)
     {
         var oldPath = FullUriRepresentation.AbsolutePath;
-        var newPath = oldPath.TrimEnd('/') + "/" + segment;
+        var newPath = oldPath.TrimEnd('/') + segment;
         RelativeWebUri.Create(newPath);
 
         return NewPath(newPath, FullUriRepresentation.Query, FullUriRepresentation.Fragment);

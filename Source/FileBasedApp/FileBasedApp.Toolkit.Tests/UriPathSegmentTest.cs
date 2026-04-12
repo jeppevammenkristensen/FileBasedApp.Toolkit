@@ -9,11 +9,11 @@ namespace FileBasedApp.Toolkit.Tests;
 public class UriPathSegmentTest
 {
     [Theory]
-    [InlineData("users", "users")]
-    [InlineData("users/", "users")]
+    [InlineData("users", "/users")]
+    [InlineData("users/", "/users")]
     [InlineData("/users", "/users")]
-    [InlineData("item-1", "item-1")]
-    [InlineData("item_1.ext", "item_1.ext")]
+    [InlineData("item-1", "/item-1")]
+    [InlineData("item_1.ext", "/item_1.ext")]
     public void From_ValidSegment_NormalizesAndStores(string input, string expected)
     {
         var segment = UriPathSegment.From(input);

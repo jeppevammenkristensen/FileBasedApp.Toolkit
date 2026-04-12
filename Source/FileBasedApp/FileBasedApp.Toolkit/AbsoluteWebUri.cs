@@ -17,7 +17,6 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
     protected AbsoluteWebUri(Uri uri) : base(uri)
     {
     }
-    
 
     /// <summary>
     /// Creates an <see cref="AbsoluteWebUri"/> from a URL string.
@@ -29,6 +28,16 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
     {
         var uri = url.SafeParseUri() ?? throw new InvalidOperationException($"The provided string '{url}' is not a valid URI");
         return Create(uri);
+    }
+
+    /// <summary>
+    /// Combines this absolute URI with a relative URI to create a new absolute URI.
+    /// </summary>
+    /// <param name="relativeUri">The relative URI to append to this absolute URI.</param>
+    /// <return>A new <see cref="AbsoluteWebUri"/> that represents the combination of this absolute URI and the relative URI.</return>
+    public AbsoluteWebUri WithRelativeUri(RelativeWebUri relativeUri)
+    {
+        return Create(new Uri(Uri, relativeUri.Uri));
     }
 
     /// <summary>
@@ -48,7 +57,9 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
     }
 
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the string representation of the absolute web URI, including the scheme, host, path, query, and fragment components.
+    /// </summary>
     public override string Value => Uri.ToString();
 
     /// <inheritdoc />
@@ -56,28 +67,6 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
     {
         return new AbsoluteWebUri(new Uri(Uri, uri));
     }
-
-    /// <summary>
-    /// Combines an <see cref="AbsoluteWebUri"/> with a relative path segment.
-    /// </summary>
-    /// <param name="left">The base URI.</param>
-    /// <param name="right">The relative path segment to append.</param>
-    /// <returns>A new <see cref="AbsoluteWebUri"/> with the combined path.</returns>
-    public static AbsoluteWebUri operator /(AbsoluteWebUri left, string right)
-    {
-        var combinedUri = new Uri(left.Uri, right);
-        return new AbsoluteWebUri(combinedUri);
-    }
-
-    // /// <summary>
-    // /// 
-    // /// </summary>
-    // /// <param name="relativePath"></param>
-    // /// <returns></returns>
-    // public AbsoluteWebUri Combine(string relativePath)
-    // {
-    //     
-    // }
 
     /// <summary>
     /// Parses a string into an <see cref="AbsoluteWebUri"/>.
@@ -127,4 +116,13 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
     {
         return Value;
     }
+
+    /// <summary>
+    /// Combines an absolute web URI with a relative web URI to create a new absolute web URI.
+    /// </summary>
+    /// <param name="left">The base absolute web URI.</param>
+    /// <param name="right">The relative web URI to append to the base URI.</param>
+    /// <returns>A new <see cref="AbsoluteWebUri"/> representing the combined path.</returns>
+    public static AbsoluteWebUri operator /(AbsoluteWebUri left, RelativeWebUri right) => left.WithRelativeUri(right);
+
 }

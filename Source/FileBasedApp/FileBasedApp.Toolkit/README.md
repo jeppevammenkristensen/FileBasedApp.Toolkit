@@ -125,6 +125,36 @@ await new SimpleExecRunner("git")
 * `SimpleExecRunner` — the fluent builder. Create with `new SimpleExecRunner("command-name")`, add arguments, then call `Run()`, `RunAsync()`, or `ReadAsync()`.
 * `ISimpleExecCommandWrapper` — an interface wrapping `SimpleExec.Command` to enable unit testing. The default implementation (`SimpleExecCommand`) delegates directly to the static `Command` class.
 
+### Web URIs (AbsoluteWebUri / RelativeWebUri)
+
+Strongly-typed, immutable wrappers around `System.Uri` for composing web URIs. Path segments, query strings, and fragments are represented as validated value objects (`UriPathSegment`, `UriQueryString`, `UriFragment`) and can be combined fluently via the `/` operator.
+
+```csharp
+using FileBasedApp.Toolkit;
+
+// Build an absolute URI fluently
+var url = AbsoluteWebUri.Create("https://example.com")
+          / UriPathSegment.From("first")
+          / UriPathSegment.From("second")
+          / UriQueryString.From("a=1&b=2")
+          / UriFragment.From("Fragment");
+
+// https://example.com/first/second?a=1&b=2#Fragment
+Console.WriteLine(url);
+
+// Or use method form
+var api = AbsoluteWebUri.Create("https://example.com/api")
+    .AddPathSegment(UriPathSegment.From("users"))
+    .AddQueryPart("page", "1")
+    .WithFragment(UriFragment.From("top"));
+
+// Relative URIs work the same way
+var relative = RelativeWebUri.Create("/search")
+               / UriQueryString.From("q=hello");
+```
+
+Each operation returns a new instance, so the originals are never mutated. Invalid inputs (empty segments, illegal characters) throw at the value-object construction step via Vogen validation.
+
 ## Template
 
 You can use the `FileBasedApp.Toolkit.Template` to easily create a new filebase app with FileBasedApp.Toolkit references added https://www.nuget.org/packages/FileBasedApp.Toolkit.Template/

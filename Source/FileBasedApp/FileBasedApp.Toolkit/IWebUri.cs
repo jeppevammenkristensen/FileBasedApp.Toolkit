@@ -6,6 +6,11 @@
 public interface IWebUri<TSelf> where TSelf : IWebUri<TSelf>
 {
     /// <summary>
+    /// Gets the underlying URI object representing the web address.
+    /// </summary>
+    public Uri Uri { get; }
+    
+    /// <summary>
     /// Gets the string representation of the URI.
     /// </summary>
     public string Value { get; }

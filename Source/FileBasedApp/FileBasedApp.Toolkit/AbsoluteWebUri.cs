@@ -48,7 +48,7 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
     /// <exception cref="ArgumentException">Thrown when <paramref name="uri"/> is not an absolute URI.</exception>
     public static AbsoluteWebUri Create(Uri uri)
     {
-        if (uri.IsAbsoluteUri)
+        if (uri is {IsAbsoluteUri: true, IsFile: false})
         {
             return new AbsoluteWebUri(uri);
         }
@@ -80,7 +80,7 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
         if (TryParse(s, provider, out var result)) return result;
         throw new FormatException();
     }
-
+    
     /// <summary>
     /// Tries to parse the input string as an absolute web URI. Returns true if successful, false otherwise.
     /// </summary>

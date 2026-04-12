@@ -3,11 +3,13 @@
 using FileBasedApp.Toolkit;
 using Spectre.Console;
 
+
+
 var url = AbsoluteWebUri.Create("https://www.dr.dk")
-    .AddPathSegment("jeppe")
-    .AddPathSegment("ulrik")
-    .AddQueryPart("jeppe","angry")
-    .WithFragment("Poul");
+    / UriPathSegment.From("first") 
+    / UriPathSegment.From("second") 
+    / UriQueryString.From("a=1&b=2")
+    / UriFragment.From("Fragment");
 
 AnsiConsole.WriteLine(url.ToString());
     

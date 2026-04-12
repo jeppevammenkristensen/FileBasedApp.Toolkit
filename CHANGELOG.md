@@ -13,6 +13,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Added `AbstractUri<TSelf>` base class with shared immutable URI operations: `AddPathSegment`, `WithFragment`, `WithRawQuerystring`, `AddQueryPart`, `HasQuery`, and `HasFragments`
 - Added `RelativeWebUri` — strongly-typed relative URI with path, query, and fragment manipulation, implementing `IParsable<RelativeWebUri>`
 - Added `AbsoluteWebUri` — strongly-typed absolute URI with validation, path combining (`/` operator), implicit conversion to `Uri`, and `IParsable<AbsoluteWebUri>`
+- Added Vogen-based value objects `UriPathSegment`, `UriFragment`, and `UriQueryString` with validation and input normalization (trailing/leading separator handling, regex-based segment validation)
+- Changed `AbstractUri.AddPathSegment`, `WithFragment`, and `WithRawQuerystring` to take the new value objects instead of `string` for stronger typing and built-in validation
+- Added `/` (divide) operators on `AbstractUri<TSelf>` for `UriPathSegment`, `UriFragment`, and `UriQueryString`, enabling fluent URI composition via operator chaining
+- Added `AbsoluteWebUri.WithRelativeUri` and `/` operators for `string` (auto-detects path segment vs fragment) and `RelativeWebUri` for combining absolute and relative URIs
 
 ### [0.19.1]
 

@@ -56,7 +56,7 @@ public class GenerateIOAbstractionsCommand : AsyncCommand<GenerateIOAbstractions
         public AbsolutePath PathFull { get; set; }
     }
 
-    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings,
+    protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings,
         CancellationToken cancellationToken)
     {
         _fileSystem.Directory.CreateDirectory(settings.PathFull);

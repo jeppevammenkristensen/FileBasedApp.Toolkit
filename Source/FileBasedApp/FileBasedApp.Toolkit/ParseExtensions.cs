@@ -43,7 +43,9 @@ public static class ParseExtensions
     public static T? SafeParseToClass<T>(string? value, IFormatProvider? formatProvider = null)
         where T : class, IParsable<T>
     {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         return TryParseTo(value, formatProvider, out T result) ? result : null;
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
     }
 
     /// <summary>

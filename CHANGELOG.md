@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## FileBasedApp
 
+### [Unreleased]
+
+#### FileBasedApp.Toolkit
+- Added `IWebUri<TSelf>` interface with `static abstract Create` using the self-referential generic pattern
+- Added `AbstractUri<TSelf>` base class with shared immutable URI operations: `AddPathSegment`, `WithFragment`, `WithRawQuerystring`, `AddQueryPart`, `HasQuery`, and `HasFragments`
+- Added `RelativeWebUri` — strongly-typed relative URI with path, query, and fragment manipulation, implementing `IParsable<RelativeWebUri>`
+- Added `AbsoluteWebUri` — strongly-typed absolute URI with validation, path combining (`/` operator), implicit conversion to `Uri`, and `IParsable<AbsoluteWebUri>`
+
 ### [0.19.1]
 
 #### FileBasedApp.Toolkit

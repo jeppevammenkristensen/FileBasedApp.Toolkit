@@ -117,6 +117,14 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
     }
 
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return Value;
+    }
+
+    #region Operators
+
     /// <summary>
     /// Implicitly converts an <see cref="AbsoluteWebUri"/> to a <see cref="Uri"/>.
     /// </summary>
@@ -127,12 +135,6 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
         return uri.Uri;
     }
 
-    /// <inheritdoc />
-    public override string ToString()
-    {
-        return Value;
-    }
-
     /// <summary>
     /// Combines an absolute web URI with a relative web URI to create a new absolute web URI.
     /// </summary>
@@ -141,4 +143,5 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
     /// <returns>A new <see cref="AbsoluteWebUri"/> representing the combined path.</returns>
     public static AbsoluteWebUri operator /(AbsoluteWebUri left, RelativeWebUri right) => left.WithRelativeUri(right);
 
+    #endregion
 }

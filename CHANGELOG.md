@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## FileBasedApp
 
-### [Unreleased]
+### [0.20.0]
 
 #### FileBasedApp.Toolkit
 - Added `IWebUri<TSelf>` interface with `static abstract Create` using the self-referential generic pattern

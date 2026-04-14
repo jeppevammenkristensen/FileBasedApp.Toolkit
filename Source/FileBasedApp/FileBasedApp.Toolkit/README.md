@@ -155,6 +155,29 @@ var relative = RelativeWebUri.Create("/search")
 
 Each operation returns a new instance, so the originals are never mutated. Invalid inputs (empty segments, illegal characters) throw at the value-object construction step via Vogen validation.
 
+### HTTP extensions
+
+`AbsoluteWebUriHttpExtensions` adds a `GetAsync` extension on `AbsoluteWebUri`, and `HttpResponseMessageExtensions` adds `ToJson<T>` / `ToRequiredJson<T>` for deserializing response content via a source-generated `JsonTypeInfo<T>`. Both deserialization helpers call `EnsureSuccessStatusCode` first; `ToRequiredJson` additionally throws `InvalidOperationException` when deserialization yields `null`.
+
+```csharp
+using System.Text.Json.Serialization;
+using FileBasedApp.Toolkit;
+
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[JsonSerializable(typeof(Widget))]
+internal partial class AppJsonContext : JsonSerializerContext { }
+
+public record Widget(string Name, int Count);
+
+var httpClient = new HttpClient();
+var uri = AbsoluteWebUri.Create("https://example.com/api")
+          / UriPathSegment.From("widgets")
+          / UriQueryString.From("id=1");
+
+using var response = await uri.GetAsync(httpClient);
+var widget = await response.ToRequiredJson(AppJsonContext.Default.Widget);
+```
+
 ## Template
 
 You can use the `FileBasedApp.Toolkit.Template` to easily create a new filebase app with FileBasedApp.Toolkit references added https://www.nuget.org/packages/FileBasedApp.Toolkit.Template/

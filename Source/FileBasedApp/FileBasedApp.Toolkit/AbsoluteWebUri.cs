@@ -1,6 +1,31 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FileBasedApp.Toolkit;
+
+/// <summary>
+/// Adds extension methods to <see cref="AbsoluteWebUri"/> for HTTP requests.
+/// </summary>
+public static class AbsoluteWebUriHttpExtensions
+{
+    /// <summary>
+    /// Sends a GET request to the specified absolute web URI and returns the response.
+    /// </summary>
+    /// <param name="uri">The absolute web URI to request.</param>
+    /// <param name="httpClient">The <see cref="HttpClient"/> used to send the request.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The <see cref="HttpResponseMessage"/> returned by the server.</returns>
+    public static Task<HttpResponseMessage> GetAsync(
+        this AbsoluteWebUri uri,
+        HttpClient httpClient,
+        CancellationToken cancellationToken = default)
+    {
+        return httpClient.GetAsync(uri.Uri, cancellationToken);
+    }
+}
+
 
 /// <summary>
 /// Represents an absolute web URI (HTTP/HTTPS). Wraps <see cref="Uri"/> with validation that ensures the URI is absolute.

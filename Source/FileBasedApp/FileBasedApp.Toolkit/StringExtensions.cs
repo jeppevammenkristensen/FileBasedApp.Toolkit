@@ -69,24 +69,3 @@ public static class StringExtensions
     /// <returns>Null if the string is null or empty; otherwise, the original string value.</returns>
     public static string? NullIfEmpty(this string? value) => string.IsNullOrWhiteSpace(value) ? null : value;
 }
-
-/// <summary>
-/// Checks only if the string reference is null, without validating whether it is empty or contains only whitespace characters.
-/// </summary>
-public enum StringNullCheck
-{
-    /// <summary>
-    /// Checks only if the string reference is null, without validating whether it is empty or contains
-    /// </summary>
-    Null,
-
-    /// <summary>
-    /// Checks if the string reference is null or an empty string.
-    /// </summary>
-    NullOrEmpty,
-
-    /// <summary>
-    /// Checks if the string reference is null or contains only whitespace characters.
-    /// </summary>
-    NullOrWhitespace
-}

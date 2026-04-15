@@ -19,7 +19,7 @@ public partial class HttpResponseMessageExtensionsTest
         using var response = new HttpResponseMessage(HttpStatusCode.OK);
         response.Content = new StringContent("""{"name":"widget","count":3}""");
 
-        var result = await response.ToJson(TestJsonContext.Default.SamplePayload);
+        var result = await response.FromJson(TestJsonContext.Default.SamplePayload);
 
         result.Should().NotBeNull();
         result!.Name.Should().Be("widget");
@@ -34,7 +34,7 @@ public partial class HttpResponseMessageExtensionsTest
             Content = new StringContent("null"),
         };
 
-        var result = await response.ToJson(TestJsonContext.Default.SamplePayload);
+        var result = await response.FromJson(TestJsonContext.Default.SamplePayload);
 
         result.Should().BeNull();
     }
@@ -48,7 +48,7 @@ public partial class HttpResponseMessageExtensionsTest
         };
         
         await Assert.ThrowsAsync<HttpRequestException>(async () =>
-            await response.ToJson(TestJsonContext.Default.SamplePayload));
+            await response.FromJson(TestJsonContext.Default.SamplePayload));
     }
 
     [Fact]
@@ -57,7 +57,7 @@ public partial class HttpResponseMessageExtensionsTest
         using var response = new HttpResponseMessage(HttpStatusCode.OK);
         response.Content = new StringContent("""{"name":"widget","count":3}""");
 
-        var result = await response.ToRequiredJson(TestJsonContext.Default.SamplePayload);
+        var result = await response.FromRequiredJson(TestJsonContext.Default.SamplePayload);
 
         result.Name.Should().Be("widget");
         result.Count.Should().Be(3);
@@ -70,7 +70,7 @@ public partial class HttpResponseMessageExtensionsTest
         response.Content = new StringContent("null");
 
         await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            await response.ToRequiredJson(TestJsonContext.Default.SamplePayload));
+            await response.FromRequiredJson(TestJsonContext.Default.SamplePayload));
     }
 
     internal sealed record SamplePayload(string Name, int Count);

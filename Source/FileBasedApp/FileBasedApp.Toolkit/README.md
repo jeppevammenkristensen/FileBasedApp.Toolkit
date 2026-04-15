@@ -148,6 +148,11 @@ var api = AbsoluteWebUri.Create("https://example.com/api")
     .AddQueryPart("page", "1")
     .WithFragment(UriFragment.From("top"));
 
+// Replace the entire path with a single segment (preserves query/fragment)
+var reset = AbsoluteWebUri.Create("https://example.com/old/path?q=1")
+    .WithPathSegment(UriPathSegment.From("new"));
+// https://example.com/new?q=1
+
 // Relative URIs work the same way
 var relative = RelativeWebUri.Create("/search")
                / UriQueryString.From("q=hello");

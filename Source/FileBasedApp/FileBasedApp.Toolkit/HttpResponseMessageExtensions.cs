@@ -17,7 +17,7 @@ public static class HttpResponseMessageExtensions
         /// <param name="cancellationToken"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public async Task<T?> ToJson<T>(JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken = default)
+        public async Task<T?> FromJson<T>(JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken = default)
         {
             response.EnsureSuccessStatusCode();
             await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
@@ -25,16 +25,16 @@ public static class HttpResponseMessageExtensions
         }
 
         /// <summary>
-        /// Tries to deseriazlie the response content as JSON and throw an exception if null
+        /// Tries to deserialize the response content as JSON and throw an exception if null
         /// </summary>
         /// <param name="typeInfo"></param>
         /// <param name="cancellationToken"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task<T> ToRequiredJson<T>(JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken = default)
+        public async Task<T> FromRequiredJson<T>(JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken = default)
         {
-            return (await response.ToJson(typeInfo, cancellationToken)) ?? throw new InvalidOperationException("Deserialization returned null");
+            return (await response.FromJson(typeInfo, cancellationToken)) ?? throw new InvalidOperationException("Deserialization returned null");
         }
     }
 }

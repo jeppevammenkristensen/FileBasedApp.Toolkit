@@ -204,4 +204,91 @@ public class AbsoluteWebUriTest
         Uri uri = absolute;
         uri.Should().Be(absolute.Uri);
     }
+
+    // --- Parent ---
+
+    [Fact]
+    public void Parent_DropsLastPathSegment()
+    {
+        var uri = AbsoluteWebUri.Create("https://dr.dk/parent/child");
+        var result = uri.Parent();
+        result.Value.Should().Be("https://dr.dk/parent");
+    }
+
+    [Fact]
+    public void Parent_PreservesQueryAndFragment()
+    {
+        var uri = AbsoluteWebUri.Create("https://dr.dk/parent/child?seg=1#frag");
+        var result = uri.Parent();
+        result.Value.Should().Be("https://dr.dk/parent?seg=1#frag");
+    }
+
+    [Fact]
+    public void Parent_NoSegments_ThrowsAnException()
+    {
+        var uri = AbsoluteWebUri.Create("https://dr.dk");
+        Assert.Throws<InvalidOperationException>(uri.Parent);
+    }
+    
+    
+    [Fact]
+    public void Parent_FromSingleSegment_ReturnsRoot()
+    {
+        var uri = AbsoluteWebUri.Create("https://dr.dk/only");
+        var result = uri.Parent();
+        result.Value.Should().Be("https://dr.dk/");
+    }
+
+    [Fact]
+    public void Parent_ReturnsNewInstance()
+    {
+        var original = AbsoluteWebUri.Create("https://dr.dk/parent/child");
+        var result = original.Parent();
+        result.Should().NotBeSameAs(original);
+        original.Value.Should().Be("https://dr.dk/parent/child");
+    }
+
+    [Fact]
+    public void Parent_ChainedTwice_DropsTwoSegments()
+    {
+        var uri = AbsoluteWebUri.Create("https://dr.dk/a/b/c");
+        var result = uri.Parent().Parent();
+        result.Value.Should().Be("https://dr.dk/a");
+    }
+
+    // --- WithPathSegment ---
+
+
+    [Fact]
+    public void WithPathSegment_ReplacesExistingPath()
+    {
+        var uri = AbsoluteWebUri.Create("https://dr.dk/1/2");
+        var result = uri.WithPathSegment(UriPathSegment.From("3"));
+        result.Value.Should().Be("https://dr.dk/3");
+    }
+
+    [Fact]
+    public void WithPathSegment_OnRootPath_SetsPath()
+    {
+        var uri = AbsoluteWebUri.Create("https://dr.dk/");
+        var result = uri.WithPathSegment(UriPathSegment.From("new"));
+        result.Value.Should().Be("https://dr.dk/new");
+    }
+
+    [Fact]
+    public void WithPathSegment_PreservesQueryAndFragment()
+    {
+        var uri = AbsoluteWebUri.Create("https://dr.dk/old/path?q=1#frag");
+        var result = uri.WithPathSegment(UriPathSegment.From("new"));
+        result.Value.Should().Be("https://dr.dk/new?q=1#frag");
+    }
+
+    [Fact]
+    public void WithPathSegment_ReturnsNewInstance()
+    {
+        var original = AbsoluteWebUri.Create("https://dr.dk/a/b");
+        var result = original.WithPathSegment(UriPathSegment.From("c"));
+        result.Should().NotBeSameAs(original);
+        original.Value.Should().Be("https://dr.dk/a/b");
+    }
 }

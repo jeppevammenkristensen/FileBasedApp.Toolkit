@@ -68,6 +68,40 @@ public abstract class AbstractUri<TSelf> where TSelf : IWebUri<TSelf>
     }
 
     /// <summary>
+    /// Replaces all path segments in the current URI with the specified segment.
+    /// for instance https://some.url/1/2 becomes https://some.url/3 if segment is 3
+    /// </summary>
+    /// <param name="segment"></param>
+    /// <returns></returns>
+    public TSelf WithPathSegment(UriPathSegment segment)
+    {
+        return NewPath(segment.Value, FullUriRepresentation.Query, FullUriRepresentation.Fragment);
+    }
+
+    /// <summary>
+    /// Returns a new URI representing the parent of the current URI by dropping the last
+    /// path segment while preserving the existing query string and fragment.
+    /// </summary>
+    /// <example>
+    /// <c>https://some.url/parent/child?seg=1#frag</c> becomes <c>https://some.url/parent?seg=1#frag</c>.
+    /// </example>
+    /// <returns>A new <typeparamref name="TSelf"/> instance pointing at the parent path.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the current URI has no path segments to remove (i.e. it is already at the root).
+    /// </exception>
+    public TSelf Parent()
+    {
+        // The first segment will always be / therefore we check for length of 1
+        if (FullUriRepresentation.Segments.Length <= 1) 
+        {
+            throw new InvalidOperationException("Cannot get parent of root");
+        }
+
+        var newPathSegment = UriPathSegment.From(FullUriRepresentation.Segments[..^1].StringJoin("/").Trim('/'));
+        return WithPathSegment(newPathSegment);
+    }
+
+    /// <summary>
     /// Creates and instance from the relative url
     /// </summary>
     /// <param name="uri"></param>

@@ -43,6 +43,7 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
     {
         return Create(new Uri(Uri, relativeUri.Uri));
     }
+    
 
     /// <summary>
     /// Creates an <see cref="AbsoluteWebUri"/> from a <see cref="Uri"/> instance.

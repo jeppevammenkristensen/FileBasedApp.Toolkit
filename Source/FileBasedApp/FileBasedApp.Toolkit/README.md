@@ -157,7 +157,7 @@ Each operation returns a new instance, so the originals are never mutated. Inval
 
 ### HTTP extensions
 
-`AbsoluteWebUriHttpExtensions` adds a `GetAsync` extension on `AbsoluteWebUri`, and `HttpResponseMessageExtensions` adds `ToJson<T>` / `ToRequiredJson<T>` for deserializing response content via a source-generated `JsonTypeInfo<T>`. Both deserialization helpers call `EnsureSuccessStatusCode` first; `ToRequiredJson` additionally throws `InvalidOperationException` when deserialization yields `null`.
+`AbsoluteWebUriHttpExtensions` adds a `WithBaseAddress` extension on `HttpClient` that accepts an `IWebUri<TSelf>`, and `HttpResponseMessageExtensions` adds `ToJson<T>` / `ToRequiredJson<T>` for deserializing response content via a source-generated `JsonTypeInfo<T>`. Both deserialization helpers call `EnsureSuccessStatusCode` first; `ToRequiredJson` additionally throws `InvalidOperationException` when deserialization yields `null`.
 
 ```csharp
 using System.Text.Json.Serialization;
@@ -169,12 +169,10 @@ internal partial class AppJsonContext : JsonSerializerContext { }
 
 public record Widget(string Name, int Count);
 
-var httpClient = new HttpClient();
-var uri = AbsoluteWebUri.Create("https://example.com/api")
-          / UriPathSegment.From("widgets")
-          / UriQueryString.From("id=1");
+var baseUri = AbsoluteWebUri.Create("https://example.com/api");
+var httpClient = new HttpClient().WithBaseAddress(baseUri);
 
-using var response = await uri.GetAsync(httpClient);
+using var response = await httpClient.GetAsync("widgets?id=1");
 var widget = await response.ToRequiredJson(AppJsonContext.Default.Widget);
 ```
 

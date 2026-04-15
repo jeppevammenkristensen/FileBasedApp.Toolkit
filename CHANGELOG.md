@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Changed `AbstractUri.AddPathSegment`, `WithFragment`, and `WithRawQuerystring` to take the new value objects instead of `string` for stronger typing and built-in validation
 - Added `/` (divide) operators on `AbstractUri<TSelf>` for `UriPathSegment`, `UriFragment`, and `UriQueryString`, enabling fluent URI composition via operator chaining
 - Added `AbsoluteWebUri.WithRelativeUri` and `/` operators for `string` (auto-detects path segment vs fragment) and `RelativeWebUri` for combining absolute and relative URIs
-- Added `AbsoluteWebUriHttpExtensions` with a `GetAsync` extension method on `AbsoluteWebUri` that sends a GET request via a supplied `HttpClient`
+- Added `AbsoluteWebUriHttpExtensions` with a `WithBaseAddress` extension method on `HttpClient` that sets the base address from an `IWebUri<TSelf>`
 - Added `HttpResponseMessageExtensions` with `ToJson<T>` and `ToRequiredJson<T>` extension methods for deserializing response content via a source-generated `JsonTypeInfo<T>`; both call `EnsureSuccessStatusCode` first, and `ToRequiredJson` throws `InvalidOperationException` when deserialization yields `null`
 
 ### [0.19.1]

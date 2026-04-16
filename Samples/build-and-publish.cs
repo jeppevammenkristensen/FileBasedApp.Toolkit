@@ -1,6 +1,6 @@
-#:package FileBasedApp.Toolkit@0.19.0
-#:package FileBasedApp.Toolkit.CSharp@0.19.0
-#:package FileBasedApp.Toolkit.Dotnet@0.19.0
+#:package FileBasedApp.Toolkit@0.20.0-rc-01
+#:package FileBasedApp.Toolkit.CSharp@0.20.0-rc-01
+#:package FileBasedApp.Toolkit.Dotnet@0.20.0-rc-01
 #:property PublishAot=false
 #:property VersionPrefix=0.0.8
 #:property PackageId=FileBasedApp.BuildAndPublish
@@ -39,7 +39,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 	[GeneratedRegex(@"\d+\.\s+(?<name>.+?)\s\[(?<status>Enabled|Disabled)\]")]
 	private partial Regex NugetSourceRegex { get; }
 	
-	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
+	protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
 	{
 		var temporaryDirectory  = (PathIO.GetTempPathAbsolute() / "Artifacts").CreateDirectory().GetAbsolutePath();
 		AnsiConsole.MarkupLineInterpolated($"[green]Creating temporary {temporaryDirectory}[/]");

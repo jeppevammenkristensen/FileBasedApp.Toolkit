@@ -1,5 +1,5 @@
-#:package FileBasedApp.Toolkit.CSharp@0.19.0
-#:package FileBasedApp.Toolkit.Dotnet@0.19.0
+#:package FileBasedApp.Toolkit.CSharp@0.20.0-rc-01
+#:package FileBasedApp.Toolkit.Dotnet@0.20.0-rc-01
 #:package Dumpify@*
 
 #:property PublishAot=false
@@ -26,18 +26,18 @@ return await commandApp.RunAsync(args);
 
 public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you can use Command (and have Execute instead of ExecuteAsync
 {
-	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
+	protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
 	{	
 		AnsiConsole.MarkupLineInterpolated($"[green bold]Find all file-based apps in {settings.RootPathAbsolute.Value} and updating to latest FileBasedApp.Toolkit package versions[/]");
 		
-		Dictionary<string, string> NameVersion = new Dictionary<string, string>();
+		Dictionary<string, string> nameVersion = new Dictionary<string, string>();
 		var result =await DotnetRecipes.GetPackageInformation("FileBasedApp.Toolkit", true);
 
 		void AddVersion(string name)
 		{
 			var highestVersion = result.GetHighestVersion(name);
 			AnsiConsole.MarkupLineInterpolated($"[blue]Adding version for {name} {highestVersion.LatestVersion}[/]");
-			NameVersion.Add(name, highestVersion.LatestVersion);	
+			nameVersion.Add(name, highestVersion.LatestVersion);	
 		}
 		
 		AddVersion("FileBasedApp.Toolkit");
@@ -53,9 +53,9 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 				AnsiConsole.MarkupLineInterpolated($"{csFile.FileName}");
 				
 				var fileBasedWrapper = new FileBasedAppWrapper(csFile);
-				foreach (var item in fileBasedWrapper.PackageDirectives.Where(x => NameVersion.ContainsKey(x.PackageInfo?.Name ?? string.Empty)))
+				foreach (var item in fileBasedWrapper.PackageDirectives.Where(x => nameVersion.ContainsKey(x.PackageInfo?.Name ?? string.Empty)))
 				{
-					var version = NameVersion[item.PackageInfo.Name];					
+					var version = nameVersion[item.PackageInfo.Name];					
 					
 					if (item.PackageInfo!.Version.Value != version)
 					{

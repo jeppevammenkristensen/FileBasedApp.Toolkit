@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.19.0
+#:package FileBasedApp.Toolkit@0.20.0-rc-01
 #:package Microsoft.CodeAnalysis.CSharp@*
 #:package TextCopy@*
 #:property PublishAot=false 
@@ -28,7 +28,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 	[GeneratedRegex("^#:(package|property|sdk|project)")]
 	protected partial Regex HasFileBasedDirective();
 	
-	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
+	protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
 	{
 		
 		AnsiConsole.MarkupLineInterpolated($"[yellow]Path: [bold]{settings.Path}[/][/] ");		

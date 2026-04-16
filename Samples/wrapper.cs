@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.19.0
+#:package FileBasedApp.Toolkit@0.20.0-rc-01
 #:package Microsoft.CodeAnalysis.CSharp@5.3.0
 #:package TextCopy@6.2.1
 #:package Roslynator.CSharp@4.15.0
@@ -31,7 +31,7 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
 	/// <param name="settings">The command settings containing configuration options such as class name, interface name, and the compilation unit to process.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used to cancel the asynchronous operation.</param>
 	/// <returns>A task that represents the asynchronous operation, containing an integer result where 0 indicates successful execution.</returns>
-	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings,
+	protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings,
 		CancellationToken cancellationToken)
 	{
 		// Note that in this iteration this only wraps methods

@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.19.0
+#:package FileBasedApp.Toolkit@0.20.0-rc-01
 #:package AutoSpectre@0.12.0
 
 using AutoSpectre;

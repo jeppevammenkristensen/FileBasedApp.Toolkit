@@ -1,15 +1,15 @@
 #!/usr/bin/env dotnet run
 
-#:package FileBasedApp.Toolkit@0.20.0-alpha-04
+#:package FileBasedApp.Toolkit@0.20.0-rc-01
 
+using System.Net.Http.Json;
 using FileBasedApp.Toolkit;
-using Spectre.Console;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 
-var httpResponseMessage = await AbsoluteWebUri.Create("https://jsonplaceholder.typicode.com/todos").GetAsync(new HttpClient());
-await httpResponseMessage.ToRequiredJson(AppContext.Default.RootObjectArray);
+var httpClient = new HttpClient();
+var httpResponseMessage =  await httpClient.GetAsync(AbsoluteWebUri.Create("https://jsonplaceholder.typicode.com/todos"));
+await httpResponseMessage.Content.ReadFromJsonAsync(AppContext.Default.RootObjectArray);
 
 public class RootObject
 {

@@ -15,8 +15,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>floppy-disc.png</PackageIcon>		
         <PackageReleaseNotes>Upgraded to use FileBasedApp.Toolkit version 0.19.0</PackageReleaseNotes>
-        <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit</RepositoryUrl>
-		<VersionPrefix>0.19.0.1</VersionPrefix>
+        <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit</RepositoryUrl>		
         <NoWarn>$(NoWarn);NU5128</NoWarn>       
         
     </PropertyGroup>

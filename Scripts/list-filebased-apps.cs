@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@0.20.0-rc-01
+#:package FileBasedApp.Toolkit@0.20.0
 #:package Microsoft.CodeAnalysis.CSharp@*
 #:package TextCopy@*
 #:property PublishAot=false 

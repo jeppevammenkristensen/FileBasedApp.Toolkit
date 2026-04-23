@@ -13,6 +13,8 @@
         <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>floppy-disc.png</PackageIcon>
+        <PackageReleaseNotes>            
+        </PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

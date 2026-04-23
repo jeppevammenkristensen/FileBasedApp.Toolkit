@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Project>
   <PropertyGroup>
-      <VersionPrefix>0.20.0</VersionPrefix>      
+      <VersionPrefix>0.20.1</VersionPrefix>
+      <VersionSuffix>alpha-01</VersionSuffix>
+      <PackageReleaseNotes>Bumped Spectre.Console version to 0.55.2</PackageReleaseNotes>
+      <IsPackable>false</IsPackable>
+      <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 </Project>

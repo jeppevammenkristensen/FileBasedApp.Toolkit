@@ -178,8 +178,7 @@ public partial class ProjectProcessor
             var rewriter = new TypeRewriter();
             
             methodBuilder.Append(rewriter
-                .Visit(metaData.MethodSyntax.ReturnType)
-                .ToString() + " ");
+                .Visit(metaData.MethodSyntax.ReturnType) + " ");
 
             var parameterRewriter = new ParameterRewriter(rewriteParameters);
             

@@ -13,17 +13,8 @@
         <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FileBasedApp.Toolkit.CSharp</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>floppy-disc.png</PackageIcon>
+        <IsPackable>true</IsPackable>
         <PackageReleaseNotes>
-- Replaced regex-based PackageVersion parsing with NuGet.Versioning (NuGetVersion) for robust version handling
-- Added NugetVersion and RequiredNugetVersion properties to PackageVersion for direct NuGet version access
-- Added WithNugetVersion and WithValue fluent methods to PackageVersion for immutable-style version updates
-- Made PackageVersion.Value setter private (breaking: use WithValue instead)
-- Made PackageInfo.PackageInfo setter private (breaking)
-- Moved PackageVersion and PackageVersionType to separate files
-- Improved MSBuild locator initialization with explicit validation and descriptive error messages
-- Added buildTransitive props to enable reflection-based JSON serialization for .NET 10+ compatibility (required by MSBuild workspaces)
-- Added NuGet.Versioning package dependency
-- Fixed PackageDirectiveWrapper.Update() failing when updating multiple package directives sequentially on the same syntax tree
         </PackageReleaseNotes>       
         
     </PropertyGroup>
@@ -54,15 +45,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
-        <PackageReference Include="NuGet.Versioning" Version="7.3.0" />
-        <PackageReference Include="Roslynator.CSharp" Version="4.15.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+        <PackageReference Include="NuGet.Versioning" />
+        <PackageReference Include="Roslynator.CSharp" />
 
-        <PackageReference Include="Microsoft.Build" Version="18.0.2" ExcludeAssets="runtime" />
-        <PackageReference Include="Microsoft.Build.Locator" Version="1.7.8" />        
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.3.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.3.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.3.0" PrivateAssets="analyzers;build" />
+        <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.Build.Locator" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" PrivateAssets="analyzers;build" />
 
     </ItemGroup>
 

@@ -11,10 +11,10 @@
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Dumpify" Version="0.7.0" />
-        <PackageReference Include="Spectre.Console" Version="0.55.0" />
+        <PackageReference Include="Spectre.Console" Version="0.55.2" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.6" />
       <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.6" />
-      <PackageReference Include="Spectre.Console.Json" Version="0.55.0" />
+      <PackageReference Include="Spectre.Console.Json" Version="0.55.2" />
     </ItemGroup>
 
 </Project>

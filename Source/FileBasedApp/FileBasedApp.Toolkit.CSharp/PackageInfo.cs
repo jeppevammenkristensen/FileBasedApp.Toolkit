@@ -22,7 +22,7 @@ public partial class PackageInfo
     /// Gets a compiled regex that matches a package directive in the format <c>packageName@version</c>.
     /// </summary>
     [GeneratedRegex(@"^package (?<packageName>.+)@(?<version>.+)$")]
-    public static partial Regex PackageDirectiveRegex { get; }
+    protected static partial Regex PackageDirectiveRegex { get; }
 
     /// <summary>The package name identifier.</summary>
     public string Name { get; init; }

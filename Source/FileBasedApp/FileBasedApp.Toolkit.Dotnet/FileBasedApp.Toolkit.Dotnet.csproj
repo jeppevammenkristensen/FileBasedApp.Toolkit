@@ -12,17 +12,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageIcon>floppy-disc.png</PackageIcon>        
-        <PackageReleaseNotes>
-- Initial release
-- Added DotnetBaseRunner — abstract base for fluent dotnet CLI runners with --configuration and --verbosity
-- Added DotnetPackSimpleRunner — fluent wrapper around dotnet pack
-- Added DotnetNugetPushSimpleRunner — fluent wrapper around dotnet nuget push
-- Added DotnetRecipes with GetPackageInformation for JSON-based NuGet package search
-- Added PackageRequest, SearchResult, and Package records for dotnet package search deserialization
-- Added PackageRequestExtension with FlattenedPackages and GetHighestVersion helpers
-- Added NuGet.Versioning package dependency
-        </PackageReleaseNotes>
+        <PackageIcon>floppy-disc.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -35,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="NuGet.Versioning" Version="7.3.0" />
+      <PackageReference Include="NuGet.Versioning" />
     </ItemGroup>
 
 </Project>

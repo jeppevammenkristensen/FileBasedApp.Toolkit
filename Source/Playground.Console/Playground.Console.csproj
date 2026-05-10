@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net10.0</TargetFramework>
@@ -10,11 +10,11 @@
       <ProjectReference Include="..\FileBasedApp\FileBasedApp.Toolkit\FileBasedApp.Toolkit.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Dumpify" Version="0.7.0" />
-        <PackageReference Include="Spectre.Console" Version="0.55.2" />
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.7" />
-      <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.7" />
-      <PackageReference Include="Spectre.Console.Json" Version="0.55.2" />
+      <PackageReference Include="Dumpify" />
+        <PackageReference Include="Spectre.Console" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" />
+      <PackageReference Include="Microsoft.Extensions.Http" />
+      <PackageReference Include="Spectre.Console.Json" />
     </ItemGroup>
 
 </Project>

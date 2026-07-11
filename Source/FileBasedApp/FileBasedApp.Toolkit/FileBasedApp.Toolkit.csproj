@@ -14,18 +14,8 @@
     <PackageIcon>floppy-disc.png</PackageIcon>   
     
     <PackageReleaseNotes>
-      - Upgraded Spectre.Console.Cli from 0.53.1 to 0.55.0
-      - Added `IWebUri&lt;TSelf&gt;` interface with `static abstract Create` using the self-referential generic pattern
-      - Added `AbstractUri&lt;TSelf&gt;` base class with shared immutable URI operations: `AddPathSegment`, `WithFragment`, `WithRawQuerystring`, `AddQueryPart`, `HasQuery`, and `HasFragments`
-      - Added `RelativeWebUri` — strongly-typed relative URI with path, query, and fragment manipulation, implementing `IParsable&lt;RelativeWebUri&gt;`
-      - Added `AbsoluteWebUri` — strongly-typed absolute URI with validation, path combining (`/` operator), implicit conversion to `Uri`, and `IParsable&lt;AbsoluteWebUri&gt;`
-      - Added Vogen-based value objects `UriPathSegment`, `UriFragment`, and `UriQueryString` with validation and input normalization
-      - Changed `AbstractUri.AddPathSegment`, `WithFragment`, and `WithRawQuerystring` to take the new value objects instead of `string` for stronger typing and built-in validation
-      - Added `/` (divide) operators on `AbstractUri&lt;TSelf&gt;` for `UriPathSegment`, `UriFragment`, and `UriQueryString`, enabling fluent URI composition via operator chaining
-      - Added `AbsoluteWebUri.WithRelativeUri` and `/` operators for `string` (auto-detects path segment vs fragment) and `RelativeWebUri` for combining absolute and relative URIs
-      - Added `AbsoluteWebUriHttpExtensions.WithBaseAddress` extension method on `HttpClient` for setting its base address from an `IWebUri&lt;TSelf&gt;`
-      - Added `AbstractUri.WithPathSegment` for replacing the entire path of a URI with a single segment while preserving query and fragment
-      - Added `HttpResponseMessageExtensions` with `ToJson&lt;T&gt;` and `ToRequiredJson&lt;T&gt;` for deserializing response content via a source-generated `JsonTypeInfo&lt;T&gt;`; both call `EnsureSuccessStatusCode` first, and `ToRequiredJson` throws `InvalidOperationException` when deserialization yields `null`
+      - Added the AnsiConsoleFactory with Stderr() and Quiet() helpers for creating an IAnsiConsole that avoids writing to stdout, for use behind a stdio-based protocol such as MCP where stdout must stay reserved for the protocol stream
+      
     </PackageReleaseNotes>
     <LangVersion>14</LangVersion>    
   </PropertyGroup>

@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## FileBasedApp
 
+### [0.21.0]
+
+#### FilebasedApp.Toolkit
+- Added `AnsiConsoleFactory` with `Stderr()` and `Quiet()` helpers for creating an `IAnsiConsole` that avoids writing to stdout, for use behind a stdio-based protocol such as MCP where stdout must stay reserved for the protocol stream
+
+#### FileBasedApp.Toolkit.CSharp
+- Added public `CSharpProjectAnalysis(IAnsiConsole, IFileSystem?)` and `CSharpSolutionAnalysis(IAnsiConsole, IFileSystem?)` constructors so callers can inject a custom console (and file system) instead of always writing to the default `AnsiConsole.Console`
+- Added `BaseAnalysis<TSelf>.WithAnsiConsole` fluent method to replace the console instance after construction
+
 ### [0.20.0]
 
 #### FileBasedApp.Toolkit

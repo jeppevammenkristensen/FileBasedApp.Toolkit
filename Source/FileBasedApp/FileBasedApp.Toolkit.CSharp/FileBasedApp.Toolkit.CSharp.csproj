@@ -16,6 +16,7 @@
         <PackageReleaseNotes>
 - Added public CSharpProjectAnalysis(IAnsiConsole, IFileSystem?) and CSharpSolutionAnalysis(IAnsiConsole, IFileSystem?) constructors so callers can inject a custom console (and file system) instead of always writing to the default AnsiConsole.Console
 - Added BaseAnalysis&lt;TSelf&gt;.WithAnsiConsole fluent method to replace the console instance after construction
+- Added BaseAnalysis&lt;TSelf&gt;.WithQuietConsole and .WithStderrConsole extension methods as discoverable shortcuts for WithAnsiConsole(AnsiConsoleFactory.Quiet()) / .Stderr()
         </PackageReleaseNotes>
         
     </PropertyGroup>

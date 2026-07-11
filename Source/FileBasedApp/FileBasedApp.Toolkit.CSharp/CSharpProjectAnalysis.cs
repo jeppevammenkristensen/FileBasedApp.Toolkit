@@ -40,8 +40,9 @@ public sealed class CSharpProjectAnalysis : BaseAnalysis<CSharpProjectAnalysis>
     }
 
     /// <summary>
-    /// Initalises a new instance of <see cref="CSharpProjectAnalysis"/> 
-    /// </summary>
+    /// Initializes a new instance of <see cref="CSharpProjectAnalysis"/> with default console and file system.
+    /// Uses the Console display loading status. You can use WithConsole or relevant extension methods to change the console
+    /// </summary> 
     /// <remarks>A typical simple call would be <![CDATA[await CsharpProjectAnalysis.Init.LoadAsync(..somepath)]]></remarks>
     public static CSharpProjectAnalysis Init => new CSharpProjectAnalysis();
 

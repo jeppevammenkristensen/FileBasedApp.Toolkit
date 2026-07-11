@@ -16,4 +16,28 @@ public class BaseAnalysisTest
         result.Should().BeSameAs(dummy);
         dummy.ExposedConsole.Should().BeSameAs(newConsole);
     }
+
+    [Fact]
+    public void WithQuietConsole_ReplacesConsole()
+    {
+        var dummy = new DummyAnalysis(AnsiConsoleFactory.Quiet());
+        var originalConsole = dummy.ExposedConsole;
+
+        var result = dummy.WithQuietConsole();
+
+        result.Should().BeSameAs(dummy);
+        dummy.ExposedConsole.Should().NotBeSameAs(originalConsole);
+    }
+
+    [Fact]
+    public void WithStderrConsole_ReplacesConsole()
+    {
+        var dummy = new DummyAnalysis(AnsiConsoleFactory.Quiet());
+        var originalConsole = dummy.ExposedConsole;
+
+        var result = dummy.WithStderrConsole();
+
+        result.Should().BeSameAs(dummy);
+        dummy.ExposedConsole.Should().NotBeSameAs(originalConsole);
+    }
 }

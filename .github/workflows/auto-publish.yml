@@ -3,9 +3,7 @@ name: Auto publish nuget on version bump
 on:
   push:
     branches-ignore: [main]
-    paths:
-      - 'Source/FileBasedApp/Directory.Build.props'
-
+    
 permissions:
   contents: read
   actions: write

@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Spectre.Console;
+using System.IO.Abstractions;
 using TruePath;
 
 namespace FileBasedApp.Toolkit.CSharp;
@@ -20,9 +21,31 @@ namespace FileBasedApp.Toolkit.CSharp;
 /// </remarks>
 public sealed class CSharpSolutionAnalysis : BaseAnalysis<CSharpSolutionAnalysis>
 {
-    
     /// <summary>
-    /// Initializes a new instance of <see cref="CSharpProjectAnalysis"/> 
+    /// Initializes a new instance of <see cref="CSharpSolutionAnalysis"/> using the default
+    /// <see cref="Spectre.Console.AnsiConsole.Console"/> and a new <see cref="FileSystem"/> instance.
+    /// </summary>
+    public CSharpSolutionAnalysis()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="CSharpSolutionAnalysis"/> using a custom <see cref="IAnsiConsole"/>
+    /// and, optionally, a custom <see cref="IFileSystem"/>.
+    /// </summary>
+    /// <param name="console">
+    /// The console to write status and diagnostic output to. Use this to avoid writing to stdout when it must stay
+    /// reserved for another purpose, e.g. a stdio-based protocol such as MCP. See <see cref="AnsiConsoleFactory"/>
+    /// for ready-made consoles that avoid stdout.
+    /// </param>
+    /// <param name="fileSystem">The file system abstraction to use. Defaults to the real file system.</param>
+    public CSharpSolutionAnalysis(IAnsiConsole console, IFileSystem? fileSystem = null)
+        : base(console, fileSystem ?? new FileSystem())
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="CSharpSolutionAnalysis"/> 
     /// </summary>
     /// <remarks>A typical simple call would be <![CDATA[await CsharpProjectAnalysis.Init.LoadAsync(..somepath)]]></remarks>
     public static CSharpSolutionAnalysis Init => new CSharpSolutionAnalysis();

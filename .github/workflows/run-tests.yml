@@ -2,9 +2,16 @@ name: Run tests
 
 on:
   workflow_call:
+    inputs:
+      display-name:
+        description: 'The job name shown in the Actions UI, so callers can distinguish their runs'
+        required: false
+        type: string
+        default: 'Build and test'
 
 jobs:
   build:
+    name: ${{ inputs.display-name }}
     runs-on: ubuntu-latest
     permissions:
       packages: read

@@ -5,8 +5,11 @@ name: Build and run Tests
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 jobs:
   test:
     uses: ./.github/workflows/run-tests.yml
+    with:
+      display-name: CI build and test

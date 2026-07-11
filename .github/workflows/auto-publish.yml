@@ -1,0 +1,37 @@
+name: Auto publish nuget on version bump
+
+on:
+  push:
+    branches-ignore: [main]
+    paths:
+      - 'Source/FileBasedApp/Directory.Build.props'
+
+permissions:
+  contents: read
+  actions: write
+  packages: read
+
+jobs:
+  test:
+    uses: ./.github/workflows/run-tests.yml
+
+  check-and-publish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - id: version
+        name: Check if version was bumped
+        shell: pwsh
+        run: dotnet run (Join-Path Scripts check-version-bumped.cs) -- ${{ github.event.before }}
+      - name: Trigger publish workflow
+        if: steps.version.outputs.bumped == 'true'
+        run: gh workflow run publish.yml --ref ${{ github.ref_name }} -f target=code-filebasedapp -f environment=staging
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

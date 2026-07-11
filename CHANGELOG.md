@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 #### FilebasedApp.Toolkit
 - Added `AnsiConsoleFactory` with `Stderr()` and `Quiet()` helpers for creating an `IAnsiConsole` that avoids writing to stdout, for use behind a stdio-based protocol such as MCP where stdout must stay reserved for the protocol stream
+- Added `RunMcpSafe` extension method on `BaseSimpleExecRunner<TSelf>` — a discoverable wrapper around `ReadAsync` that guides consumers toward the console-safe way to shell out when running behind an MCP host, since `Run`/`RunAsync` inherit the real stdio handles and can't be redirected
+- Added `JetBrains.Annotations` package reference and annotated `BaseSimpleExecRunnerExtensions` with `[PublicAPI]` so Rider/ReSharper doesn't flag its public extension methods as unused
+- Renamed `BaseSimpleExecRunner<TSelf>._testWrapper` field to `TestWrapper`
 
 #### FileBasedApp.Toolkit.CSharp
 - Added public `CSharpProjectAnalysis(IAnsiConsole, IFileSystem?)` and `CSharpSolutionAnalysis(IAnsiConsole, IFileSystem?)` constructors so callers can inject a custom console (and file system) instead of always writing to the default `AnsiConsole.Console`

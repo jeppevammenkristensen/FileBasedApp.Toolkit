@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 #### FileBasedApp.Toolkit.CSharp
 - Added public `CSharpProjectAnalysis(IAnsiConsole, IFileSystem?)` and `CSharpSolutionAnalysis(IAnsiConsole, IFileSystem?)` constructors so callers can inject a custom console (and file system) instead of always writing to the default `AnsiConsole.Console`
 - Added `BaseAnalysis<TSelf>.WithAnsiConsole` fluent method to replace the console instance after construction
+- Added `BaseAnalysis<TSelf>.WithQuietConsole` and `.WithStderrConsole` extension methods as discoverable shortcuts for `WithAnsiConsole(AnsiConsoleFactory.Quiet())` / `.Stderr()`
 
 ### [0.20.0]
 

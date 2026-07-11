@@ -13,12 +13,12 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     /// <summary>
     /// The command wrapper used for execution. Returns the test wrapper if set, otherwise the default <see cref="SimpleExecCommand.Instance"/>.
     /// </summary>
-    protected ISimpleExecCommandWrapper Wrapper => _testWrapper ?? SimpleExecCommand.Instance;
+    protected ISimpleExecCommandWrapper Wrapper => TestWrapper ?? SimpleExecCommand.Instance;
 
     /// <summary>
     /// An optional test wrapper that overrides the default command execution. Set via <see cref="WithSimpleExecWrapper"/>.
     /// </summary>
-    protected ISimpleExecCommandWrapper? _testWrapper;
+    protected ISimpleExecCommandWrapper? TestWrapper;
     
     /// <summary>
     /// For unit testing only. Allows for simple injection of the <see cref="ISimpleExecCommandWrapper"/> wrapper.
@@ -27,7 +27,7 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     /// <returns>The current <see cref="SimpleExecRunner"/> instance for chaining.</returns>
     internal TSelf WithSimpleExecWrapper(ISimpleExecCommandWrapper simpleExecCommandWrapper)
     {
-        _testWrapper = simpleExecCommandWrapper;
+        TestWrapper = simpleExecCommandWrapper;
         return (TSelf)this;
     }
     
@@ -473,6 +473,7 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     /// <param name="commandWrapper">An optional <see cref="ISimpleExecCommandWrapper"/> to use for execution. When <see langword="null"/>, the internally configured wrapper is used.</param>
     /// <param name="token">A cancellation token to observe while waiting for the command to complete.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a tuple with the captured standard output and standard error.</returns>
+    /// <remarks>This is the safe choice</remarks>
     public Task<(string StandardOutput, string StandardError)> ReadAsync(
         ISimpleExecCommandWrapper? commandWrapper = null, CancellationToken token = default)
     {

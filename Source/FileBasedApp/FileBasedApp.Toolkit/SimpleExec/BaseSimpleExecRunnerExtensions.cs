@@ -1,16 +1,31 @@
 ﻿using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using JetBrains.Annotations;
 
 namespace FileBasedApp.Toolkit.SimpleExec;
 
 /// <summary>
 /// Extension methods for <see cref="BaseSimpleExecRunner{TSelf}"/> providing additional fluent operations such as JSON deserialization of command output.
 /// </summary>
+[PublicAPI]
 public static class BaseSimpleExecRunnerExtensions
 {
     extension<TSelf>(BaseSimpleExecRunner<TSelf> self) where TSelf : BaseSimpleExecRunner<TSelf>
     {
+        /// <summary>
+        /// Runs the command and returns the standard output and standard error as a tuple. This is here
+        /// as a convenience method to help make you more likely to use this if you use an mcp as this call
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        /// <remarks>This is basically just a wrapper for calling ReadAsync and is meant to guide you in the right direction
+        /// if you are using a mcp as it doesn't use the Console streams in anyway</remarks>
+        public Task<(string StandardOutput, string StandardError)> RunMcpSafe(CancellationToken token = default)
+        {
+            return self.ReadAsync(token: token);
+        }
+        
         /// <summary>
         /// Executes the command, reads the standard output, and deserializes the JSON output into an object of type T.
         /// </summary>

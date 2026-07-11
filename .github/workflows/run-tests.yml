@@ -1,0 +1,29 @@
+name: Run tests
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: 10.0.x
+    - name: Add GitHub Packages source
+      run: dotnet nuget add source "https://nuget.pkg.github.com/jeppevammenkristensen/index.json" --name "github" --username jeppevammenkristensen --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+    - name: Test
+      shell: pwsh
+      run: dotnet run (Join-Path Scripts build-and-run-test.cs) --run-all-test
+    - name: Upload build artifact
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: build-output
+        path: test-reports/
+        # Keep for 7 days (default is 90)
+        retention-days: 7

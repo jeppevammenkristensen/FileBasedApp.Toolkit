@@ -40,7 +40,7 @@ public abstract class BaseAnalysis<TSelf> : IDisposable, IAsyncDisposable where 
     /// An <see cref="IAnsiConsole"/> instance that provides methods for writing formatted output to the console.
     /// This console is used throughout the project loading process to display status updates and diagnostics.
     /// </value>
-    protected IAnsiConsole Console { get; }
+    protected IAnsiConsole Console { get; private set; }
     
     /// <summary>
     /// Initializes a new instance of <see cref="CSharpProjectAnalysis"/> using the default
@@ -139,6 +139,19 @@ public abstract class BaseAnalysis<TSelf> : IDisposable, IAsyncDisposable where 
     public TSelf WithProperty(string name, string value)
     {
         Properties = Properties.SetItem(name, value);
+        return (TSelf)this;
+    }
+
+    /// <summary>
+    /// Replaces the current console instance with the specified one. This is aimed at scenarios you want a
+    /// console that differs from the default for instance if using a stdio-based protocol such as MCP where stdout must be reserved for the protocol.
+    /// </summary>
+    /// <param name="console"></param>
+    /// <returns></returns>
+    /// <remarks>You can use the <see cref="AnsiConsoleFactory"/> to create <see cref="IAnsiConsole"/> targeting different console types</remarks>
+    public TSelf WithAnsiConsole(IAnsiConsole console)
+    {
+        Console = console;
         return (TSelf)this;
     }
 

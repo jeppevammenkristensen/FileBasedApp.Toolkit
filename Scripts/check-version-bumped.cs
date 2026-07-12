@@ -1,5 +1,6 @@
 #:package FileBasedApp.Toolkit@0.21.0-alpha-03
 #:property PublishAot=false
+using System.ComponentModel;
 using Spectre.Console.Cli;
 using Spectre.Console;
 using FileBasedApp.Toolkit;
@@ -41,14 +42,18 @@ public class RunCommand : AsyncCommand<RunCommand.Settings>
             var (output, _) = await SimpleExecRunner.Init("git")
                 .AddArgumentPair("show", $"{settings.BeforeSha}:{RelativeBuildPropsPath}")
                 .WithWorkingDirectory(settings.ExecutionPath).ReadAsync(token: cancellationToken);
-               
-            previousVersion = ParseVersion(XElement.Parse(output));
+            previousVersion = ParseVersion(XElement.Parse(output), out var suffixIsEmpty);
+            if (suffixIsEmpty && !settings.PublishNoSuffix)
+            {
+                return await Finish(bumped: false, warning: "SuffixIsEmpty and PublishNoSuffix is set to false");
+            }
+            
         }
         catch (Exception ex)
         {
             return await Finish(bumped: false, warning: $"Could not read the previous version ({ex.Message}) - skipping auto-publish");
         }
-
+        
         AnsiConsole.MarkupLineInterpolated($"[green]Previous version: {previousVersion}[/]");
 
         if (currentVersion.CompareTo(previousVersion) <= 0)
@@ -79,14 +84,21 @@ public class RunCommand : AsyncCommand<RunCommand.Settings>
     {
         await using var stream = path.OpenRead();
         var xml = await XElement.LoadAsync(stream, LoadOptions.None, cancellationToken);
-        return ParseVersion(xml);
+        return ParseVersion(xml, out  _);
     }
 
-    private static NuGetVersion ParseVersion(XElement xml)
+    private static NuGetVersion ParseVersion(XElement xml, out bool suffixIsEmpty)
     {
+        suffixIsEmpty = false;
+        
         var prefix = xml.Descendants("VersionPrefix").FirstOrDefault()?.Value
                      ?? throw new InvalidOperationException("Failed to find VersionPrefix");
         var suffix = xml.Descendants("VersionSuffix").FirstOrDefault()?.Value;
+
+        if (string.IsNullOrWhiteSpace(suffix))
+        {
+            suffixIsEmpty = true;
+        }
 
         var versionString = string.IsNullOrWhiteSpace(suffix) ? prefix : $"{prefix}-{suffix}";
         if (!NuGetVersion.TryParse(versionString, out var version))
@@ -104,6 +116,10 @@ public class RunCommand : AsyncCommand<RunCommand.Settings>
 
         [CommandArgument(0, "<BeforeSha>")]
         public string BeforeSha { get; set; } = "";
+        
+        [CommandOption("--publish-no-suffix")]
+        [Description("If set will output that this should be published")]
+        public bool PublishNoSuffix { get; } = true;
 
         protected override ValidationResult DoValidate()
         {

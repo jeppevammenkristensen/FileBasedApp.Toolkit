@@ -116,10 +116,10 @@ public class RunCommand : AsyncCommand<RunCommand.Settings>
 
         [CommandArgument(0, "<BeforeSha>")]
         public string BeforeSha { get; set; } = "";
-        
+
         [CommandOption("--publish-no-suffix")]
         [Description("If set will output that this should be published")]
-        public bool PublishNoSuffix { get; } = true;
+        public bool PublishNoSuffix { get; set; }
 
         protected override ValidationResult DoValidate()
         {

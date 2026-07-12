@@ -28,7 +28,12 @@ public class RunCommand : AsyncCommand<RunCommand.Settings>
     {
         var buildProps = settings.ExecutionPath / ".." / RelativeBuildPropsPath;
 
-        var currentVersion = await ReadVersionAsync(buildProps, cancellationToken);
+        var (currentVersion, suffixIsEmpty) = await ReadVersionAsync(buildProps, cancellationToken);
+        if (suffixIsEmpty && !settings.PublishNoSuffix)
+        {
+            return await Finish(bumped: false, warning: "SuffixIsEmpty and PublishNoSuffix is set to false");
+        }
+        
         AnsiConsole.MarkupLineInterpolated($"[green]Current version: {currentVersion}[/]");
 
         if (string.IsNullOrWhiteSpace(settings.BeforeSha) || settings.BeforeSha.All(c => c == '0'))
@@ -42,11 +47,7 @@ public class RunCommand : AsyncCommand<RunCommand.Settings>
             var (output, _) = await SimpleExecRunner.Init("git")
                 .AddArgumentPair("show", $"{settings.BeforeSha}:{RelativeBuildPropsPath}")
                 .WithWorkingDirectory(settings.ExecutionPath).ReadAsync(token: cancellationToken);
-            previousVersion = ParseVersion(XElement.Parse(output), out var suffixIsEmpty);
-            if (suffixIsEmpty && !settings.PublishNoSuffix)
-            {
-                return await Finish(bumped: false, warning: "SuffixIsEmpty and PublishNoSuffix is set to false");
-            }
+            previousVersion = ParseVersion(XElement.Parse(output), out _);
             
         }
         catch (Exception ex)
@@ -80,11 +81,12 @@ public class RunCommand : AsyncCommand<RunCommand.Settings>
         return 0;
     }
 
-    private static async Task<NuGetVersion> ReadVersionAsync(AbsolutePath path, CancellationToken cancellationToken)
+    private static async Task<(NuGetVersion, bool)> ReadVersionAsync(AbsolutePath path, CancellationToken cancellationToken)
     {
         await using var stream = path.OpenRead();
         var xml = await XElement.LoadAsync(stream, LoadOptions.None, cancellationToken);
-        return ParseVersion(xml, out  _);
+        var result = ParseVersion(xml, out var suffixIsEmpty);
+        return (result, suffixIsEmpty);
     }
 
     private static NuGetVersion ParseVersion(XElement xml, out bool suffixIsEmpty)

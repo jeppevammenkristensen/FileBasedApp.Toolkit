@@ -14,6 +14,7 @@
     <PackageIcon>floppy-disc.png</PackageIcon>  
     
     <PackageReleaseNotes>
+      - First 1.0.0 alpha release
       - Added the AnsiConsoleFactory with Stderr() and Quiet() helpers for creating an IAnsiConsole that avoids writing to stdout, for use behind a stdio-based protocol such as MCP where stdout must stay reserved for the protocol stream
       - Added RunMcpSafe extension method on BaseSimpleExecRunner&lt;TSelf&gt; as a discoverable, console-safe wrapper around ReadAsync for use when running behind an MCP host
       - Annotated BaseSimpleExecRunnerExtensions with [PublicAPI] (JetBrains.Annotations) so IDE inspections don't flag its public extension methods as unused
@@ -42,7 +43,7 @@
     <PackageReference Include="SimpleExec" Version="13.0.0" />    
     <PackageReference Include="Spectre.Console.Cli" Version="0.55.0" />
     <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="22.1.0" />
-    <PackageReference Include="TruePath.TestableIO.System.IO" Version="0.16.0" />
+    <PackageReference Include="TruePath.TestableIO.System.IO" Version="1.0.0-alpha" />
     <PackageReference Include="TruePath" Version="1.12.0" />
     <PackageReference Include="Vogen" Version="8.0.5" />
     

@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## FileBasedApp
 
+### [1.0.0-alpha]
+
+- First 1.0.0 alpha release of `FileBasedApp.Toolkit`, `FileBasedApp.Toolkit.CSharp`, and `FileBasedApp.Toolkit.Dotnet`
+
 ### [0.21.0]
 
 #### FilebasedApp.Toolkit
@@ -122,6 +126,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Added convenience methods
 
 ## TruePath.TestableIO.System.IO
+
+### [1.0.0-alpha]
+
+- First 1.0.0 alpha release
 
 ### [0.16.0]
 

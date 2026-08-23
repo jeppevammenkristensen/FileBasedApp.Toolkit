@@ -14,7 +14,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>floppy-disc.png</PackageIcon>
         <PackageReleaseNotes>
-- First 1.0.0 alpha release
+- First stable 1.0.0 release
 - Added public CSharpProjectAnalysis(IAnsiConsole, IFileSystem?) and CSharpSolutionAnalysis(IAnsiConsole, IFileSystem?) constructors so callers can inject a custom console (and file system) instead of always writing to the default AnsiConsole.Console
 - Added BaseAnalysis&lt;TSelf&gt;.WithAnsiConsole fluent method to replace the console instance after construction
 - Added BaseAnalysis&lt;TSelf&gt;.WithQuietConsole and .WithStderrConsole extension methods as discoverable shortcuts for WithAnsiConsole(AnsiConsoleFactory.Quiet()) / .Stderr()

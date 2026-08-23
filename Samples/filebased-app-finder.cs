@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit.CSharp@1.0.0-alpha
+#:package FileBasedApp.Toolkit.CSharp@1.0.0
 #:package FileBasedApp.Toolkit.Dotnet@1.0.0
 #:package Dumpify@*
 

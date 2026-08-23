@@ -14,8 +14,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>floppy-disc.png</PackageIcon>        
         <PackageReleaseNotes>
-- First 1.0.0 alpha release
-- Initial release
+- First stable 1.0.0 release
 - Added DotnetBaseRunner — abstract base for fluent dotnet CLI runners with --configuration and --verbosity
 - Added DotnetPackSimpleRunner — fluent wrapper around dotnet pack
 - Added DotnetNugetPushSimpleRunner — fluent wrapper around dotnet nuget push

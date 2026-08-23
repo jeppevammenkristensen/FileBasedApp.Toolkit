@@ -6,9 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## FileBasedApp
 
-### [1.0.0-alpha]
+### [1.0.0]
 
-- First 1.0.0 alpha release of `FileBasedApp.Toolkit`, `FileBasedApp.Toolkit.CSharp`, and `FileBasedApp.Toolkit.Dotnet`
+- First stable release of `FileBasedApp.Toolkit`, `FileBasedApp.Toolkit.CSharp`, `FileBasedApp.Toolkit.Dotnet`, and `FileBasedApp.Toolkit.Template`
+- Updated repository scripts, samples, and the file-based app template to reference the stable 1.0.0 packages
+- Improved the file-based app template with assembly informational version support and a clearer directory argument example
+- Added null-or-whitespace validation when resolving file paths from command settings
 
 ### [0.21.0]
 
@@ -127,9 +130,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## TruePath.TestableIO.System.IO
 
-### [1.0.0-alpha]
+### [1.0.0]
 
-- First 1.0.0 alpha release
+- First stable release of `TruePath.TestableIO.System.IO`
+- Updated `FileBasedApp.Toolkit` to consume the stable 1.0.0 package
 
 ### [0.16.0]
 

@@ -8,6 +8,8 @@
 
 A toolkit for building file-based applications in .NET.  (see  [more](https://learn.microsoft.com/en-us/dotnet/core/sdk/file-based-apps))
 
+**NOTE** It was made for FileBased Apps. But the functionality can be used in standard console apps or in libaries. 
+
 ## Packages
 
 - [FileBasedApp.Toolkit](Source/FileBasedApp/FileBasedApp.Toolkit/README.md) - Core toolkit with helpers and extensions.

@@ -1,6 +1,6 @@
-#:package FileBasedApp.Toolkit@0.21.0-alpha-03
-#:package FileBasedApp.Toolkit.CSharp@0.21.0-alpha-03
-#:package FileBasedApp.Toolkit.Dotnet@0.21.0-alpha-03
+#:package FileBasedApp.Toolkit@0.21.0
+#:package FileBasedApp.Toolkit.CSharp@0.21.0
+#:package FileBasedApp.Toolkit.Dotnet@0.21.0
 #:property PublishAot=false
 #:property VersionPrefix=0.0.8
 #:property PackageId=FileBasedApp.BuildAndPublish

@@ -114,6 +114,8 @@ public abstract class ExtendedCommandSettings : CommandSettings
     protected AbsolutePath TryGetFile(string candidatePath, bool shouldExist, AbsolutePath root,
         [CallerArgumentExpression(nameof(candidatePath))] string? paramName = null)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(candidatePath);
+        
         return TryGetFile(candidatePath, shouldExist, paramName, root);
     }
     

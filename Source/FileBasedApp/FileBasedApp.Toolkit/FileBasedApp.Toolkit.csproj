@@ -14,10 +14,7 @@
     <PackageIcon>floppy-disc.png</PackageIcon>  
     
     <PackageReleaseNotes>
-      - First stable 1.0.0 release
-      - Added the AnsiConsoleFactory with Stderr() and Quiet() helpers for creating an IAnsiConsole that avoids writing to stdout, for use behind a stdio-based protocol such as MCP where stdout must stay reserved for the protocol stream
-      - Added RunMcpSafe extension method on BaseSimpleExecRunner&lt;TSelf&gt; as a discoverable, console-safe wrapper around ReadAsync for use when running behind an MCP host
-      - Annotated BaseSimpleExecRunnerExtensions with [PublicAPI] (JetBrains.Annotations) so IDE inspections don't flag its public extension methods as unused
+      - Fixed alpha reference for TruePath.TestableIO.System.IO
     </PackageReleaseNotes>
     <LangVersion>14</LangVersion>    
   </PropertyGroup>

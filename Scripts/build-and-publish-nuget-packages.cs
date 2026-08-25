@@ -191,8 +191,6 @@ public class BuildCodeCommand : BuildCommand<BuildCodeCommand.Settings>
                          {
                              Settings.CodeToBuildType.FileBasedApp => x.GetFilenameWithoutExtension()
                                  .StartsWith("FileBasedApp."),
-                             Settings.CodeToBuildType.TruePath => x.GetFilenameWithoutExtension()
-                                 .StartsWith("TruePath."),
                              _ => true
                          };
                      }).OrderBy(x => x.GetExtensionWithoutDot().StartsWith('s') ? 1 : 0))
@@ -241,7 +239,7 @@ public class BuildCodeCommand : BuildCommand<BuildCodeCommand.Settings>
         [CommandOption("--code-to-build", false)]
         [DefaultValue(CodeToBuildType.All)]
         [Description(
-            $"The type to build. Values {nameof(CodeToBuildType.All)},{nameof(CodeToBuildType.FileBasedApp)},{nameof(CodeToBuildType.TruePath)}")]
+            $"The type to build. Values {nameof(CodeToBuildType.All)},{nameof(CodeToBuildType.FileBasedApp)}")]
         public CodeToBuildType CodeToBuild { get; set; }
 
         protected override ValidationResult DoValidate()
@@ -278,7 +276,6 @@ public class BuildCodeCommand : BuildCommand<BuildCodeCommand.Settings>
         {
             [Description("Only FileBasedApp.Toolkit")]
             FileBasedApp,
-            [Description("Only TruePath")] TruePath,
             [Description("All packages")] All
         }
     }

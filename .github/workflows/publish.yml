@@ -10,7 +10,6 @@ on:
         options:
           - code-all
           - code-filebasedapp
-          - code-truepath
           - template
       environment:
         description: 'Where to publish'
@@ -52,7 +51,6 @@ jobs:
         $codeMap = @{
           'code-all' = 'All'
           'code-filebasedapp' = 'FileBasedApp'
-          'code-truepath' = 'TruePath'
         }
         $codeToBuild = $codeMap['${{ inputs.target }}']
         dotnet run (Join-Path Scripts build-and-publish-nuget-packages.cs) -- build-code -c Release --source $env:NUGET_SOURCE --code-to-build $codeToBuild

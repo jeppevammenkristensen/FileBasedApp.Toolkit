@@ -1,7 +1,6 @@
 # FileBasedApp.Toolkit
 
 [![FileBasedApp.Toolkit](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.svg?style=flat-square&label=FileBasedApp.Toolkit)](https://www.nuget.org/packages/FileBasedApp.Toolkit)
-[![TruePath.TestableIO.System.IO](https://img.shields.io/nuget/v/TruePath.TestableIO.System.IO.svg?style=flat-square&label=TruePath.TestableIO.System.IO)](https://www.nuget.org/packages/TruePath.TestableIO.System.IO)
 [![FileBasedApp.Toolkit.CSharp](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.CSharp.svg?style=flat-square&label=FileBasedApp.Toolkit.CSharp)](https://www.nuget.org/packages/FileBasedApp.Toolkit.CSharp)
 [![FileBasedApp.Toolkit.Dotnet](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.Dotnet.svg?style=flat-square&label=FileBasedApp.Toolkit.Dotnet)](https://www.nuget.org/packages/FileBasedApp.Toolkit.Dotnet)
 [![FileBasedApp.Toolkit.Template](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.Template.svg?style=flat-square&label=FileBasedApp.Toolkit.Template)](https://www.nuget.org/packages/FileBasedApp.Toolkit.Template)
@@ -13,7 +12,7 @@ A toolkit for building file-based applications in .NET.  (see  [more](https://le
 ## Packages
 
 - [FileBasedApp.Toolkit](Source/FileBasedApp/FileBasedApp.Toolkit/README.md) - Core toolkit with helpers and extensions.
-- [TruePath.TestableIO.System.IO](Source/TruePath.TestableIO/TruePath.TestableIO.System.IO/README.md) - Bridges TruePath and TestableIO.
+- [TruePath.TestableIO.System.IO](https://github.com/jeppevammenkristensen/TruePath.TestableIO.System.IO) - External bridge between TruePath and TestableIO.
 - [FileBasedApp.Toolkit.CSharp](Source/FileBasedApp/FileBasedApp.Toolkit.CSharp/README.md) - Roslyn-based helpers for detecting and working with file-based .NET apps.
 - [FileBasedApp.Toolkit.Dotnet](Source/FileBasedApp/FileBasedApp.Toolkit.Dotnet/README.md) - Fluent builders and recipes for dotnet CLI commands (pack, nuget push, package search).
 - [FileBasedApp.Toolkit.Template](Source/FileBasedApp/Templates/README.md) - Item template for creating a file based app that uses the FileBasedApp.Toolkit.
@@ -22,7 +21,7 @@ It takes some inspiration based on experiences with brilliant tools like Cake an
 
 It relies heavily (hence opinionated) on [TruePath](https://github.com/ForNeVeR/TruePath),[SimpleExec](https://github.com/adamralph/simple-exec) and [Spectre.Console and Spectre.Console.Cli](https://spectreconsole.net/). In this library I strive for especially TruePath types to be first class citizens.
 
-A side effect of this project is the `TruePath.TestableIO.System.IO` library which provides a bridge between `TruePath` and [System.Io.Abstractions](https://github.com/TestableIO/System.IO.Abstractions) 
+`TruePath.TestableIO.System.IO` is maintained in its [own repository](https://github.com/jeppevammenkristensen/TruePath.TestableIO.System.IO) and provides a bridge between `TruePath` and [System.Io.Abstractions](https://github.com/TestableIO/System.IO.Abstractions).
 
 ## Scripts
 

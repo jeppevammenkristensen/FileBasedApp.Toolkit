@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Project>
   <PropertyGroup>
-     <VersionPrefix>1.0.0.1</VersionPrefix>
+     <VersionPrefix>1.0.1</VersionPrefix>
+      <PackageReleaseNotes>
+          - Bumped references
+      </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

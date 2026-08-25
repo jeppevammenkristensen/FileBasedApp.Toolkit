@@ -1,0 +1,19 @@
+<Project>
+    <Target Name="RemoveMSBuildHostRuntimeAssets"
+            AfterTargets="ResolvePackageAssets"
+            BeforeTargets="EnsureMSBuildAssembliesNotCopied">
+        <ItemGroup>
+            <_FileBasedAppMSBuildRuntimeAssets Include="@(RuntimeCopyLocalItems->WithMetadataValue('NuGetPackageId', 'Microsoft.Build'))" />
+            <_FileBasedAppMSBuildRuntimeAssets Include="@(RuntimeCopyLocalItems->WithMetadataValue('NuGetPackageId', 'Microsoft.Build.Framework'))" />
+            <_FileBasedAppMSBuildRuntimeAssets Include="@(RuntimeCopyLocalItems->WithMetadataValue('NuGetPackageId', 'Microsoft.Build.Utilities.Core'))" />
+            <_FileBasedAppMSBuildRuntimeAssets Include="@(RuntimeCopyLocalItems->WithMetadataValue('NuGetPackageId', 'Microsoft.Build.Tasks.Core'))" />
+            <_FileBasedAppMSBuildRuntimeAssets Include="@(RuntimeCopyLocalItems->WithMetadataValue('NuGetPackageId', 'Microsoft.Build.Engine'))" />
+            <_FileBasedAppMSBuildRuntimeAssets Include="@(RuntimeCopyLocalItems->WithMetadataValue('NuGetPackageId', 'Microsoft.Build.Conversion.Core'))" />
+            <_FileBasedAppMSBuildRuntimeAssets Include="@(RuntimeCopyLocalItems->WithMetadataValue('NuGetPackageId', 'Microsoft.Build.Runtime'))" />
+            <_FileBasedAppMSBuildRuntimeAssets Include="@(RuntimeCopyLocalItems->WithMetadataValue('NuGetPackageId', 'Microsoft.Build.Localization'))" />
+            <_FileBasedAppMSBuildRuntimeAssets Include="@(RuntimeCopyLocalItems->WithMetadataValue('NuGetPackageId', 'Microsoft.NET.StringTools'))" />
+            <_FileBasedAppMSBuildRuntimeAssets Include="@(RuntimeCopyLocalItems->WithMetadataValue('NuGetPackageId', 'NuGet.Frameworks'))" />
+            <RuntimeCopyLocalItems Remove="@(_FileBasedAppMSBuildRuntimeAssets)" />
+        </ItemGroup>
+    </Target>
+</Project>

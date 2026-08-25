@@ -11,11 +11,11 @@ registries:
 updates:
   - package-ecosystem: nuget
     registries: '*'
-    directories:
-      - "/Source/FileBasedApp/"
-      - "/Source/TruePath.TestableIO/"
+    directory: "/Source"
     schedule:
       interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
   - package-ecosystem: github-actions
     directory: "/"
     schedule:

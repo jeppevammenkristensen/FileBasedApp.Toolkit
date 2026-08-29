@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 #### FileBasedApp.Toolkit
 
-- Added `AcceptedErrorCodes` and `HandlesAllErrorCodes` fluent extensions for configuring SimpleExec exit-code handling without writing a custom predicate
+- Added `WithAcceptedErrorCodes` and `HandlesAllErrorCodes` fluent extensions for configuring SimpleExec exit-code handling without writing a custom predicate
 - Added `RunWithExitCode`, `RunWithExitCodeAsync`, and `ReadEnhancedAsync`, together with `SimpleExecRunResult` and `SimpleExecReadResult`, so callers can inspect process exit codes and captured output
 - Added optional conflict detection to `WithExitCodeHandler` through `throwIfAlreadySet`
 - Fixed strict `AddSecrets` validation so it compares supplied secrets with existing arguments, reports only unmatched values, and does not mutate secrets when validation fails

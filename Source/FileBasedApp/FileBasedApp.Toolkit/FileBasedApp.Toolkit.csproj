@@ -11,10 +11,8 @@
     <TargetFrameworks>net10.0;net8.0</TargetFrameworks>
     <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FileBasedApp.Toolkit</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>floppy-disc.png</PackageIcon> 
-    
-    <PackageReleaseNotes>      
-    </PackageReleaseNotes>
+    <PackageIcon>floppy-disc.png</PackageIcon>    
+    <PackageReleaseNotes>Added WithAcceptedErrorCodes and HandlesAllErrorCodes for SimpleExec exit-code handling; added RunWithExitCode, RunWithExitCodeAsync, ReadEnhancedAsync, SimpleExecRunResult, and SimpleExecReadResult; fixed strict AddSecrets validation.</PackageReleaseNotes>
     <LangVersion>14</LangVersion>    
   </PropertyGroup>
   

@@ -84,6 +84,7 @@ The `SimpleExecRunner` provides a fluent builder API on top of the [SimpleExec](
 
 ```csharp
 using FileBasedApp.Toolkit.SimpleExec;
+using Spectre.Console;
 using TruePath;
 
 // Basic command execution
@@ -129,8 +130,26 @@ await new SimpleExecRunner("git")
 
 Exit code `0` remains successful by default and does not need to be listed. Other non-zero exit codes still cause the command to throw. Use `WithExitCodeHandler` when you need the lower-level handled-exit-code callback instead of a fixed list of accepted codes.
 
+Use `HandlesAllErrorCodes()` only when every exit code is an expected result; it disables SimpleExec's default non-zero-exit-code failure behavior.
+
+Use the result-returning APIs when the observed exit code or captured output is needed after execution:
+
+```csharp
+var result = await new SimpleExecRunner("git")
+    .AddArguments("diff", "--quiet")
+    .WithAcceptedErrorCodes([1])
+    .ReadEnhancedAsync();
+
+AnsiConsole.WriteLine(result.ExitCode.ToString());
+AnsiConsole.WriteLine(result.StandardOutput);
+AnsiConsole.WriteLine(result.StandardError);
+```
+
+`RunWithExitCode()` and `RunWithExitCodeAsync()` return `SimpleExecRunResult`, which contains `ExitCode`. `ReadEnhancedAsync()` returns `SimpleExecReadResult`, which contains `ExitCode`, `StandardOutput`, and `StandardError`. These methods still honor the configured exit-code policy.
+
 **Key types:**
-* `SimpleExecRunner` — the fluent builder. Create with `new SimpleExecRunner("command-name")`, add arguments, then call `Run()`, `RunAsync()`, or `ReadAsync()`.
+* `SimpleExecRunner` — the fluent builder. Create with `new SimpleExecRunner("command-name")`, add arguments, then call `Run()`, `RunAsync()`, `ReadAsync()`, or a result-returning execution method.
+* `SimpleExecRunResult` / `SimpleExecReadResult` — result types returned by the exit-code-aware execution methods.
 * `ISimpleExecCommandWrapper` — an interface wrapping `SimpleExec.Command` to enable unit testing. The default implementation (`SimpleExecCommand`) delegates directly to the static `Command` class.
 
 ### Web URIs (AbsoluteWebUri / RelativeWebUri)
@@ -139,6 +158,7 @@ Strongly-typed, immutable wrappers around `System.Uri` for composing web URIs. P
 
 ```csharp
 using FileBasedApp.Toolkit;
+using Spectre.Console;
 
 // Build an absolute URI fluently
 var url = AbsoluteWebUri.Create("https://example.com")
@@ -148,7 +168,7 @@ var url = AbsoluteWebUri.Create("https://example.com")
           / UriFragment.From("Fragment");
 
 // https://example.com/first/second?a=1&b=2#Fragment
-Console.WriteLine(url);
+AnsiConsole.WriteLine(url.ToString());
 
 // Or use method form
 var api = AbsoluteWebUri.Create("https://example.com/api")

@@ -50,4 +50,22 @@ All wrapped methods in the selected class must be either static or instance meth
 
 The nested [`worktree-path-selector`](worktree-path-selector/) sample provides an interactive Git worktree picker. The C# app finds a repository, lists its worktrees, and copies the selected path to the clipboard. `push-worktree.ps1` adds a PowerShell `Push-Worktree` function that runs the picker and changes to the selected directory while preserving the previous location for `Pop-Location`.
 
-See the [installation instructions](worktree-path-selector/instructions.md) to install the app as a global .NET tool and configure PowerShell on Windows, Linux, or macOS. This is aimed to be picked up by AI.
+See the [installation instructions](worktree-path-selector/instructions.md) to install the app as a global .NET tool and configure PowerShell on Windows, Linux, or macOS. These are is aimed to be picked up by AI.
+
+### Example
+
+Run `Push-Worktree` from a repository or a directory containing its worktrees:
+
+```text
+PS D:\code\filebased-app> Push-Worktree
+Found worktree candidate D:\code\filebased-app\feature
+Select worktree
+
+> main                D:\code\filebased-app\_main                    da8bb2a55c8f3798118387310e96e83a94656d7e
+  feature/echo-flanger D:\code\filebased-app\feature                 47b1da8a8c608e0433609ff0a28e7ebdb0205c53
+  feature/first-major D:\code\filebased-app\feature\first-major     2ecb040a70a56059a0002f31b49b6e852d60870c
+  task/add-scripts     D:\code\filebased-app\task\add-scripts        f41cf796aff665921f43cc4aaf4d995599109077
+  task/fix-issue       D:\code\filebased-app\task\fix-issue          dd96e260c4a5662fb4257ceb54dc33c226a2fdae
+```
+
+Choose a worktree to push its directory onto PowerShell's location stack. Use `Pop-Location` to return to the previous directory.

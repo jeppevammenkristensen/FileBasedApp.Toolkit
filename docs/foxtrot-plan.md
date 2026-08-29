@@ -87,9 +87,11 @@ Do not add `AcceptAnyExitCode()` in the first implementation. Requiring explicit
 
 ## Work Item 2: Fix strict secret validation
 
-### Problem
+**Status:** Completed — implemented and tested on 2026-08-29.
 
-`AddSecrets(bool strict, params string[] secrets)` in `BaseSimpleExecRunner.cs:277-293` currently has two problems:
+### Original problem
+
+`AddSecrets(bool strict, params string[] secrets)` had two problems:
 
 1. It throws every time `strict` is `true`, even when no secret is unmatched.
 2. It calculates `Secrets.Except(secrets)` instead of checking whether the supplied secrets already occur in `Arguments`.
@@ -101,16 +103,18 @@ Do not add `AcceptAnyExitCode()` in the first implementation. Requiring explicit
 - Throw only when one or more supplied secrets are not present in `Arguments`.
 - Include only the unmatched values in the exception message.
 - If all supplied secrets match arguments, append them and return the runner.
-- Use exact ordinal matching unless SimpleExec's redaction behavior is confirmed to use a different comparer. A differently cased value should not be considered safe for redaction by assumption.
+- Match using `StringComparison.OrdinalIgnoreCase`, consistent with the confirmed SimpleExec redaction implementation.
 
-### Tests to add
+### Tests added
 
-- Strict mode succeeds when every secret exists in `Arguments`.
-- Strict mode throws when one secret is absent.
-- The exception identifies the absent secret.
-- Strict mode with a mixture of matched and unmatched secrets reports only unmatched values.
-- Non-strict mode continues to accept values that are not arguments.
-- Null-element validation continues to throw.
+- [x] Strict mode succeeds when every secret exists in `Arguments`.
+- [x] Case-insensitive substring matching reflects SimpleExec's redaction behavior.
+- [x] Strict mode throws when one secret is absent without mutating the configured secrets.
+- [x] The exception identifies the absent secret.
+- [x] Strict mode with a mixture of matched and unmatched secrets reports only unmatched values.
+- [x] Non-strict mode continues to accept values that are not arguments.
+- [x] Duplicate secrets are stored once.
+- [x] Null-element validation continues to throw without mutating the configured secrets.
 
 ## Work Item 3: Decide how JSON parsing handles stderr
 
@@ -149,7 +153,7 @@ This is the intended repository structure. Do not add these projects to `FileBas
 
 ## Implementation Order
 
-1. Fix strict `AddSecrets` behavior and add its tests.
+1. [x] Fix strict `AddSecrets` behavior and add its tests.
 2. Add `WithAcceptedExitCodes` and its tests.
 3. Update the SimpleExecRunner README examples and XML documentation.
 4. Add the optional stderr policy to `ReadAndParseJson` and test it.
@@ -160,7 +164,7 @@ This is the intended repository structure. Do not add these projects to `FileBas
 
 - [ ] `WithAcceptedExitCodes` is implemented with the contract above.
 - [ ] The default exit-code behavior remains unchanged.
-- [ ] Strict `AddSecrets` validation is fixed and tested.
+- [x] Strict `AddSecrets` validation is fixed and tested.
 - [ ] JSON stderr behavior is explicit and tested.
 - [ ] Intentionally separate projects are built directly when affected.
 - [ ] Public XML documentation explains accepted versus handled exit codes.
@@ -177,3 +181,5 @@ This is the intended repository structure. Do not add these projects to `FileBas
 - Initialized the Foxtrot plan.
 - Completed the Rider solution health check.
 - Converted the findings into implementation-ready work items for manual implementation.
+- Completed Work Item 2: fixed strict `AddSecrets` validation and added coverage for matching, failures, non-strict behavior, duplicates, and null elements.
+- Verified all 63 `SimpleExecRunnerTest` tests pass and the Rider solution build succeeds without reported problems.

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
+using JetBrains.Annotations;
 using TruePath;
 
 namespace FileBasedApp.Toolkit.SimpleExec;
@@ -7,7 +8,8 @@ namespace FileBasedApp.Toolkit.SimpleExec;
 /// <summary>
 /// A base class for simple exec runners. Not intended for external use, but can be used for internal extension methods to provide additional fluent configuration options without exposing those options on the main SimpleExecRunner API.
 /// </summary>
-/// <typeparam name="TSelf"></typeparam>
+/// <typeparam name="TSelf"></typeparam>]
+[UsedImplicitly]
 public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecRunner<TSelf>
 {
     /// <summary>
@@ -45,7 +47,7 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     /// Secrets for the command
     /// </summary>
     /// <remarks>Only relevant if calling Run or RunAsync</remarks>
-    public ImmutableArray<string> Secrets { get; protected set; } = [];
+    public ImmutableHashSet<string> Secrets { get; protected set; } = [];
 
     /// <summary>
     /// The working directory in which the command will be executed.
@@ -155,6 +157,7 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     /// <param name="path">The absolute path to append as an argument.</param>
     /// <param name="isSecret">When <see langword="true"/>, the path value is treated as a secret.</param>
     /// <returns>The current <see cref="SimpleExecRunner"/> instance for chaining.</returns>
+    [UsedImplicitly]
     public TSelf AddArgument(AbsolutePath path, bool isSecret = false) => AddArgument(path.Value, isSecret);
 
     /// <summary>
@@ -163,6 +166,7 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     /// <param name="path">The local path to append as an argument.</param>
     /// <param name="isSecret">When <see langword="true"/>, the path value is treated as a secret.</param>
     /// <returns>The current <see cref="SimpleExecRunner"/> instance for chaining.</returns>
+    [UsedImplicitly]
     public TSelf AddArgument(LocalPath path, bool isSecret = false) => AddArgument(path.Value, isSecret);
 
     /// <summary>
@@ -223,6 +227,7 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     /// <param name="isSecret">When <see langword="true"/>, the path value is treated as a secret.</param>
     /// <returns>The current <see cref="SimpleExecRunner"/> instance for chaining.</returns>
     /// <remarks>isSecret is only relevant to set if you call Run or RunAsync</remarks>
+    
     public TSelf AddArgumentPair(string argument, LocalPath value, bool isSecret = false) => AddArgumentPair(argument, value.Value, isSecret);
 
     /// <summary>
@@ -284,11 +289,28 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
         
         if (strict)
         {
-            var unmatchedSecrets = Secrets.Except(secrets, StringComparer.OrdinalIgnoreCase);
-            throw new InvalidOperationException("The following secrets were not found in the command: " + unmatchedSecrets.StringJoin(","));
+            HashSet<string> unmatchedSecrets = [];
+            
+            foreach (var secret in secrets)
+            {
+                if (!Arguments.Any(x => x.Contains(secret, StringComparison.OrdinalIgnoreCase)))
+                {
+                    unmatchedSecrets.Add(secret);   
+                }
+            }
+            
+            if (unmatchedSecrets.Any())
+            {
+                throw new InvalidOperationException("The following secrets were not found in the command: " + unmatchedSecrets.StringJoin(","));    
+            }
+        }
+
+        foreach (var secret in secrets)
+        {
+            Secrets = Secrets.Add(secret);
         }
         
-        Secrets = Secrets.AddRange(secrets);
+        
         return (TSelf)this;;
     }
     

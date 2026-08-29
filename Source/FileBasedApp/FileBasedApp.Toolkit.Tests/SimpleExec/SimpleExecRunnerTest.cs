@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using FileBasedApp.Toolkit.SimpleExec;
 using FluentAssertions;
@@ -31,16 +32,16 @@ public class SimpleExecRunnerTest
         var call = _wrapper.ReceivedCalls().Single();
         var args = call.GetArguments();
         return new RunCallArgs(
-            Name: (string)args[0]!,
-            Args: ((IEnumerable<string>)args[1]!).ToList(),
-            WorkingDirectory: (string)args[2]!,
-            ConfigureEnvironment: (Action<IDictionary<string, string?>>?)args[3],
-            Secrets: ((IEnumerable<string>?)args[4])?.ToList(),
-            HandleExitCode: (Func<int, bool>?)args[5],
-            EchoPrefix: (string?)args[6],
-            NoEcho: (bool)args[7]!,
-            CancellationIgnoresProcessTree: (bool)args[8]!,
-            CreateNoWindow: (bool)args[9]!);
+            Name: (string) args[0]!,
+            Args: ((IEnumerable<string>) args[1]!).ToList(),
+            WorkingDirectory: (string) args[2]!,
+            ConfigureEnvironment: (Action<IDictionary<string, string?>>?) args[3],
+            Secrets: ((IEnumerable<string>?) args[4])?.ToList(),
+            HandleExitCode: (Func<int, bool>?) args[5],
+            EchoPrefix: (string?) args[6],
+            NoEcho: (bool) args[7]!,
+            CancellationIgnoresProcessTree: (bool) args[8]!,
+            CreateNoWindow: (bool) args[9]!);
     }
 
     /// <summary>
@@ -51,14 +52,14 @@ public class SimpleExecRunnerTest
         var call = _wrapper.ReceivedCalls().Single();
         var a = call.GetArguments();
         return new ReadCallArgs(
-            Name: (string)a[0]!,
-            Args: ((IEnumerable<string>)a[1]!).ToList(),
-            WorkingDirectory: (string)a[2]!,
-            ConfigureEnvironment: (Action<IDictionary<string, string?>>?)a[3],
-            HandleExitCode: (Func<int, bool>?)a[4],
-            Encoding: (Encoding?)a[5],
-            StandardInput: (string?)a[6],
-            CancellationIgnoresProcessTree: (bool)a[7]!);
+            Name: (string) a[0]!,
+            Args: ((IEnumerable<string>) a[1]!).ToList(),
+            WorkingDirectory: (string) a[2]!,
+            ConfigureEnvironment: (Action<IDictionary<string, string?>>?) a[3],
+            HandleExitCode: (Func<int, bool>?) a[4],
+            Encoding: (Encoding?) a[5],
+            StandardInput: (string?) a[6],
+            CancellationIgnoresProcessTree: (bool) a[7]!);
     }
 
     #region Run and RunAsync pass all configured values
@@ -151,6 +152,29 @@ public class SimpleExecRunnerTest
         GetRunCallArgs().CreateNoWindow.Should().BeTrue();
     }
 
+    [Fact]
+    public void  Run_DoesNotThrowsIfExitHandlerIsAlreadySetAndThrowIfAlreadySetPassed()
+    {
+        Func<int,bool> firstHandler = _ => true;
+        Func<int,bool> secondHandler = _ => true;
+        var runner = CreateRunner().WithExitCodeHandler(firstHandler);
+        runner.WithExitCodeHandler(secondHandler, throwIfAlreadySet: false);
+    }
+    
+    [Fact]
+    public void  Run_ThrowsIfExitHandlerIsAlreadySetAndThrowIfAlreadySetPassed()
+    {
+        Func<int,bool> firstHandler = _ => true;
+        Func<int,bool> secondHandler = _ => true;
+        var runner = CreateRunner().WithExitCodeHandler(firstHandler);
+
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            runner.WithExitCodeHandler(secondHandler, throwIfAlreadySet: true);
+        });
+    }
+
+
     [Theory]
     [InlineData(RunMethod.Run)]
     [InlineData(RunMethod.RunAsync)]
@@ -223,6 +247,144 @@ public class SimpleExecRunnerTest
             default:
                 throw new ArgumentOutOfRangeException(nameof(method));
         }
+    }
+
+    #endregion
+
+    #region Methods returning exit codes
+
+    [Fact]
+    public void RunWithExitCode_ReturnsExitCodeAndDelegatesToConfiguredHandler()
+    {
+        const int exitCode = 17;
+        int? handledExitCode = null;
+        var runner = CreateRunner("tool")
+            .AddArgument("run")
+            .WithExitCodeHandler(code =>
+            {
+                handledExitCode = code;
+                return code == exitCode;
+            });
+
+        _wrapper.When(wrapper => wrapper.Run(
+                Arg.Any<string>(),
+                Arg.Any<IEnumerable<string>>(),
+                Arg.Any<string>(),
+                Arg.Any<Action<IDictionary<string, string?>>?>(),
+                Arg.Any<IEnumerable<string>?>(),
+                Arg.Any<Func<int, bool>?>(),
+                Arg.Any<string?>(),
+                Arg.Any<bool>(),
+                Arg.Any<bool>(),
+                Arg.Any<bool>(),
+                Arg.Any<CancellationToken>()))
+            .Do(call => ((Func<int, bool>)call[5]!)(exitCode).Should().BeTrue());
+
+        var result = runner.RunWithExitCode();
+
+        result.ExitCode.Should().Be(exitCode);
+        handledExitCode.Should().Be(exitCode);
+        var call = GetRunCallArgs();
+        call.Name.Should().Be("tool");
+        call.Args.Should().Equal("run");
+    }
+
+    [Fact]
+    public async Task RunWithExitCodeAsync_ReturnsExitCodeAndDelegatesToConfiguredHandler()
+    {
+        const int exitCode = 23;
+        int? handledExitCode = null;
+        var runner = CreateRunner()
+            .WithExitCodeHandler(code =>
+            {
+                handledExitCode = code;
+                return code == exitCode;
+            });
+
+        _wrapper.RunAsync(
+                Arg.Any<string>(),
+                Arg.Any<IEnumerable<string>>(),
+                Arg.Any<string>(),
+                Arg.Any<Action<IDictionary<string, string?>>?>(),
+                Arg.Any<IEnumerable<string>?>(),
+                Arg.Any<Func<int, bool>?>(),
+                Arg.Any<string?>(),
+                Arg.Any<bool>(),
+                Arg.Any<bool>(),
+                Arg.Any<bool>(),
+                Arg.Any<CancellationToken>())
+            .Returns(call =>
+            {
+                ((Func<int, bool>)call[5]!)(exitCode).Should().BeTrue();
+                return Task.CompletedTask;
+            });
+
+        var result = await runner.RunWithExitCodeAsync();
+
+        result.ExitCode.Should().Be(exitCode);
+        handledExitCode.Should().Be(exitCode);
+    }
+
+    [Fact]
+    public async Task ReadEnhancedAsync_ReturnsOutputErrorAndExitCodeAndDelegatesToConfiguredHandler()
+    {
+        const int exitCode = 4;
+        int? handledExitCode = null;
+        var runner = CreateRunner()
+            .WithExitCodeHandler(code =>
+            {
+                handledExitCode = code;
+                return code == exitCode;
+            });
+
+        _wrapper.ReadAsync(
+                Arg.Any<string>(),
+                Arg.Any<IEnumerable<string>>(),
+                Arg.Any<string>(),
+                Arg.Any<Action<IDictionary<string, string?>>?>(),
+                Arg.Any<Func<int, bool>?>(),
+                Arg.Any<Encoding?>(),
+                Arg.Any<string?>(),
+                Arg.Any<bool>(),
+                Arg.Any<CancellationToken>())
+            .Returns(call =>
+            {
+                ((Func<int, bool>)call[4]!)(exitCode).Should().BeTrue();
+                return Task.FromResult((StandardOutput: "output", StandardError: "warning"));
+            });
+
+        var result = await runner.ReadEnhancedAsync();
+
+        result.StandardOutput.Should().Be("output");
+        result.StandardError.Should().Be("warning");
+        result.ExitCode.Should().Be(exitCode);
+        handledExitCode.Should().Be(exitCode);
+    }
+
+    [Theory]
+    [InlineData(0, true)]
+    [InlineData(1, false)]
+    public void RunWithExitCode_UsesSimpleExecDefaultPolicyWhenNoHandlerIsConfigured(
+        int exitCode, bool expectedHandled)
+    {
+        bool? handled = null;
+        _wrapper.When(wrapper => wrapper.Run(
+                Arg.Any<string>(),
+                Arg.Any<IEnumerable<string>>(),
+                Arg.Any<string>(),
+                Arg.Any<Action<IDictionary<string, string?>>?>(),
+                Arg.Any<IEnumerable<string>?>(),
+                Arg.Any<Func<int, bool>?>(),
+                Arg.Any<string?>(),
+                Arg.Any<bool>(),
+                Arg.Any<bool>(),
+                Arg.Any<bool>(),
+                Arg.Any<CancellationToken>()))
+            .Do(call => handled = ((Func<int, bool>)call[5]!)(exitCode));
+
+        CreateRunner().RunWithExitCode();
+
+        handled.Should().Be(expectedHandled);
     }
 
     #endregion
@@ -522,7 +684,8 @@ public class SimpleExecRunnerTest
     [InlineData("  ", StringNullCheck.NullOrWhitespace, false)]
     [InlineData("", StringNullCheck.NullOrWhitespace, false)]
     [InlineData(null, StringNullCheck.NullOrWhitespace, false)]
-    public void AddArgumentPairIfValueNotEmpty_AddsOnlyWhenValuePasses(string? value, StringNullCheck nullCheck, bool expectedAdded)
+    public void AddArgumentPairIfValueNotEmpty_AddsOnlyWhenValuePasses(string? value, StringNullCheck nullCheck,
+        bool expectedAdded)
     {
         var runner = CreateRunner()
             .AddArgumentPairIfValueNotEmpty("--key", value, nullCheck);

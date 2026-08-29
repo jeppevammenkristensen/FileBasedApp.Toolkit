@@ -11,10 +11,9 @@
     <TargetFrameworks>net10.0;net8.0</TargetFrameworks>
     <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FileBasedApp.Toolkit</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>floppy-disc.png</PackageIcon>  
+    <PackageIcon>floppy-disc.png</PackageIcon> 
     
-    <PackageReleaseNotes>
-      - Fixed alpha reference for TruePath.TestableIO.System.IO
+    <PackageReleaseNotes>      
     </PackageReleaseNotes>
     <LangVersion>14</LangVersion>    
   </PropertyGroup>

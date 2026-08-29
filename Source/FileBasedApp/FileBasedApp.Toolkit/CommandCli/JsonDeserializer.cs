@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 
 namespace FileBasedApp.Toolkit.CommandCli;
 

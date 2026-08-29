@@ -144,7 +144,7 @@ public abstract class AbstractUri<TSelf> where TSelf : IWebUri<TSelf>
         return NewPath(FullUriRepresentation.AbsolutePath, CreateQuery(result), FullUriRepresentation.Fragment);
     }
 
-    private string CreateQuery(NameValueCollection query)
+    private static string CreateQuery(NameValueCollection query)
     {
         if (query.Count == 0) return string.Empty;
 

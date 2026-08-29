@@ -1,6 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using TruePath;
 
 namespace FileBasedApp.Toolkit.CommandCli;
@@ -29,10 +27,8 @@ public record FlexibleFilePath(string Windows, string Unix)
         {
             return AbsolutePath.Create(Windows);
         }
-        else
-        {
-            return AbsolutePath.Create(Unix);
-        }
+
+        return AbsolutePath.Create(Unix);
     }
 
     /// <summary>

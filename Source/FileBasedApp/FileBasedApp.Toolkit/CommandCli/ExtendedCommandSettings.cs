@@ -75,7 +75,7 @@ public abstract class ExtendedCommandSettings : CommandSettings
     /// <returns>The absolute path</returns>
     /// <remarks>If no paths are added. The current working directory is used as default root</remarks>
     /// <exception cref="InvalidOperationException">Throw an exception that can be caught by the do validate method</exception>
-    protected AbsolutePath TryGetDirectory(string? candidatePath, bool allowEmpty, bool shouldExist, [CallerArgumentExpression(nameof(candidatePath))] string? paramName = null, params AbsolutePath[] rootPaths)
+    protected static AbsolutePath TryGetDirectory(string? candidatePath, bool allowEmpty, bool shouldExist, [CallerArgumentExpression(nameof(candidatePath))] string? paramName = null, params AbsolutePath[] rootPaths)
     {
         var result = candidatePath.AnalyzeDirectory(rootPaths);
         (AbsolutePath path, string? errorMessage) = result.GetPath(shouldExist, allowEmpty);
@@ -128,7 +128,7 @@ public abstract class ExtendedCommandSettings : CommandSettings
     /// <param name="roots">The <see cref="AbsolutePath"/> representing the root path to use when the candidate is relative</param>
     /// <returns>An <see cref="AbsolutePath"/> representing the resolved file path.</returns>
     /// <exception cref="InvalidOperationException">Thrown if <paramref name="candidatePath"/> is null, empty, whitespace, or cannot be resolved to a valid file path.</exception>
-    protected AbsolutePath TryGetFile(string candidatePath, bool shouldExist, [CallerArgumentExpression(nameof(candidatePath))] string? paramName = null,
+    protected static AbsolutePath TryGetFile(string candidatePath, bool shouldExist, [CallerArgumentExpression(nameof(candidatePath))] string? paramName = null,
         params AbsolutePath[] roots)
     {
         if (string.IsNullOrWhiteSpace(candidatePath))
@@ -230,7 +230,7 @@ public abstract class ExtendedCommandSettings : CommandSettings
     /// or the value of the environment variable specified by <paramref name="environmentKey"/>.
     /// Returns null if both <paramref name="originalValue"/> and the environment variable are null or empty.
     /// </returns>
-    protected string? GetValueOrFromEnvironment(string? originalValue, string environmentKey)
+    protected static string? GetValueOrFromEnvironment(string? originalValue, string environmentKey)
     {
         if (string.IsNullOrWhiteSpace(originalValue))
         {

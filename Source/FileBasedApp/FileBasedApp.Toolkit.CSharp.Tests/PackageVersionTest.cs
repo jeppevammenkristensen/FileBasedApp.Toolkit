@@ -1,5 +1,4 @@
 using System;
-using FileBasedApp.Toolkit.CSharp;
 using FluentAssertions;
 using JetBrains.Annotations;
 using NuGet.Versioning;

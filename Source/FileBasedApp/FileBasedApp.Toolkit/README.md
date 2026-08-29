@@ -112,14 +112,22 @@ var (stdout, stderr) = await new SimpleExecRunner("dotnet")
     .AddArgument("--version")
     .ReadAsync();
 
-// Working directory, environment variables, and custom exit code handling
+// Working directory and environment variables
 await new SimpleExecRunner("git")
     .AddArguments("status", "--porcelain")
     .WithWorkingDirectory(repoRoot)
     .WithConfigureEnvironment(env => env["GIT_TERMINAL_PROMPT"] = "0")
-    .WithExitCodeHandler(code => code is 0 or 1)
+    .RunAsync();
+
+// Accept an expected non-zero exit code. `git diff --quiet` returns 1 when
+// differences exist, which is an expected result rather than a command failure.
+await new SimpleExecRunner("git")
+    .AddArguments("diff", "--quiet")
+    .WithAcceptedErrorCodes([1])
     .RunAsync();
 ```
+
+Exit code `0` remains successful by default and does not need to be listed. Other non-zero exit codes still cause the command to throw. Use `WithExitCodeHandler` when you need the lower-level handled-exit-code callback instead of a fixed list of accepted codes.
 
 **Key types:**
 * `SimpleExecRunner` — the fluent builder. Create with `new SimpleExecRunner("command-name")`, add arguments, then call `Run()`, `RunAsync()`, or `ReadAsync()`.

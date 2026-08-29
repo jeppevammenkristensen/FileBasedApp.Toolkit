@@ -88,10 +88,8 @@ public class RelativeWebUri : AbstractUri<RelativeWebUri>, IParsable<RelativeWeb
             result = new RelativeWebUri(uri);
             return true;
         }
-        else
-        {
-            result = null;
-            return false;
-        }
+
+        result = null;
+        return false;
     }
 }

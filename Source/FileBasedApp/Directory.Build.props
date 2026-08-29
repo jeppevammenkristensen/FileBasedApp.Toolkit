@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Project>
   <PropertyGroup>
-     <VersionPrefix>1.1.0</VersionPrefix>      
-      <PackageReleaseNotes>         
+     <VersionPrefix>1.1.1</VersionPrefix>      
+      <PackageReleaseNotes>
+          - Fix for protected methods made static. 
       </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

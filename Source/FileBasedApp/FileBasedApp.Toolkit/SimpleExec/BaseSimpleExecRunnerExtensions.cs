@@ -23,10 +23,15 @@ public static class BaseSimpleExecRunnerExtensions
         /// <remarks>
         /// This method modifies the behavior of the exit code handler to consider the specified error codes as valid.
         /// Use this method to handle cases where specific non-zero exit codes are expected and should not be treated as errors.
-        /// NOTE. This will override any existing exit code handler.
+        /// Passing an empty acceptedErrorCodes will not modify the error handler
         /// </remarks>
-        public TSelf AcceptedErrorCodes(bool failOnExistingErrorHandler = false,params int[] acceptedErrorCodes)
+        public TSelf WithAcceptedErrorCodes(int[] acceptedErrorCodes, bool failOnExistingErrorHandler = false)
         {
+            if (acceptedErrorCodes is null or { Length: 0 })
+            {
+                return (TSelf)self;
+            }
+            
             return self.WithExitCodeHandler(code => acceptedErrorCodes.Contains(code), failOnExistingErrorHandler);
         }
 

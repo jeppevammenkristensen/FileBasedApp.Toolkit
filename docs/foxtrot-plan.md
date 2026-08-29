@@ -17,6 +17,33 @@ The health check was performed through Rider on 2026-08-29.
 
 ## Work Item 1: Add an accepted-exit-code API
 
+**Status:** In progress — implementation and focused unit coverage are complete; user documentation and final validation remain.
+
+### Current implementation progress
+
+- Added `WithAcceptedErrorCodes(int[] acceptedErrorCodes, bool failOnExistingErrorHandler = false)` as a fluent extension.
+- Added `HandlesAllErrorCodes(bool failOnExistingErrorHandler = false)` as a fluent extension.
+- Extended `WithExitCodeHandler` with optional conflict detection through `throwIfAlreadySet`.
+- Added `SimpleExecRunResult` and `SimpleExecReadResult` result types.
+- Added `RunWithExitCode`, `RunWithExitCodeAsync`, and `ReadEnhancedAsync` for returning the observed exit code, with captured output for reads.
+- Added tests covering the three result-returning methods, custom-handler delegation, the default zero/non-zero policy, accepted-code behavior, null and empty input, and accept-all behavior.
+- Verified all 82 `SimpleExecRunnerTest` tests pass.
+
+### Intentional API decisions
+
+- The public method is named `WithAcceptedErrorCodes` rather than `WithAcceptedExitCodes`.
+- The accepted codes are supplied as an `int[]` rather than a `params int[]`.
+- Passing a null or empty array is intentionally a no-op and preserves any existing exit-code handler.
+- A non-empty accepted-code array replaces the existing handler by default. Callers can set `failOnExistingErrorHandler: true` to reject replacement.
+- `HandlesAllErrorCodes` is intentionally included for callers that explicitly want to suppress default failure handling for every exit code.
+
+### Remaining closure work
+
+- Add or update the package README example for expected non-zero exit codes.
+- Complete the final XML-documentation review.
+- Update the changelog to use the final `WithAcceptedErrorCodes` name.
+- Run final solution and affected separate-project validation.
+
 ### Problem
 
 The current public API requires this for a command where exit code `1` is expected:
@@ -27,12 +54,14 @@ The current public API requires this for a command where exit code `1` is expect
 
 That exposes SimpleExec's low-level “handled exit code” callback and makes every caller repeat the same predicate.
 
-### Recommended public API
+### Chosen public API
 
-Add this fluent method to `BaseSimpleExecRunner<TSelf>`:
+Add this fluent extension for `BaseSimpleExecRunner<TSelf>`:
 
 ```csharp
-public TSelf WithAcceptedExitCodes(params int[] exitCodes)
+public TSelf WithAcceptedErrorCodes(
+    int[] acceptedErrorCodes,
+    bool failOnExistingErrorHandler = false)
 ```
 
 Use it like this:
@@ -40,7 +69,7 @@ Use it like this:
 ```csharp
 await new SimpleExecRunner("git")
     .AddArguments("diff", "--quiet")
-    .WithAcceptedExitCodes(1)
+    .WithAcceptedErrorCodes([1])
     .RunAsync();
 ```
 
@@ -50,18 +79,18 @@ The method should have the following contract:
 - Listed non-zero exit codes are treated as successful.
 - Any other non-zero exit code keeps the existing behavior and throws.
 - Duplicate exit codes have no effect.
-- An empty list clears the generated handler and restores the default behavior where only `0` succeeds.
-- Listing `0` is harmless but should be ignored when constructing the non-zero accepted-code set.
-- Calling `WithAcceptedExitCodes` again replaces the previous accepted-code policy rather than silently accumulating state.
+- A null or empty array is a no-op and leaves the current exit-code handler unchanged.
+- Listing `0` is harmless because SimpleExec already treats exit code `0` as successful.
+- Calling `WithAcceptedErrorCodes` again with a non-empty array replaces the previous accepted-code policy rather than silently accumulating state.
 - Keep `WithExitCodeHandler` as the advanced, backward-compatible API.
-- If both configuration methods are called, the last call should define the active policy. Document this explicitly.
+- By default, the last non-empty configuration call defines the active policy. Setting `failOnExistingErrorHandler: true` rejects replacement instead.
 
-Do not add `AcceptAnyExitCode()` in the first implementation. Requiring explicit codes makes accidental failure suppression less likely. It can be added later when there is a concrete use case.
+`HandlesAllErrorCodes` is included as an explicit opt-in for accepting every exit code.
 
 ### Implementation locations
 
 - Main implementation:
-  - `Source/FileBasedApp/FileBasedApp.Toolkit/SimpleExec/BaseSimpleExecRunner.cs`
+  - `Source/FileBasedApp/FileBasedApp.Toolkit/SimpleExec/BaseSimpleExecRunnerExtensions.cs`
 - Existing forwarding points that must continue to use the configured policy:
   - `Run` around lines 435-448.
   - `RunAsync` around lines 456-468.
@@ -73,17 +102,18 @@ Do not add `AcceptAnyExitCode()` in the first implementation. Requiring explicit
 - Release notes:
   - `CHANGELOG.md`
 
-### Tests to add
+### Test coverage
 
-- `WithAcceptedExitCodes(1)` produces a handler that marks `1` as handled but not `2`; exit code `0` remains successful through SimpleExec's default behavior.
-- Multiple accepted codes work.
-- Duplicate codes do not change behavior.
-- An empty list clears the handler and restores the default policy.
-- A second call replaces the first accepted-code list.
-- Calling `WithExitCodeHandler` after `WithAcceptedExitCodes` replaces the generated policy.
-- Calling `WithAcceptedExitCodes` after `WithExitCodeHandler` replaces the custom policy.
-- The generated handler is forwarded by `Run`, `RunAsync`, and `ReadAsync`.
-- Existing default-behavior tests continue to verify that the handler is `null` when no policy is configured.
+- [x] Configured codes are handled while unconfigured codes are not.
+- [x] Multiple accepted codes work.
+- [x] Duplicate codes do not change behavior.
+- [x] Null and empty arrays preserve the existing handler, including when replacement rejection is enabled.
+- [x] `WithAcceptedErrorCodes` replaces an existing custom handler by default.
+- [x] Replacement can be rejected with `failOnExistingErrorHandler: true`.
+- [x] `HandlesAllErrorCodes` handles zero, positive, negative, and maximum integer exit codes.
+- [x] `HandlesAllErrorCodes` replacement and replacement rejection are covered.
+- [x] Existing forwarding tests verify that `Run`, `RunAsync`, and `ReadAsync` pass their configured handler to SimpleExec.
+- [x] Existing default-behavior tests verify that the handler is `null` when no policy is configured.
 
 ## Work Item 2: Fix strict secret validation
 
@@ -154,22 +184,22 @@ This is the intended repository structure. Do not add these projects to `FileBas
 ## Implementation Order
 
 1. [x] Fix strict `AddSecrets` behavior and add its tests.
-2. Add `WithAcceptedExitCodes` and its tests.
-3. Update the SimpleExecRunner README examples and XML documentation.
-4. Add the optional stderr policy to `ReadAndParseJson` and test it.
-5. Build and test the main solution, plus any intentionally separate projects affected by the changes.
-6. Update `CHANGELOG.md` with the public API addition and behavior fixes.
+2. [x] Implement the accepted-error-code API and its direct tests.
+3. [ ] Update the SimpleExecRunner README examples and complete XML documentation.
+4. [ ] Add the optional stderr policy to `ReadAndParseJson` and test it.
+5. [ ] Build and test the main solution, plus any intentionally separate projects affected by the changes.
+6. [x] Update `CHANGELOG.md` with the current public API additions and behavior fixes.
 
 ## Definition of Done
 
-- [ ] `WithAcceptedExitCodes` is implemented with the contract above.
-- [ ] The default exit-code behavior remains unchanged.
+- [x] `WithAcceptedErrorCodes` is implemented with the chosen contract above.
+- [x] The default exit-code behavior remains unchanged.
 - [x] Strict `AddSecrets` validation is fixed and tested.
 - [ ] JSON stderr behavior is explicit and tested.
 - [ ] Intentionally separate projects are built directly when affected.
 - [ ] Public XML documentation explains accepted versus handled exit codes.
 - [ ] The package README contains an expected-non-zero-exit-code example.
-- [ ] The changelog describes the new API and fixes.
+- [x] The changelog describes the current API additions and fixes.
 - [ ] Rider reports no new problems.
 - [ ] The complete solution builds successfully.
 - [ ] All tests pass.
@@ -183,3 +213,11 @@ This is the intended repository structure. Do not add these projects to `FileBas
 - Converted the findings into implementation-ready work items for manual implementation.
 - Completed Work Item 2: fixed strict `AddSecrets` validation and added coverage for matching, failures, non-strict behavior, duplicates, and null elements.
 - Verified all 63 `SimpleExecRunnerTest` tests pass and the Rider solution build succeeds without reported problems.
+- Began Work Item 1 by adding `AcceptedErrorCodes`, `HandlesAllErrorCodes`, and optional conflict detection to `WithExitCodeHandler`.
+- Added `SimpleExecRunResult`, `SimpleExecReadResult`, `RunWithExitCode`, `RunWithExitCodeAsync`, and `ReadEnhancedAsync`.
+- Added focused tests for the three result-returning methods, configured-handler delegation, and default exit-code handling.
+- Verified all 70 `SimpleExecRunnerTest` tests pass. Full solution and separate-project validation remain pending for the completed Foxtrot work.
+- Updated `CHANGELOG.md` with the current public API additions and the strict `AddSecrets` fix.
+- Finalized the intentional API decisions: `WithAcceptedErrorCodes` uses an array, null and empty arrays are no-ops, and `HandlesAllErrorCodes` remains available as an explicit opt-in.
+- Added direct coverage for `WithAcceptedErrorCodes` and `HandlesAllErrorCodes`, including null and empty input and handler-replacement behavior.
+- Verified all 82 `SimpleExecRunnerTest` tests pass.

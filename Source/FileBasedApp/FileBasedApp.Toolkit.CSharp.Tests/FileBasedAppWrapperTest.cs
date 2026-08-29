@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
-using FileBasedApp.Toolkit.CSharp;
 using FluentAssertions;
 using JetBrains.Annotations;
 using NuGet.Versioning;

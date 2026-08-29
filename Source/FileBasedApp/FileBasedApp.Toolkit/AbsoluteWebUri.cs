@@ -1,8 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
-using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace FileBasedApp.Toolkit;
 
@@ -51,6 +48,7 @@ public class AbsoluteWebUri : AbstractUri<AbsoluteWebUri>, IParsable<AbsoluteWeb
     /// <param name="uri">The URI to wrap.</param>
     /// <returns>A new <see cref="AbsoluteWebUri"/> instance.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="uri"/> is not an absolute URI.</exception>
+    [UsedImplicitly]
     public static AbsoluteWebUri Create(Uri uri)
     {
         if (uri is {IsAbsoluteUri: true, IsFile: false})

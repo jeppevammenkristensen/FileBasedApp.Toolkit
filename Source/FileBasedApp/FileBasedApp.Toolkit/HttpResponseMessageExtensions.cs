@@ -34,7 +34,7 @@ public static class HttpResponseMessageExtensions
         /// <exception cref="InvalidOperationException"></exception>
         public async Task<T> FromRequiredJson<T>(JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken = default)
         {
-            return (await response.FromJson(typeInfo, cancellationToken)) ?? throw new InvalidOperationException("Deserialization returned null");
+            return await response.FromJson(typeInfo, cancellationToken) ?? throw new InvalidOperationException("Deserialization returned null");
         }
     }
 }

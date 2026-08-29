@@ -1,9 +1,11 @@
-﻿namespace FileBasedApp.Toolkit;
+﻿using JetBrains.Annotations;
+
+namespace FileBasedApp.Toolkit;
 
 /// <summary>
 /// Represents a web URI (HTTP/HTTPS).
 /// </summary>
-public interface IWebUri<TSelf> where TSelf : IWebUri<TSelf>
+public interface IWebUri<out TSelf> where TSelf : IWebUri<TSelf>
 {
     /// <summary>
     /// Gets the underlying URI object representing the web address.
@@ -13,6 +15,7 @@ public interface IWebUri<TSelf> where TSelf : IWebUri<TSelf>
     /// <summary>
     /// Gets the string representation of the URI.
     /// </summary>
+    [UsedImplicitly]
     public string Value { get; }
 
     /// <summary>
@@ -20,5 +23,6 @@ public interface IWebUri<TSelf> where TSelf : IWebUri<TSelf>
     /// </summary>
     /// <param name="uri">The URI to create the instance from.</param>
     /// <returns>A new instance of the implementing type.</returns>
+    [UsedImplicitly]
     static abstract TSelf Create(string uri);
 }

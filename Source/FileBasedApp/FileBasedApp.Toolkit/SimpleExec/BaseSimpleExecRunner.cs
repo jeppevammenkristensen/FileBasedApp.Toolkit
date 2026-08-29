@@ -390,13 +390,24 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     }
 
     /// <summary>
-    /// Sets a custom handler to determine whether a command's exit code should be considered successful.
-    /// The handler receives the exit code and returns true if the exit code is acceptable, false otherwise.
+    /// Sets the low-level callback that determines whether SimpleExec should treat an exit code as handled.
     /// </summary>
-    /// <param name="handler">A function that receives an exit code and returns true if it represents success, false if it represents failure.</param>
-    /// <param name="throwIfAlreadySet">If set to true and exception if this has already been set</param>
+    /// <param name="handler">
+    /// A callback that returns <see langword="true"/> to handle an exit code without throwing, or
+    /// <see langword="false"/> to retain SimpleExec's failure behavior for that code.
+    /// </param>
+    /// <param name="throwIfAlreadySet">
+    /// <see langword="true"/> to throw when another handler is already configured; otherwise, replace it.
+    /// </param>
     /// <returns>The current <see cref="SimpleExecRunner"/> instance for method chaining.</returns>
-    /// <remarks>If this is left out the default exit code handler logic is used.</remarks>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a handler is already configured and <paramref name="throwIfAlreadySet"/> is <see langword="true"/>.
+    /// </exception>
+    /// <remarks>
+    /// This is the advanced SimpleExec callback API. Prefer <c>WithAcceptedErrorCodes</c> when a command has a known set
+    /// of expected non-zero exit codes. When no handler is configured, SimpleExec treats <c>0</c> as successful and
+    /// throws for non-zero exit codes. Exit code <c>0</c> is handled independently by SimpleExec.
+    /// </remarks>
     public TSelf WithExitCodeHandler(Func<int, bool> handler, bool throwIfAlreadySet = false)
     {
         if (throwIfAlreadySet && ExitCodeHandler != null)
@@ -407,11 +418,13 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     }
 
     /// <summary>
-    /// Gets or sets a function that determines whether a given exit code should be considered successful.
-    /// When set, the handler receives the process exit code and returns true if the exit code is acceptable,
-    /// or false if it should be treated as an error.
-    /// If null, the default behavior treats only exit code 0 as successful.
+    /// Gets the callback used by SimpleExec to determine whether an exit code is handled.
     /// </summary>
+    /// <remarks>
+    /// A callback result of <see langword="true"/> suppresses the default exception for the supplied exit code;
+    /// <see langword="false"/> leaves it unhandled. When <see langword="null"/>, SimpleExec applies its default behavior:
+    /// exit code <c>0</c> succeeds and a non-zero exit code throws.
+    /// </remarks>
     public Func<int, bool>? ExitCodeHandler { get; private set; }
 
     /// <summary>

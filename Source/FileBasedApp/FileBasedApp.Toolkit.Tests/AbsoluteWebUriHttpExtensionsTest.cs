@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-using FileBasedApp.Toolkit;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;

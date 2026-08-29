@@ -17,7 +17,7 @@ The health check was performed through Rider on 2026-08-29.
 
 ## Work Item 1: Add an accepted-exit-code API
 
-**Status:** In progress — implementation and focused unit coverage are complete; user documentation and final validation remain.
+**Status:** In progress — implementation, focused unit coverage, and user documentation are complete; final validation remains.
 
 ### Current implementation progress
 
@@ -39,8 +39,6 @@ The health check was performed through Rider on 2026-08-29.
 
 ### Remaining closure work
 
-- Add or update the package README example for expected non-zero exit codes.
-- Complete the final XML-documentation review.
 - Update the changelog to use the final `WithAcceptedErrorCodes` name.
 - Run final solution and affected separate-project validation.
 
@@ -185,8 +183,8 @@ This is the intended repository structure. Do not add these projects to `FileBas
 
 1. [x] Fix strict `AddSecrets` behavior and add its tests.
 2. [x] Implement the accepted-error-code API and its direct tests.
-3. [ ] Update the SimpleExecRunner README examples and complete XML documentation.
-4. [ ] Add the optional stderr policy to `ReadAndParseJson` and test it.
+3. [x] Update the SimpleExecRunner README examples and complete XML documentation.
+4. [x] Add the optional stderr policy to `ReadAndParseJson` and test it.
 5. [ ] Build and test the main solution, plus any intentionally separate projects affected by the changes.
 6. [x] Update `CHANGELOG.md` with the current public API additions and behavior fixes.
 
@@ -197,8 +195,8 @@ This is the intended repository structure. Do not add these projects to `FileBas
 - [x] Strict `AddSecrets` validation is fixed and tested.
 - [ ] JSON stderr behavior is explicit and tested.
 - [ ] Intentionally separate projects are built directly when affected.
-- [ ] Public XML documentation explains accepted versus handled exit codes.
-- [ ] The package README contains an expected-non-zero-exit-code example.
+- [x] Public XML documentation explains accepted versus handled exit codes.
+- [x] The package README contains an expected-non-zero-exit-code example.
 - [x] The changelog describes the current API additions and fixes.
 - [ ] Rider reports no new problems.
 - [ ] The complete solution builds successfully.
@@ -221,3 +219,5 @@ This is the intended repository structure. Do not add these projects to `FileBas
 - Finalized the intentional API decisions: `WithAcceptedErrorCodes` uses an array, null and empty arrays are no-ops, and `HandlesAllErrorCodes` remains available as an explicit opt-in.
 - Added direct coverage for `WithAcceptedErrorCodes` and `HandlesAllErrorCodes`, including null and empty input and handler-replacement behavior.
 - Verified all 82 `SimpleExecRunnerTest` tests pass.
+- Added a package README example for accepting the expected exit code from `git diff --quiet`.
+- Completed the XML-documentation review for accepted error codes, accept-all behavior, and the low-level handled-exit-code callback.

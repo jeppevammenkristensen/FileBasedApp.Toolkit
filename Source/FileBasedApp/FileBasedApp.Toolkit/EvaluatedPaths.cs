@@ -18,16 +18,14 @@ internal record EvaluatedPaths(ImmutableArray<EvaluatedPath> Paths) : IEvaluated
         {
             return Paths[0].GetPath(shouldExist, originalPathCanBeNull);
         }
-        else
-        {
-            var results = Paths.Select(x => x.GetPath(shouldExist, originalPathCanBeNull))
-                .Select(x => new {x.errorMessage, x.path})
-                .ToList();
+
+        var results = Paths.Select(x => x.GetPath(shouldExist, originalPathCanBeNull))
+            .Select(x => new {x.errorMessage, x.path})
+            .ToList();
             
-            var result = results
-                .FirstOrDefault(x => x.errorMessage == null) ?? results[0];
+        var result = results
+            .FirstOrDefault(x => x.errorMessage == null) ?? results[0];
             
-            return (result.path, result.errorMessage);
-        }
+        return (result.path, result.errorMessage);
     }
 }

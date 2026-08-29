@@ -198,7 +198,7 @@ public class SimpleExecCommand : ISimpleExecCommandWrapper,
     /// </exception>
     public Task<(string StandardOutput, string StandardError)> ReadAsync(string name, IEnumerable<string> args, string workingDirectory = "", Action<IDictionary<string, string?>>? configureEnvironment = null, Func<int, bool>? handleExitCode = null, Encoding? encoding = null, string? standardInput = null, bool cancellationIgnoresProcessTree = false, Ct ct = default) => Command.ReadAsync(name, args, workingDirectory, configureEnvironment, handleExitCode, encoding, standardInput, cancellationIgnoresProcessTree, ct);
 
-    private static ISimpleExecCommandWrapper GetDefault()
+    private static SimpleExecCommand GetDefault()
     {
         return new SimpleExecCommand();
     }

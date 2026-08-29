@@ -14,16 +14,23 @@ public static class BaseSimpleExecRunnerExtensions
     extension<TSelf>(BaseSimpleExecRunner<TSelf> self) where TSelf : BaseSimpleExecRunner<TSelf>
     {
         /// <summary>
-        /// Configures the runner to accept the specified error codes as valid exit codes.
-        /// This allows commands to complete successfully even if their exit code matches one of the provided codes.
+        /// Accepts the specified non-zero exit codes so the command can complete without throwing.
         /// </summary>
-        /// <param name="failOnExistingErrorHandler">Throw an exception if a exit code handler has already been set</param>
-        /// <param name="acceptedErrorCodes">An array of integer values representing the error codes that should be treated as successful exit codes.</param>
-        /// <returns>Returns the current instance of the runner for method chaining.</returns>
+        /// <param name="acceptedErrorCodes">The exit codes to accept in addition to the default successful exit code, <c>0</c>.</param>
+        /// <param name="failOnExistingErrorHandler">
+        /// <see langword="true"/> to throw when an exit-code handler is already configured;
+        /// otherwise, a non-empty array replaces the existing handler.
+        /// </param>
+        /// <returns>The current runner instance for method chaining.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when a handler is already configured and <paramref name="failOnExistingErrorHandler"/> is <see langword="true"/>.
+        /// </exception>
         /// <remarks>
-        /// This method modifies the behavior of the exit code handler to consider the specified error codes as valid.
-        /// Use this method to handle cases where specific non-zero exit codes are expected and should not be treated as errors.
-        /// Passing an empty acceptedErrorCodes will not modify the error handler
+        /// SimpleExec handles exit code <c>0</c> independently, so it does not need to be included.
+        /// A listed non-zero code is handled without throwing; any other non-zero code retains SimpleExec's failure behavior.
+        /// Passing <see langword="null"/> or an empty array is a no-op and preserves the current handler.
+        /// Repeated calls with non-empty arrays replace rather than combine the accepted codes.
+        /// Use <c>WithExitCodeHandler</c> for advanced callback-based handling.
         /// </remarks>
         public TSelf WithAcceptedErrorCodes(int[] acceptedErrorCodes, bool failOnExistingErrorHandler = false)
         {
@@ -36,14 +43,18 @@ public static class BaseSimpleExecRunnerExtensions
         }
 
         /// <summary>
-        /// Configures the runner to treat all exit codes as valid and successful.
-        /// When this handler is applied, every exit code will be accepted, regardless of its value.
+        /// Handles every exit code without applying SimpleExec's default non-zero-exit-code failure behavior.
         /// </summary>
-        /// <param name="failOnExistingErrorHandler">Specifies whether an exception should be thrown if an existing exit code handler is already set.</param>
-        /// <returns>Returns the current instance of the runner for method chaining.</returns>
+        /// <param name="failOnExistingErrorHandler">
+        /// <see langword="true"/> to throw when an exit-code handler is already configured;
+        /// otherwise, replace the existing handler.
+        /// </param>
+        /// <returns>The current runner instance for method chaining.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when a handler is already configured and <paramref name="failOnExistingErrorHandler"/> is <see langword="true"/>.
+        /// </exception>
         /// <remarks>
-        /// Use this method when commands with any exit code should be considered successful.
-        /// This overrides any pre-existing exit code handler. Ensure that this configuration aligns with your application's error-handling requirements.
+        /// Use this only when every non-zero exit code is an expected result. By default, this replaces any previously configured handler.
         /// </remarks>
         public TSelf HandlesAllErrorCodes(bool failOnExistingErrorHandler = false)
         {
@@ -95,7 +106,7 @@ public static class BaseSimpleExecRunnerExtensions
             var bytes = Encoding.UTF8.GetBytes(standardOutput);
             using var stream = new MemoryStream(bytes);
             
-            return await JsonSerializer.DeserializeAsync<T>(stream, options, cancellationToken) ?? throw new InvalidOperationException("Deserialization returned null");
+            return await JsonSerializer.DeserializeAsync(stream, options, cancellationToken) ?? throw new InvalidOperationException("Deserialization returned null");
         }
     }
 }

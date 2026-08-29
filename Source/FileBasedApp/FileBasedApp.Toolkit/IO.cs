@@ -215,25 +215,28 @@ public static class IO
         {
             using var streamReader = new StreamReader(s);
 
-            if (searchStrategy == FileSearchStrategy.AllText)
+            switch (searchStrategy)
             {
-                return regex.IsMatch(streamReader.ReadToEnd());
-            }
-            else if (searchStrategy == FileSearchStrategy.ByLine)
-            {
-                var currentLine = streamReader.ReadLine();
-
-                while (currentLine != null)
+                case FileSearchStrategy.AllText:
+                    return regex.IsMatch(streamReader.ReadToEnd());
+                case FileSearchStrategy.ByLine:
                 {
-                    if (regex.IsMatch(currentLine))
+                    var currentLine = streamReader.ReadLine();
+
+                    while (currentLine != null)
                     {
-                        return true;
+                        if (regex.IsMatch(currentLine))
+                        {
+                            return true;
+                        }
+
+                        currentLine = streamReader.ReadLine();
                     }
 
-                    currentLine = streamReader.ReadLine();
-                }    
+                    break;
+                }
             }
-            
+
             return false;
         }
     }

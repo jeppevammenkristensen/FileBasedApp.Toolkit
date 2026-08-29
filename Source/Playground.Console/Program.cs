@@ -1,14 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using Dumpify;
 using FileBasedApp.Toolkit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console;
-using Spectre.Console.Json;
 
 var url = AbsoluteWebUri.Create("https://www.dr.dk")
           / UriPathSegment.From("first") 

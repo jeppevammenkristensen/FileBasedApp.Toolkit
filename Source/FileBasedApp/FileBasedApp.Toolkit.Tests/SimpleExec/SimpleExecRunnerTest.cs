@@ -376,6 +376,85 @@ public class SimpleExecRunnerTest
     }
 
     [Fact]
+    public void AddSecrets_Strict_AllSecretsMatchArguments_AddsSecrets()
+    {
+        var runner = CreateRunner()
+            .AddArguments("first", "second")
+            .AddSecrets(true, "first", "second");
+
+        runner.Secrets.Should().BeEquivalentTo(["first", "second"]);
+    }
+
+    [Fact]
+    public void AddSecrets_Strict_SecretMatchesPartOfArgumentIgnoringCase()
+    {
+        var runner = CreateRunner()
+            .AddArgument("prefix-SECRET-suffix")
+            .AddSecrets(true, "secret");
+
+        runner.Secrets.Should().Contain("secret");
+    }
+
+    [Fact]
+    public void AddSecrets_Strict_UnmatchedSecret_ThrowsAndDoesNotAddSecrets()
+    {
+        var runner = CreateRunner()
+            .AddArgument("present");
+
+        var act = () => runner.AddSecrets(true, "missing");
+
+        act.Should().Throw<InvalidOperationException>()
+            .WithMessage("*missing*");
+        runner.Secrets.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void AddSecrets_Strict_MixedSecrets_ReportsOnlyUnmatchedSecrets()
+    {
+        var runner = CreateRunner()
+            .AddArgument("contains-present-value");
+
+        var act = () => runner.AddSecrets(true, "present", "missing-one", "missing-two");
+
+        var exception = act.Should().Throw<InvalidOperationException>().Which;
+        exception.Message.Should().Contain("missing-one");
+        exception.Message.Should().Contain("missing-two");
+        exception.Message.Should().NotContain("present");
+        runner.Secrets.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void AddSecrets_NonStrict_UnmatchedSecret_IsAdded()
+    {
+        var runner = CreateRunner()
+            .AddArgument("visible")
+            .AddSecrets(false, "missing");
+
+        runner.Secrets.Should().Contain("missing");
+    }
+
+    [Fact]
+    public void AddSecrets_DuplicateSecrets_AreStoredOnce()
+    {
+        var runner = CreateRunner()
+            .AddSecrets(false, "duplicate", "duplicate");
+
+        runner.Secrets.Should().ContainSingle()
+            .Which.Should().Be("duplicate");
+    }
+
+    [Fact]
+    public void AddSecrets_NullElement_ThrowsAndDoesNotAddSecrets()
+    {
+        var runner = CreateRunner();
+
+        var act = () => runner.AddSecrets(false, "valid", null!);
+
+        act.Should().Throw<ArgumentException>();
+        runner.Secrets.Should().BeEmpty();
+    }
+
+    [Fact]
     public void AddArgumentPairConditionally_ConditionTrue_AddsBothArguments()
     {
         var runner = CreateRunner()

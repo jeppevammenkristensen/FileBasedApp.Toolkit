@@ -6,6 +6,7 @@
 #:property PackageId=FileBasedApp.BuildAndPublish
 
 using System.Collections.Immutable;
+using System.ComponentModel;
 using Spectre.Console.Cli;
 using TruePath;
 using Spectre.Console;
@@ -30,19 +31,28 @@ var commandApp = new CommandApp<RunCommand>();
 commandApp.Configure(ctx =>
 {
 	ctx.PropagateExceptions();
+	ctx.UseAssemblyInformationalVersion();
 });
 
 return await commandApp.RunAsync(args);
 
+/// <summary>
+/// Packs buildable inputs and publishes the resulting NuGet packages to a selected source.
+/// </summary>
 public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you can use Command (and have Execute instead of ExecuteAsync
 {
 	[GeneratedRegex(@"\d+\.\s+(?<name>.+?)\s\[(?<status>Enabled|Disabled)\]")]
 	private partial Regex NugetSourceRegex { get; }
 	
+	/// <summary>
+	/// Packs the configured inputs and pushes the generated packages to the configured or interactively selected NuGet source.
+	/// </summary>
 	protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
 	{
 		var temporaryDirectory  = (PathIO.GetTempPathAbsolute() / "Artifacts").CreateDirectory().GetAbsolutePath();
 		AnsiConsole.MarkupLineInterpolated($"[green]Creating temporary {temporaryDirectory}[/]");
+		
+		temporaryDirectory.SafeDeleteDirectory();
 		
 		try
 		{		
@@ -50,12 +60,21 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 			{
 				AnsiConsole.MarkupLineInterpolated($"[green]Building [bold]{path.RelativeTo(PathUtil.GetCurrentWorkingFolder())}[/][/]");
 				
-				await DotnetPackSimpleRunner
+				var runner = DotnetPackSimpleRunner
 					.Init()
 					.WithProject(path)
 					.WithConfiguration("Release")
-					.WithOutput(temporaryDirectory)
-					.RunAsync(token: cancellationToken);					
+					.WithOutput(temporaryDirectory);
+
+				if (settings.Path.Length == 1)
+				{
+					foreach (var (key, value) in settings.Properties ?? ImmutableDictionary<string, string?>.Empty)
+					{
+						runner.AddArgument($"-p:{key}={value}");
+					}	
+				}
+				
+				await runner.RunAsync(token: cancellationToken);					
 			}
 
 			(string output, string _)  = await SimpleExecRunner.Init("dotnet")
@@ -98,7 +117,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 				{
 					runner.WithApiKey(settings.ApiKey);
 				}
-
+				
 				await runner.RunAsync(token: cancellationToken);
 			}
 		}
@@ -110,24 +129,60 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 		return 0; // 0 for success
 	}	
 	
+	/// <summary>
+	/// Defines the command-line inputs and validated build paths used by the build-and-publish workflow.
+	/// </summary>
 	public class Settings : ExtendedCommandSettings
 	{
+		/// <summary>
+		/// Gets or sets the candidate project, solution, file-based app, or directory path to process.
+		/// </summary>
 		[CommandArgument(0, "[PathToUse]")]
+		[Description("Path to a project, solution, file-based app, or directory containing buildable files.")]
 		public string? PathCandidate { get; set; }
 		
+		/// <summary>
+		/// Gets or sets the API key used to authenticate package pushes.
+		/// </summary>
 		[CommandOption("--api-key")]
+		[Description("API key used when pushing packages to the selected NuGet source.")]
 		public string? ApiKey {get;set;}
 		
+		/// <summary>
+		/// Gets or sets the NuGet source name or URL to which packages are pushed.
+		/// </summary>
 		[CommandOption("--source")]
+		[Description("NuGet source name or URL to push packages to. Prompts for a source when omitted.")]
 		public string? Source {get;set;}
+		
+		/// <summary>
+		/// Gets or sets the MSBuild properties supplied when packing each input.
+		/// </summary>
+		[CommandOption("-p|--property <NAME=VALUE>")]
+		[Description("MSBuild property to pass to dotnet pack. May be specified multiple times.")]
+		public IDictionary<string,string?> Properties { get; set; }
 		
 		private readonly HashSet<string> _directlyBuildableTypes =
 			new(["csproj", "slnx", "sln"], StringComparer.OrdinalIgnoreCase);
 		
+		/// <summary>
+		/// Gets a value indicating whether the supplied candidate resolves to a directly buildable file.
+		/// </summary>
 		public bool IsValidFile { get; private set; }
+
+		/// <summary>
+		/// Gets a value indicating whether the supplied candidate resolves to a directory.
+		/// </summary>
 		public bool IsValidFolder { get; private set; }
+
+		/// <summary>
+		/// Gets the validated paths that will be packed and published.
+		/// </summary>
 		public ImmutableArray<AbsolutePath> Path { get; private set; }
 		
+		/// <summary>
+		/// Resolves the path candidate and validates that it identifies at least one buildable input.
+		/// </summary>
 		protected override ValidationResult DoValidate()
 		{
 			// Exceptions here will bubble up and outputted as validation
@@ -140,7 +195,8 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 					Path = [filePath];
 					return base.DoValidate();					
 				}
-				else if (filePath.GetExtensionWithoutDot() == "cs")
+
+				if (filePath.GetExtensionWithoutDot() == "cs")
 				{
 					var evaulator = new FileBasedAppEvaluator();
 					if (evaulator.IsFileBasedApp(filePath))
@@ -149,49 +205,45 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 						Path = [filePath];
 						return base.DoValidate();
 					}
-					else
-					{
-						throw new InvalidOperationException($"The given cs file is not a file based app: {filePath}");
-					}
+
+					throw new InvalidOperationException($"The given cs file is not a file based app: {filePath}");
 				}
 
 				throw new InvalidOperationException("The file is not in a correct format");
 			}
-			else
+
+			var evaulatedDirectory = PathUtil.AnalyzeDirectory(PathCandidate, PathUtil.GetCurrentWorkingFolder());
+			if (evaulatedDirectory.GetPath(true, true) is {errorMessage: null, path: { } directoryPath})
 			{
-				var evaulatedDirectory = PathUtil.AnalyzeDirectory(PathCandidate, PathUtil.GetCurrentWorkingFolder());
-				if (evaulatedDirectory.GetPath(true, true) is {errorMessage: null, path: { } directoryPath})
+				var buildablePaths = directoryPath.EnumerateFiles().Where(path =>
 				{
-					var buildablePaths = directoryPath.EnumerateFiles().Where(path =>
+					if (_directlyBuildableTypes.Contains(path.GetExtensionWithoutDot()))
 					{
-						if (_directlyBuildableTypes.Contains(path.GetExtensionWithoutDot()))
-						{
-							IsValidFile= true;
-							return true;
-						}
-
-						if (path.GetExtensionWithoutDot() == "cs")
-						{
-							var evaulator = new FileBasedAppEvaluator();
-							if (evaulator.IsFileBasedApp(path))
-							{
-								return true;
-							}
-						}
-
-						return false;
-					}).ToList();
-
-					if (buildablePaths.Count == 0)
-					{
-						throw new InvalidOperationException($"The given directory is does not contain any buildable files: {directoryPath}");
+						IsValidFile= true;
+						return true;
 					}
 
+					if (path.GetExtensionWithoutDot() == "cs")
+					{
+						var evaulator = new FileBasedAppEvaluator();
+						if (evaulator.IsFileBasedApp(path))
+						{
+							return true;
+						}
+					}
 
-					Path = [..buildablePaths];
+					return false;
+				}).ToList();
+
+				if (buildablePaths.Count == 0)
+				{
+					throw new InvalidOperationException($"The given directory is does not contain any buildable files: {directoryPath}");
 				}
+
+
+				Path = [..buildablePaths];
 			}
-			
+
 			if (Path == null)
 			{
 				throw new InvalidOperationException($"Path {PathCandidate} is not correct");

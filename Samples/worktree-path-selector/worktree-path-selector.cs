@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@1.0.1
+#:package FileBasedApp.Toolkit@1.1.1
 #:package TextCopy@6.2.1
 #:property PublishAot=false
 #:property PackAsTool=true

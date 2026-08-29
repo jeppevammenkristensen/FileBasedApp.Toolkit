@@ -1,6 +1,6 @@
 #!/usr/bin/env dotnet run
 
-#:package FileBasedApp.Toolkit@1.1.0-alpha-01
+#:package FileBasedApp.Toolkit@1.1.1
 
 using System.Net.Http.Json;
 using FileBasedApp.Toolkit;

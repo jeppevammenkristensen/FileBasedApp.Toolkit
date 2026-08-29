@@ -14,6 +14,38 @@ public static class BaseSimpleExecRunnerExtensions
     extension<TSelf>(BaseSimpleExecRunner<TSelf> self) where TSelf : BaseSimpleExecRunner<TSelf>
     {
         /// <summary>
+        /// Configures the runner to accept the specified error codes as valid exit codes.
+        /// This allows commands to complete successfully even if their exit code matches one of the provided codes.
+        /// </summary>
+        /// <param name="failOnExistingErrorHandler">Throw an exception if a exit code handler has already been set</param>
+        /// <param name="acceptedErrorCodes">An array of integer values representing the error codes that should be treated as successful exit codes.</param>
+        /// <returns>Returns the current instance of the runner for method chaining.</returns>
+        /// <remarks>
+        /// This method modifies the behavior of the exit code handler to consider the specified error codes as valid.
+        /// Use this method to handle cases where specific non-zero exit codes are expected and should not be treated as errors.
+        /// NOTE. This will override any existing exit code handler.
+        /// </remarks>
+        public TSelf AcceptedErrorCodes(bool failOnExistingErrorHandler = false,params int[] acceptedErrorCodes)
+        {
+            return self.WithExitCodeHandler(code => acceptedErrorCodes.Contains(code), failOnExistingErrorHandler);
+        }
+
+        /// <summary>
+        /// Configures the runner to treat all exit codes as valid and successful.
+        /// When this handler is applied, every exit code will be accepted, regardless of its value.
+        /// </summary>
+        /// <param name="failOnExistingErrorHandler">Specifies whether an exception should be thrown if an existing exit code handler is already set.</param>
+        /// <returns>Returns the current instance of the runner for method chaining.</returns>
+        /// <remarks>
+        /// Use this method when commands with any exit code should be considered successful.
+        /// This overrides any pre-existing exit code handler. Ensure that this configuration aligns with your application's error-handling requirements.
+        /// </remarks>
+        public TSelf HandlesAllErrorCodes(bool failOnExistingErrorHandler = false)
+        {
+            return self.WithExitCodeHandler(_ => true, failOnExistingErrorHandler);
+        }
+        
+        /// <summary>
         /// Runs the command and returns the standard output and standard error as a tuple. This is here
         /// as a convenience method to help make you more likely to use this if you use an mcp as this call
         /// </summary>

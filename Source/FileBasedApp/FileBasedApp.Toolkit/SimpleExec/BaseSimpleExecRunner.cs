@@ -6,12 +6,49 @@ using TruePath;
 namespace FileBasedApp.Toolkit.SimpleExec;
 
 /// <summary>
+/// Represents the result of a simple execution run operation. This provides information about the
+/// exit code returned by the process, allowing for validation or error handling.
+/// </summary>
+/// <param name="ExitCode">The exit code returned by the executed process, where a value of 0 traditionally indicates success.</param>
+public record SimpleExecRunResult(int ExitCode);
+
+/// <summary>
+/// Represents the result of a simple execution read operation. May include information such as the command output,
+/// error output, and exit code, providing a structured way to handle command execution results.
+/// </summary>
+/// <param name="standardOutput">The text captured from the process's standard output stream.</param>
+/// <param name="standardError">The text captured from the process's standard error stream.</param>
+/// <param name="exitCode">The exit code returned by the process.</param>
+public class SimpleExecReadResult(string standardOutput, string standardError, int exitCode)
+{
+    /// <summary>
+    /// Gets the text captured from the process's standard output stream.
+    /// </summary>
+    public string StandardOutput { get; } = standardOutput;
+
+    /// <summary>
+    /// Gets the text captured from the process's standard error stream.
+    /// </summary>
+    public string StandardError { get; } = standardError;
+
+    /// <summary>
+    /// Gets the exit code returned by the process.
+    /// </summary>
+    public int ExitCode { get; } = exitCode;
+}
+
+/// <summary>
 /// A base class for simple exec runners. Not intended for external use, but can be used for internal extension methods to provide additional fluent configuration options without exposing those options on the main SimpleExecRunner API.
 /// </summary>
 /// <typeparam name="TSelf"></typeparam>]
 [UsedImplicitly]
 public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecRunner<TSelf>
 {
+    /// <summary>
+    /// Based on analysis this mimmicks the logic found in SimpleExec
+    /// </summary>
+    internal Func<int, bool> DefaultExitCodeHandler = i => i == 0; 
+    
     /// <summary>
     /// The command wrapper used for execution. Returns the test wrapper if set, otherwise the default <see cref="SimpleExecCommand.Instance"/>.
     /// </summary>
@@ -357,10 +394,14 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     /// The handler receives the exit code and returns true if the exit code is acceptable, false otherwise.
     /// </summary>
     /// <param name="handler">A function that receives an exit code and returns true if it represents success, false if it represents failure.</param>
+    /// <param name="throwIfAlreadySet">If set to true and exception if this has already been set</param>
     /// <returns>The current <see cref="SimpleExecRunner"/> instance for method chaining.</returns>
     /// <remarks>If this is left out the default exit code handler logic is used.</remarks>
-    public TSelf WithExitCodeHandler(Func<int, bool> handler)
+    public TSelf WithExitCodeHandler(Func<int, bool> handler, bool throwIfAlreadySet = false)
     {
+        if (throwIfAlreadySet && ExitCodeHandler != null)
+            throw new InvalidOperationException($"Exit code handler has already been set earlier and {nameof(throwIfAlreadySet)} is true");
+        
         ExitCodeHandler = handler;
         return (TSelf)this;;
     }
@@ -450,6 +491,40 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
     }
 
     /// <summary>
+    /// Runs the command and outputs the exit code to the console.
+    /// </summary>
+    /// <param name="commandWrapper"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    /// <remarks>If an ExitCodeHandler is set it will be respected. So a call to this method can still fail</remarks>
+    public SimpleExecRunResult RunWithExitCode(ISimpleExecCommandWrapper? commandWrapper = null, CancellationToken token = default)
+    {
+        int recordedExitCode = 0;
+
+        Func<int, bool> unwrappedHandler = ExitCodeHandler ?? DefaultExitCodeHandler;
+
+        bool WrappedHandler(int exitCode)
+        {
+            recordedExitCode = exitCode;
+            return unwrappedHandler(exitCode);
+        }
+
+        (commandWrapper ?? Wrapper).Run(
+            Name,
+            Arguments,
+            configureEnvironment: ConfigureEnvironment,
+            workingDirectory: WorkingDirectory?.Value ?? string.Empty,
+            cancellationIgnoresProcessTree: CancellationIgnoresProcessTree,
+            createNoWindow: CreateNoWindow,
+            secrets: Secrets,
+            handleExitCode: WrappedHandler,
+            echoPrefix: EchoPrefix,
+            noEcho: NoEcho, ct: token);
+
+        return new SimpleExecRunResult(recordedExitCode);
+    }
+    
+    /// <summary>
     /// Executes the command synchronously using the configured name, arguments, and working directory.
     /// </summary>
     /// <param name="commandWrapper">An optional <see cref="ISimpleExecCommandWrapper"/> to use for execution. When <see langword="null"/>, the internally configured wrapper is used.</param>
@@ -488,6 +563,38 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
             echoPrefix: EchoPrefix,
             noEcho: NoEcho, ct: token);
     }
+    
+    /// <summary>
+    /// Executes the command asynchronously with the configured arguments and options.
+    /// </summary>
+    /// <param name="commandWrapper">An optional <see cref="ISimpleExecCommandWrapper"/> to use for execution. When <see langword="null"/>, the internally configured wrapper is used.</param>
+    /// <param name="token">A cancellation token to observe while waiting for the command to exit.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public async Task<SimpleExecRunResult> RunWithExitCodeAsync(ISimpleExecCommandWrapper? commandWrapper = null, CancellationToken token = default)
+    {
+        int recordedExitCode = 0;
+
+        Func<int, bool> unwrappedHandler = ExitCodeHandler ?? DefaultExitCodeHandler;
+
+        bool WrappedHandler(int exitCode)
+        {
+            recordedExitCode = exitCode;
+            return unwrappedHandler(exitCode);
+        }
+        
+        await (commandWrapper ?? Wrapper).RunAsync(Name,
+            Arguments,
+            configureEnvironment: ConfigureEnvironment,
+            workingDirectory: WorkingDirectory?.Value ?? string.Empty,
+            cancellationIgnoresProcessTree: CancellationIgnoresProcessTree,
+            createNoWindow: CreateNoWindow,
+            secrets: Secrets,
+            handleExitCode: WrappedHandler,
+            echoPrefix: EchoPrefix,
+            noEcho: NoEcho, ct: token);
+
+        return new SimpleExecRunResult(recordedExitCode);
+    }
 
     /// <summary>
     /// Executes the command asynchronously and captures the standard output and standard error streams as strings.
@@ -509,4 +616,39 @@ public abstract class BaseSimpleExecRunner<TSelf>  where TSelf : BaseSimpleExecR
             standardInput: StandardInput,
             ct: token);
     }
+    
+    /// <summary>
+    /// Executes the command asynchronously and captures the standard output and standard error streams as strings.
+    /// </summary>
+    /// <param name="commandWrapper">An optional <see cref="ISimpleExecCommandWrapper"/> to use for execution. When <see langword="null"/>, the internally configured wrapper is used.</param>
+    /// <param name="token">A cancellation token to observe while waiting for the command to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a tuple with the captured standard output and standard error.</returns>
+    /// <remarks>This is the safe choice</remarks>
+    public async Task<SimpleExecReadResult> ReadEnhancedAsync(ISimpleExecCommandWrapper? commandWrapper = null, CancellationToken token = default)
+    {
+        int exitCode = 0;
+
+        Func<int, bool> unwrappedHandler = ExitCodeHandler ?? DefaultExitCodeHandler;
+
+        Func<int,bool> wrappedHandler = i =>
+        {
+            exitCode = i;
+            return unwrappedHandler(i);
+        };
+        
+        
+        var result = await (commandWrapper ?? Wrapper).ReadAsync(Name,
+            Arguments,
+            configureEnvironment: ConfigureEnvironment,
+            workingDirectory: WorkingDirectory?.Value ?? string.Empty,
+            cancellationIgnoresProcessTree: CancellationIgnoresProcessTree,
+            handleExitCode: wrappedHandler,
+            encoding: Encoding,
+            standardInput: StandardInput,
+            ct: token);
+
+        return new SimpleExecReadResult(result.StandardOutput, result.StandardError, exitCode);
+    }
+    
+   
 }

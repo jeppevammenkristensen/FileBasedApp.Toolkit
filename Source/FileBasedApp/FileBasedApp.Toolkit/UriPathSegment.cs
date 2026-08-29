@@ -40,7 +40,7 @@ public partial class UriPathSegment
     }
 
     /// <summary>
-    /// 
+    /// Returns the path segment without leading or trailing separators.
     /// </summary>
     public string WithNoLeadingOrTrailingSeparator => Value.Trim('/');
 

@@ -63,7 +63,7 @@ public static class ParseExtensions
     }
 
     /// <summary>
-    /// 
+    /// Parses the value into the specified type and throws if parsing fails.
     /// </summary>
     /// <param name="value"></param>
     /// <param name="formatProvider"></param>

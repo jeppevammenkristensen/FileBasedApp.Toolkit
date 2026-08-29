@@ -4,7 +4,7 @@ using NuGet.Versioning;
 namespace FileBasedApp.Toolkit;
 
 /// <summary>
-/// 
+/// Provides extension methods for working with NuGet versions.
 /// </summary>
 public static class NugetVersionExtensions
 {

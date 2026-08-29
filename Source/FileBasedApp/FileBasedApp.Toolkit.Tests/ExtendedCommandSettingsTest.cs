@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FileBasedApp.Toolkit.CommandCli;
 using FluentAssertions;
 using JetBrains.Annotations;
+using TruePath;
 using Xunit;
 
 namespace FileBasedApp.Toolkit.Tests;
@@ -31,7 +32,8 @@ public class ExtendedCommandSettingsTest : IDisposable
     private string CreateTempJsonFile(string fileName, object content)
     {
         var filePath = Path.Combine(_tempDir, fileName);
-        File.WriteAllText(filePath, JsonSerializer.Serialize(content, new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+        File.WriteAllText(filePath,
+            JsonSerializer.Serialize(content, new JsonSerializerOptions(JsonSerializerDefaults.Web)));
         return filePath;
     }
 
@@ -49,7 +51,7 @@ public class ExtendedCommandSettingsTest : IDisposable
     [Fact]
     public void LoadSetting_ValidJsonFile_DeserializesCorrectly()
     {
-        var expected = new SampleConfig { Name = "TestApp", Count = 42 };
+        var expected = new SampleConfig {Name = "TestApp", Count = 42};
         var filePath = CreateTempJsonFile("config.json", expected);
 
         var settings = new TestSettings();
@@ -74,7 +76,7 @@ public class ExtendedCommandSettingsTest : IDisposable
     [Fact]
     public void LoadSetting_WithCustomDeserializer_UsesOverriddenDeserializer()
     {
-        var filePath = CreateTempJsonFile("custom.json", new SampleConfig { Name = "Original", Count = 1 });
+        var filePath = CreateTempJsonFile("custom.json", new SampleConfig {Name = "Original", Count = 1});
 
         var settings = new TestSettingsWithCustomDeserializer();
         var result = settings.InvokeLoadSetting<SampleConfig>(filePath);
@@ -89,7 +91,7 @@ public class ExtendedCommandSettingsTest : IDisposable
         var expected = new NestedConfig
         {
             Title = "Root",
-            Inner = new SampleConfig { Name = "Child", Count = 99 }
+            Inner = new SampleConfig {Name = "Child", Count = 99}
         };
         var filePath = CreateTempJsonFile("nested.json", expected);
 
@@ -103,10 +105,32 @@ public class ExtendedCommandSettingsTest : IDisposable
         result.Inner.Count.Should().Be(99);
     }
 
+    [Fact]
+    public void InstanceHelpers_CanBeCalledByAnExtendedCommandSettingsImplementation()
+    {
+        var settings = new TestSettings();
+        var root = AbsolutePath.Create(_tempDir);
+        var filePath = CreateTempJsonFile("instance-helper.json", new SampleConfig());
+
+        settings.InvokeTryGetDirectory(".", allowEmpty: false, shouldExist: true, root).Should().Be(root);
+        settings.InvokeTryGetFile(filePath, shouldExist: true, root).Should().Be(AbsolutePath.Create(filePath));
+        settings.InvokeGetValueOrFromEnvironment("provided-value", "unused-environment-variable")
+            .Should().Be("provided-value");
+    }
+
     private class TestSettings : ExtendedCommandSettings
     {
         public T? InvokeLoadSetting<T>(string? path) where T : class
             => LoadSetting<T>(path);
+
+        public AbsolutePath InvokeTryGetDirectory(string? candidatePath, bool allowEmpty, bool shouldExist, AbsolutePath root)
+            => TryGetDirectory(candidatePath, allowEmpty, shouldExist, root);
+
+        public AbsolutePath InvokeTryGetFile(string candidatePath, bool shouldExist, AbsolutePath root)
+            => TryGetFile(candidatePath, shouldExist, root);
+
+        public string? InvokeGetValueOrFromEnvironment(string? originalValue, string environmentKey)
+            => GetValueOrFromEnvironment(originalValue, environmentKey);
     }
 
     private class TestSettingsWithCustomDeserializer : ExtendedCommandSettings
@@ -121,7 +145,7 @@ public class ExtendedCommandSettingsTest : IDisposable
             public T? Deserialize<T>(Stream stream)
             {
                 if (typeof(T) == typeof(SampleConfig))
-                    return (T)(object)new SampleConfig { Name = "CustomDeserializer", Count = -1 };
+                    return (T) (object) new SampleConfig {Name = "CustomDeserializer", Count = -1};
                 return default;
             }
 

@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## FileBasedApp
 
+### [Unreleased]
+
+#### FileBasedApp.Toolkit
+
+- Added `AcceptedErrorCodes` and `HandlesAllErrorCodes` fluent extensions for configuring SimpleExec exit-code handling without writing a custom predicate
+- Added `RunWithExitCode`, `RunWithExitCodeAsync`, and `ReadEnhancedAsync`, together with `SimpleExecRunResult` and `SimpleExecReadResult`, so callers can inspect process exit codes and captured output
+- Added optional conflict detection to `WithExitCodeHandler` through `throwIfAlreadySet`
+- Fixed strict `AddSecrets` validation so it compares supplied secrets with existing arguments, reports only unmatched values, and does not mutate secrets when validation fails
+- Added unit coverage for strict secret validation, exit-code result methods, configured-handler delegation, and default exit-code handling
+
 ### [1.0.0]
 
 - First stable release of `FileBasedApp.Toolkit`, `FileBasedApp.Toolkit.CSharp`, `FileBasedApp.Toolkit.Dotnet`, and `FileBasedApp.Toolkit.Template`

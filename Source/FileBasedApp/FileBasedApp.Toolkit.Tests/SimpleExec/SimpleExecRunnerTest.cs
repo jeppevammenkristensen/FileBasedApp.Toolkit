@@ -188,6 +188,111 @@ public class SimpleExecRunnerTest
         GetRunCallArgs().HandleExitCode.Should().BeSameAs(handler);
     }
 
+    [Fact]
+    public void WithAcceptedErrorCodes_HandlerAcceptsOnlyConfiguredCodes()
+    {
+        var runner = CreateRunner().WithAcceptedErrorCodes(acceptedErrorCodes: [1, 2]);
+
+        runner.ExitCodeHandler.Should().NotBeNull();
+        runner.ExitCodeHandler!(1).Should().BeTrue();
+        runner.ExitCodeHandler(2).Should().BeTrue();
+        runner.ExitCodeHandler(3).Should().BeFalse();
+        runner.ExitCodeHandler(0).Should().BeFalse(
+            "SimpleExec handles exit code zero independently of the custom handler");
+    }
+
+    [Fact]
+    public void WithAcceptedErrorCodes_DuplicateCodesDoNotChangeBehavior()
+    {
+        var runner = CreateRunner().WithAcceptedErrorCodes(acceptedErrorCodes: [1, 1, 2]);
+
+        runner.ExitCodeHandler!(1).Should().BeTrue();
+        runner.ExitCodeHandler(2).Should().BeTrue();
+        runner.ExitCodeHandler(3).Should().BeFalse();
+    }
+
+    [Fact]
+    public void WithAcceptedErrorCodes_ReplacesExistingHandlerByDefault()
+    {
+        var runner = CreateRunner()
+            .WithExitCodeHandler(code => code == 7)
+            .WithAcceptedErrorCodes(acceptedErrorCodes: [8]);
+
+        runner.ExitCodeHandler!(7).Should().BeFalse();
+        runner.ExitCodeHandler(8).Should().BeTrue();
+    }
+
+    [Fact]
+    public void WithAcceptedErrorCodes_WhenConfiguredToFailOnExistingHandler_Throws()
+    {
+        var runner = CreateRunner().WithExitCodeHandler(_ => true);
+
+        var act = () => runner.WithAcceptedErrorCodes(
+            failOnExistingErrorHandler: true,
+            acceptedErrorCodes: [1]);
+
+        act.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void WithAcceptedErrorCodes_NullCodes_DoesNotModifyExistingHandler()
+    {
+        Func<int, bool> handler = code => code == 7;
+        var runner = CreateRunner().WithExitCodeHandler(handler);
+
+        runner.WithAcceptedErrorCodes(
+            acceptedErrorCodes: null!,
+            failOnExistingErrorHandler: true);
+
+        runner.ExitCodeHandler.Should().BeSameAs(handler);
+    }
+
+    [Fact]
+    public void WithAcceptedErrorCodes_EmptyCodes_DoesNotModifyExistingHandler()
+    {
+        Func<int, bool> handler = code => code == 7;
+        var runner = CreateRunner().WithExitCodeHandler(handler);
+
+        runner.WithAcceptedErrorCodes(
+            acceptedErrorCodes: [],
+            failOnExistingErrorHandler: true);
+
+        runner.ExitCodeHandler.Should().BeSameAs(handler);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(-1)]
+    [InlineData(int.MaxValue)]
+    public void HandlesAllErrorCodes_HandlerAcceptsEveryCode(int exitCode)
+    {
+        var runner = CreateRunner().HandlesAllErrorCodes();
+
+        runner.ExitCodeHandler.Should().NotBeNull();
+        runner.ExitCodeHandler!(exitCode).Should().BeTrue();
+    }
+
+    [Fact]
+    public void HandlesAllErrorCodes_ReplacesExistingHandlerByDefault()
+    {
+        var runner = CreateRunner()
+            .WithExitCodeHandler(_ => false)
+            .HandlesAllErrorCodes();
+
+        runner.ExitCodeHandler!(42).Should().BeTrue();
+    }
+
+    [Fact]
+    public void HandlesAllErrorCodes_WhenConfiguredToFailOnExistingHandler_Throws()
+    {
+        var runner = CreateRunner().WithExitCodeHandler(_ => true);
+
+        var act = () => runner.HandlesAllErrorCodes(failOnExistingErrorHandler: true);
+
+        act.Should().Throw<InvalidOperationException>();
+    }
+
     [Theory]
     [InlineData(RunMethod.Run)]
     [InlineData(RunMethod.RunAsync)]

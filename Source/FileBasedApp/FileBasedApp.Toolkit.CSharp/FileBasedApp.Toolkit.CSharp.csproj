@@ -12,10 +12,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FileBasedApp.Toolkit.CSharp</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageIcon>floppy-disc.png</PackageIcon>
-        <PackageReleaseNotes>
-            - First stable 1.0.0 release
-        </PackageReleaseNotes>
+        <PackageIcon>floppy-disc.png</PackageIcon>       
         
     </PropertyGroup>
 

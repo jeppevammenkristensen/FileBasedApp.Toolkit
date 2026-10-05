@@ -34,7 +34,7 @@
     </PackageReference>
     <PackageReference Include="NuGet.Versioning" Version="7.9.0" />
     <PackageReference Include="SimpleExec" Version="13.1.0" />    
-    <PackageReference Include="Spectre.Console.Cli" Version="0.55.0" />
+    <PackageReference Include="Spectre.Console.Cli" Version="0.57.2" />
     <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="22.2.0" />
     <PackageReference Include="TruePath.TestableIO.System.IO" Version="1.0.1" />
     <PackageReference Include="TruePath" Version="1.12.0" />

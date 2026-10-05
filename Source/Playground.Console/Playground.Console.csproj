@@ -10,7 +10,7 @@
       <ProjectReference Include="..\FileBasedApp\FileBasedApp.Toolkit\FileBasedApp.Toolkit.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Dumpify" Version="0.7.0" />
+      <PackageReference Include="Dumpify" Version="0.8.0" />
         <PackageReference Include="Spectre.Console" Version="0.57.2" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
       <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.12" />

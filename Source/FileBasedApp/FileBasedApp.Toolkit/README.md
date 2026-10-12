@@ -5,6 +5,7 @@ A collection of opinionated helpers and extensions for building file-based appli
 ## Features
 
 * Provides a `PathUtil` class for working with paths and validating string paths
+* Provides `LocalPathExtensions` with `IsHome`, `HasHomeDirectoryPrefix()`, and `ExpandHomeDirectory()` for home-directory expansion, plus `GetSegments()` and `Traverse()` for lexical path traversal
 * Provides an IO class to provide methods and extension methods for `TruePath`
   * `FindInFiles` — filter files by stream predicate or regex (with `ByLine` / `AllText` strategies)
   * `Replace` — in-place file text transformation
@@ -77,6 +78,21 @@ fileSystem.File.Create(newDirectory / "test.txt");
 
 (newDirectory / "..").GetDirectories(fileSystem)
 ```
+
+### Home-directory expansion
+
+`HasHomeDirectoryPrefix()` detects a leading `~` segment in a relative path. `ExpandHomeDirectory()` replaces that segment with the user profile directory, preserving the remaining segments. Absolute paths and relative paths without a home-directory prefix are returned unchanged; this does not convert arbitrary relative paths to absolute paths.
+
+```csharp
+using FileBasedApp.Toolkit;
+using TruePath;
+
+var path = new LocalPath("~/Documents/file.txt");
+var hasHomePrefix = path.HasHomeDirectoryPrefix(); // true
+var expanded = path.ExpandHomeDirectory(); // User profile directory / Documents / file.txt
+```
+
+`IsHome` identifies only the `~` marker itself. `GetSegments()` enumerates segments root-first, while `Traverse()` enumerates them leaf-first.
 
 ### SimpleExecRunner
 

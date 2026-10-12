@@ -10,11 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 #### FileBasedApp.Toolkit
 
-- Added `WithAcceptedErrorCodes` and `HandlesAllErrorCodes` fluent extensions for configuring SimpleExec exit-code handling without writing a custom predicate
-- Added `RunWithExitCode`, `RunWithExitCodeAsync`, and `ReadEnhancedAsync`, together with `SimpleExecRunResult` and `SimpleExecReadResult`, so callers can inspect process exit codes and captured output
-- Added optional conflict detection to `WithExitCodeHandler` through `throwIfAlreadySet`
-- Fixed strict `AddSecrets` validation so it compares supplied secrets with existing arguments, reports only unmatched values, and does not mutate secrets when validation fails
-- Added unit coverage for strict secret validation, exit-code result methods, configured-handler delegation, and default exit-code handling
+- Added `LocalPathExtensions` with `IsHome`, `CanBeTransformedToAbsolute`, and `TransformAbsolute` for expanding a leading `~` to the user profile directory while leaving other paths unchanged
+- Added `GetSegments` and `Traverse` for individual path segments in root-first and leaf-first order, preserving absolute roots and handling empty paths and relative parent markers
+
 
 ### [1.0.0]
 

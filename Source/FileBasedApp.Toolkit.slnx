@@ -17,4 +17,7 @@
   <Folder Name="/Playground/">
     <Project Path="Playground.Console/Playground.Console.csproj" />
   </Folder>
+  <Folder Name="/SolutionsFiles/">
+    <File Path="../CHANGELOG.md" />
+  </Folder>
 </Solution>

@@ -35,21 +35,21 @@ public class LocalPathExtensionsTest
     [InlineData(".", false)]
     [InlineData("..", false)]
     [InlineData("../../file.txt", false)]
-    public void CanBeTransformedToAbsolute_RecognizesLeadingHomeMarker(string value, bool expected)
+    public void HasHomeDirectoryPrefix_RecognizesLeadingHomeMarker(string value, bool expected)
     {
-        new LocalPath(value).CanBeTransformedToAbsolute().Should().Be(expected);
+        new LocalPath(value).HasHomeDirectoryPrefix().Should().Be(expected);
     }
 
     [Theory]
     [InlineData("~", "")]
     [InlineData("~/Documents", "Documents")]
     [InlineData("~/Documents/Projects/file.txt", "Documents/Projects/file.txt")]
-    public void TransformAbsolute_ExpandsHomeAndPreservesEachSegment(string value, string suffix)
+    public void ExpandHomeDirectory_ExpandsHomeAndPreservesEachSegment(string value, string suffix)
     {
         var home = Environment.SpecialFolder.UserProfile.GetSpecialFolder();
         var expected = suffix.Length == 0 ? home : home / suffix;
 
-        var result = new LocalPath(value).TransformAbsolute();
+        var result = new LocalPath(value).ExpandHomeDirectory();
 
         result.Should().Be((LocalPath) expected);
         result.IsAbsolute.Should().BeTrue();
@@ -63,11 +63,11 @@ public class LocalPathExtensionsTest
     [InlineData(".")]
     [InlineData("..")]
     [InlineData("../../file.txt")]
-    public void TransformAbsolute_LeavesNonHomeRelativePathsUnchanged(string value)
+    public void ExpandHomeDirectory_LeavesNonHomeRelativePathsUnchanged(string value)
     {
         var path = new LocalPath(value);
 
-        path.TransformAbsolute().Should().Be(path);
+        path.ExpandHomeDirectory().Should().Be(path);
     }
 
     [Fact]
@@ -76,8 +76,8 @@ public class LocalPathExtensionsTest
         LocalPath path = AbsolutePath.CurrentWorkingDirectory / "~" / "file.txt";
 
         path.IsHome.Should().BeFalse();
-        path.CanBeTransformedToAbsolute().Should().BeFalse();
-        path.TransformAbsolute().Should().Be(path);
+        path.HasHomeDirectoryPrefix().Should().BeFalse();
+        path.ExpandHomeDirectory().Should().Be(path);
     }
 
     [Theory]
@@ -123,7 +123,7 @@ public class LocalPathExtensionsTest
 
         root.GetSegments().Should().Equal(root);
         root.Traverse().Should().Equal(root);
-        root.CanBeTransformedToAbsolute().Should().BeFalse();
-        root.TransformAbsolute().Should().Be(root);
+        root.HasHomeDirectoryPrefix().Should().BeFalse();
+        root.ExpandHomeDirectory().Should().Be(root);
     }
 }

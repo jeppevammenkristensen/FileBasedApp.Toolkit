@@ -17,23 +17,30 @@ public static class LocalPathExtensions
         /// <summary>
         /// Determines whether a relative path starts with the home-directory marker (<c>~</c>).
         /// </summary>
-        public bool CanBeTransformedToAbsolute()
+        /// <remarks>This will check if the given path is relative and starts with tilde.</remarks>
+        public bool HasHomeDirectoryPrefix()
         {
             if (path.IsAbsolute)
             {
                 return false;
             }
 
-            return path.GetSegments().FirstOrDefault().IsHome;
+            var localPaths = path.GetSegments().ToArray();
+            if (localPaths is {Length: > 0})
+            {
+                return localPaths[0].IsHome;
+            }
+
+            return false;
         }
 
         /// <summary>
         /// Replaces a leading home-directory marker with the user profile directory.
         /// </summary>
         /// <returns>An absolute <see cref="LocalPath"/> for a home-based path; otherwise, the original path.</returns>
-        public LocalPath TransformAbsolute()
+        public LocalPath ExpandHomeDirectory()
         {
-            if (!path.CanBeTransformedToAbsolute())
+            if (!path.HasHomeDirectoryPrefix())
             {
                 return path;
             }
@@ -63,6 +70,9 @@ public static class LocalPathExtensions
         public IEnumerable<LocalPath> Traverse()
         {
             var root = path;
+            
+            // Only when the path is absolute we can use the traversal up
+            // it results in an infinite loop when it's a RelativePath
             if (path.IsAbsolute)
             {
                 while (root.Parent is { } parent)
@@ -72,7 +82,7 @@ public static class LocalPathExtensions
             }
 
             var relativeValue = path.IsAbsolute ? path.Value[root.Value.Length..] : path.Value;
-            var separator = OperatingSystem.IsWindows() ? '\\' : '/';
+            var separator = Path.DirectorySeparatorChar;
             var segments = relativeValue.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 
             for (var index = segments.Length - 1; index >= 0; index--)

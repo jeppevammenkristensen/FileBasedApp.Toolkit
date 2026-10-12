@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 #### FileBasedApp.Toolkit
 
-- Added `LocalPathExtensions` with `IsHome`, `CanBeTransformedToAbsolute`, and `TransformAbsolute` for expanding a leading `~` to the user profile directory while leaving other paths unchanged
+- Added `LocalPathExtensions` with `IsHome`, `HasHomeDirectoryPrefix`, and `ExpandHomeDirectory` for expanding a leading `~` to the user profile directory while leaving other paths unchanged
 - Added `GetSegments` and `Traverse` for individual path segments in root-first and leaf-first order, preserving absolute roots and handling empty paths and relative parent markers
 
 

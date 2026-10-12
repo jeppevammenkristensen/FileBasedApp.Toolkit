@@ -1,8 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Project>
   <PropertyGroup>
-     <VersionPrefix>1.1.2</VersionPrefix>      
+     <VersionPrefix>1.2.0</VersionPrefix>
+      <VersionSuffix>preview-01</VersionSuffix>
       <PackageReleaseNotes>
-          - Bumped dependency versions. 
+          - Added LocalPathExtensions helpers to expand a leading ~ to the user profile directory.
+          - Added GetSegments and Traverse to enumerate path segments in root-first or leaf-first order.
+          - Updated Spectre.Console.Cli and TestableIO.System.IO.Abstractions dependencies.
       </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

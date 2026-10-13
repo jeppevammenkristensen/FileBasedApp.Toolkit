@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## FileBasedApp
 
-### [Unreleased]
+### [1.2.0]
 
 #### FileBasedApp.Toolkit
 

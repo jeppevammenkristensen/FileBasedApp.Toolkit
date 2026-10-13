@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@1.1.2
+#:package FileBasedApp.Toolkit@1.2.0
 #:property PublishAot=false 
 using Spectre.Console.Cli;
 using TruePath;
@@ -20,7 +20,7 @@ commandApp.Configure(ctx =>
 return await commandApp.RunAsync(args);
 public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you can use Command (and have Execute instead of ExecuteAsync)
 {
-    protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
+    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
     {
         AnsiConsole.MarkupLineInterpolated($"[green]Directory is {settings.DirectoryAbsolute.Value}[/]");
         var directoryInfo = DirectoryInfoFactory.New(settings.DirectoryAbsolute);

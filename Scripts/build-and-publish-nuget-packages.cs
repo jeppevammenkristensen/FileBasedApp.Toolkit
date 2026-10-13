@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@1.1.2
+#:package FileBasedApp.Toolkit@1.2.0
 #:property PublishAot=false
 
 using FileBasedApp.Toolkit;
@@ -40,7 +40,7 @@ public abstract class BuildCommand<TSetting> : AsyncCommand<TSetting> where TSet
 
 public class BuildTemplateCommand : BuildCommand<BuildTemplateCommand.Settings>
 {
-    protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings,
+    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings,
         CancellationToken cancellationToken)
     {
         var fileSystem = new FileSystem();
@@ -138,7 +138,7 @@ public class BuildTemplateCommand : BuildCommand<BuildTemplateCommand.Settings>
 
 public class BuildCodeCommand : BuildCommand<BuildCodeCommand.Settings>
 {
-    protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings,
+    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings,
         CancellationToken cancellationToken)
     {
         var (sourcePath, artifact) = GetSourcePathAndOutput();

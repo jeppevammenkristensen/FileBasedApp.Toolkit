@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@1.1.2
+#:package FileBasedApp.Toolkit@1.2.0
 #:property PublishAot=false
 
 using System.ComponentModel;
@@ -29,7 +29,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 	[GeneratedRegex(".Tests+")]
 	public static partial Regex TestsRegex();
 	
-	protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
+	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
 	{
 		AnsiConsole.MarkupLineInterpolated($"[green]Current working folder{PathUtil.GetCurrentWorkingFolder()}[/]");
 		AnsiConsole.MarkupLineInterpolated($"[green]Current execution folder{PathUtil.GetExecutionFolder()}[/]");

@@ -1,6 +1,6 @@
-#:package FileBasedApp.Toolkit@1.1.2
-#:package FileBasedApp.Toolkit.CSharp@1.1.2
-#:package FileBasedApp.Toolkit.Dotnet@1.1.2
+#:package FileBasedApp.Toolkit@1.2.0
+#:package FileBasedApp.Toolkit.CSharp@1.2.0
+#:package FileBasedApp.Toolkit.Dotnet@1.2.0
 #:property PublishAot=false
 #:property VersionPrefix=0.0.8
 #:property PackageId=FileBasedApp.BuildAndPublish
@@ -47,7 +47,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 	/// <summary>
 	/// Packs the configured inputs and pushes the generated packages to the configured or interactively selected NuGet source.
 	/// </summary>
-	protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
+	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
 	{
 		var temporaryDirectory  = (PathIO.GetTempPathAbsolute() / "Artifacts").CreateDirectory().GetAbsolutePath();
 		AnsiConsole.MarkupLineInterpolated($"[green]Creating temporary {temporaryDirectory}[/]");

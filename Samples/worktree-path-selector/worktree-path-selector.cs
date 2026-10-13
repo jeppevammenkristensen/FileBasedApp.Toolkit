@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@1.1.2
+#:package FileBasedApp.Toolkit@1.2.0
 #:package TextCopy@6.2.1
 #:property PublishAot=false
 #:property PackAsTool=true
@@ -25,7 +25,7 @@ commandApp.Configure(ctx =>
 return await commandApp.RunAsync(args);
 public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you can use Command (and have Execute instead of ExecuteAsync)
 {
-    protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
+    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
     {
         AbsolutePath[] candidatePaths = [settings.DirectoryAbsolute, ..settings.DirectoryAbsolute.GetDirectories()];
 

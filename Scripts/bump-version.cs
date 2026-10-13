@@ -1,4 +1,4 @@
-#:package FileBasedApp.Toolkit@1.1.2
+#:package FileBasedApp.Toolkit@1.2.0
 #:property PublishAot=false
 using System.ComponentModel;
 using Spectre.Console.Cli;
@@ -26,7 +26,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 
     private partial Regex Rc { get; }
 
-    protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
+    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
     {
         var buildProps = settings.ExecutionPath / ".." / "Source" / "FileBasedApp" / "Directory.Build.props";
 

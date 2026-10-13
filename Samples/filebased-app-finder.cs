@@ -1,5 +1,5 @@
-#:package FileBasedApp.Toolkit.CSharp@1.1.2
-#:package FileBasedApp.Toolkit.Dotnet@1.1.2
+#:package FileBasedApp.Toolkit.CSharp@1.2.0
+#:package FileBasedApp.Toolkit.Dotnet@1.2.0
 #:package Dumpify@*
 
 #:property PublishAot=false
@@ -24,7 +24,7 @@ return await commandApp.RunAsync(args);
 
 public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you can use Command (and have Execute instead of ExecuteAsync
 {
-	protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
+	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
 	{	
 		AnsiConsole.MarkupLineInterpolated($"[green] Traversing [bold]{settings.RootPathAbsolute.Value}[/] looking for filebased-apps[/]");
 		

@@ -12,6 +12,72 @@ namespace FileBasedApp.Toolkit.Tests;
 [TestSubject(typeof(PathUtil))]
 public class PathUtilTest
 {
+    [WindowsTheory]
+    [InlineData(false, @"\logs", @"C:\logs")]
+    [InlineData(true, @"\logs", @"C:\logs")]
+    [InlineData(false, "C:logs", @"C:\base\logs")]
+    [InlineData(true, "C:logs", @"C:\base\logs")]
+    [InlineData(false, "C:", @"C:\base")]
+    [InlineData(true, "C:", @"C:\base")]
+    [InlineData(false, @"D:\logs", @"D:\logs")]
+    [InlineData(true, @"D:\logs", @"D:\logs")]
+    public void AnalyzePath_WindowsInput_ResolvesAgainstSuppliedRoot(bool directory, string candidate, string expected)
+    {
+        var fileSystem = new MockFileSystem();
+        using (new FileSystemSetter<PathUtil>(fileSystem))
+        {
+            var root = new AbsolutePath(@"C:\base");
+            var result = directory
+                ? PathUtil.AnalyzeDirectory(candidate, root)
+                : PathUtil.AnalyzeFile(candidate, root);
+
+            var (path, errorMessage) = result.GetPath(shouldExist: false, originalPathCanBeNull: false);
+
+            errorMessage.Should().BeNull();
+            path.Should().Be(new AbsolutePath(expected));
+        }
+    }
+
+    [WindowsTheory]
+    [InlineData(false, "D:logs")]
+    [InlineData(true, "D:logs")]
+    [InlineData(false, "D:")]
+    [InlineData(true, "D:")]
+    public void AnalyzePath_CrossDriveRelativeInput_UsesProcessDriveDirectoryInsteadOfSuppliedRoot(bool directory, string candidate)
+    {
+        // TruePath uses real process drive-directory state, not the mock file system's current directory.
+        var processFileSystem = new System.IO.Abstractions.FileSystem();
+        var expected = new AbsolutePath(processFileSystem.Path.GetFullPath(candidate));
+        var fileSystem = new MockFileSystem();
+        using (new FileSystemSetter<PathUtil>(fileSystem))
+        {
+            foreach (var rootValue in new[] { @"C:\base", @"C:\other" })
+            {
+                var root = new AbsolutePath(rootValue);
+                var result = directory
+                    ? PathUtil.AnalyzeDirectory(candidate, root)
+                    : PathUtil.AnalyzeFile(candidate, root);
+
+                var (path, errorMessage) = result.GetPath(shouldExist: false, originalPathCanBeNull: false);
+
+                errorMessage.Should().BeNull();
+                path.Should().Be(expected);
+            }
+        }
+    }
+
+    /// <summary>Skips Windows path-resolution cases on platforms with different path semantics.</summary>
+    private sealed class WindowsTheoryAttribute : TheoryAttribute
+    {
+        public WindowsTheoryAttribute()
+        {
+            if (!OperatingSystem.IsWindows())
+            {
+                Skip = "Requires Windows drive-relative and rooted path semantics.";
+            }
+        }
+    }
+
 
     [Fact]
     public void AnalyzeFilePath_MultipleRootsNoMatch_FileShouldNotExist()

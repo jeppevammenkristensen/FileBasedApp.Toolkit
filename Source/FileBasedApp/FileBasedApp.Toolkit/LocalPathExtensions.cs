@@ -66,9 +66,15 @@ public static class LocalPathExtensions
         /// <summary>
         /// Enumerates individual path segments from the final segment to the root-most segment.
         /// </summary>
-        /// <remarks>Absolute roots are preserved. Empty paths have no segments; relative parent markers remain individual segments.</remarks>
+        /// <remarks>Absolute roots are preserved. Empty and current-directory paths have no segments; relative parent markers remain individual segments.</remarks>
         public IEnumerable<LocalPath> Traverse()
         {
+            // TruePath 1.x normalizes the current directory to ""; 2.x uses ".".
+            if (path.Value is "" or ".")
+            {
+                yield break;
+            }
+
             var root = path;
             
             // Only when the path is absolute we can use the traversal up

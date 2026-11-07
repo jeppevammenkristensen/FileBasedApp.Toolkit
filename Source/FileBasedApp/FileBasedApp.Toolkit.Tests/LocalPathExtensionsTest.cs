@@ -89,6 +89,7 @@ public class LocalPathExtensionsTest
     [InlineData("../../file.txt", new[] {"..", "..", "file.txt"})]
     [InlineData("", new string[0])]
     [InlineData(".", new string[0])]
+    [InlineData("a/..", new string[0])]
     public void Traversal_ReturnsIndividualSegmentsInBothOrders(string value, string[] expected)
     {
         var path = new LocalPath(value);

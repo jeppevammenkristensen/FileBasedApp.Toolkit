@@ -15,6 +15,16 @@ public static class LocalPathExtensions
         public bool IsHome => path.Value == "~";
 
         /// <summary>
+        /// Determines whether the normalized path lexically represents the current directory.
+        /// </summary>
+        /// <remarks>Absolute paths are not treated as current-directory markers, even when they point to the working directory.</remarks>
+        public bool IsCurrentDirectory()
+        {
+            // TruePath 1.x normalizes the current directory to ""; 2.x uses ".".
+            return path.Value is "" or ".";
+        }
+
+        /// <summary>
         /// Determines whether a relative path starts with the home-directory marker (<c>~</c>).
         /// </summary>
         /// <remarks>This will check if the given path is relative and starts with tilde.</remarks>
@@ -69,14 +79,13 @@ public static class LocalPathExtensions
         /// <remarks>Absolute roots are preserved. Empty and current-directory paths have no segments; relative parent markers remain individual segments.</remarks>
         public IEnumerable<LocalPath> Traverse()
         {
-            // TruePath 1.x normalizes the current directory to ""; 2.x uses ".".
-            if (path.Value is "" or ".")
+            if (path.IsCurrentDirectory())
             {
                 yield break;
             }
 
             var root = path;
-            
+
             // Only when the path is absolute we can use the traversal up
             // it results in an infinite loop when it's a RelativePath
             if (path.IsAbsolute)

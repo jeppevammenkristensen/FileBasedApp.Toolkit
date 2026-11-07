@@ -12,6 +12,25 @@ namespace FileBasedApp.Toolkit.Tests;
 public class LocalPathExtensionsTest
 {
     [Theory]
+    [InlineData("", true)]
+    [InlineData(".", true)]
+    [InlineData("a/..", true)]
+    [InlineData("..", false)]
+    [InlineData("folder", false)]
+    public void IsCurrentDirectory_RecognizesNormalizedCurrentDirectoryMarkers(string value, bool expected)
+    {
+        new LocalPath(value).IsCurrentDirectory().Should().Be(expected);
+    }
+
+    [Fact]
+    public void IsCurrentDirectory_RejectsAbsoluteCurrentWorkingDirectory()
+    {
+        LocalPath path = AbsolutePath.CurrentWorkingDirectory;
+
+        path.IsCurrentDirectory().Should().BeFalse();
+    }
+
+    [Theory]
     [InlineData("~", true)]
     [InlineData("~/", true)]
     [InlineData("~/Documents", false)]

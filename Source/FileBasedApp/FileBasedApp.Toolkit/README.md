@@ -5,7 +5,7 @@ A collection of opinionated helpers and extensions for building file-based appli
 ## Features
 
 * Provides a `PathUtil` class for working with paths and validating string paths
-* Provides `LocalPathExtensions` with `IsHome`, `HasHomeDirectoryPrefix()`, and `ExpandHomeDirectory()` for home-directory expansion, plus `GetSegments()` and `Traverse()` for lexical path traversal
+* Provides `LocalPathExtensions` with `IsHome`, `HasHomeDirectoryPrefix()`, and `ExpandHomeDirectory()` for home-directory expansion, `IsCurrentDirectory()` for lexical current-directory detection, plus `GetSegments()` and `Traverse()` for lexical path traversal
 * Provides an IO class to provide methods and extension methods for `TruePath`
   * `FindInFiles` — filter files by stream predicate or regex (with `ByLine` / `AllText` strategies)
   * `Replace` — in-place file text transformation
@@ -14,11 +14,11 @@ A collection of opinionated helpers and extensions for building file-based appli
 * Provides an extension of the `CommandSettings` from the `Spectre.Console.Cli` providing validation of file and directory paths
 * Provides a `SimpleExecRunner` fluent builder for constructing and executing system commands via the `SimpleExec` library, with support for secrets redaction and `TruePath` integration
 * Includes the following libraries
-  * `TruePath`
+  * `TruePath` 2.0.0
   * `SimpleExec`
   * `Spectre.Console.Cli`
   * `TestableIO.System.IO.Abstractions.Wrappers`
-  * `TruePath.TestableIO.System.IO`
+  * `TruePath.TestableIO.System.IO` 1.1.0
 
 ## Example
 
@@ -93,6 +93,39 @@ var expanded = path.ExpandHomeDirectory(); // User profile directory / Documents
 ```
 
 `IsHome` identifies only the `~` marker itself. `GetSegments()` enumerates segments root-first, while `Traverse()` enumerates them leaf-first.
+
+### Current-directory paths and traversal
+
+`IsCurrentDirectory()` checks the normalized path lexically: empty input, `.` and `a/..` all represent the current-directory marker. An absolute path is not a marker, even when it points to the current working directory. This check does not access the file system.
+
+```csharp
+using FileBasedApp.Toolkit;
+using TruePath;
+
+var path = new LocalPath("a/..");
+var isCurrentDirectory = path.IsCurrentDirectory(); // true; Value is "." in TruePath 2.0
+var segments = path.GetSegments(); // No segments; Traverse() is also empty
+```
+
+Traversal preserves absolute roots and relative parent markers (`..`). Windows rooted-without-drive and drive-relative traversal/reconstruction remain unresolved; do not assume that segment reconstruction preserves those path forms.
+
+### TruePath 2.0 migration notes
+
+The toolkit now references TruePath 2.0.0 and the TestableIO bridge 1.1.0. TruePath normalizes empty input and paths such as `a/..` to `.`; the toolkit still returns no traversal segments for these paths.
+
+On Windows, `PathUtil.AnalyzeFile()` and `AnalyzeDirectory()` resolve inputs against a supplied absolute root as follows (root: `C:\base`):
+
+| Input | Resolved path |
+| --- | --- |
+| `\logs` | `C:\logs` |
+| `C:logs` | `C:\base\logs` |
+| `C:` | `C:\base` |
+| `D:logs` | Resolved against the process's current directory for drive D |
+| `D:\logs` | `D:\logs` |
+
+Drive-relative inputs are currently accepted. Cross-drive relative resolution depends on process/per-drive state, not just the supplied root; use fully qualified paths when deterministic resolution is required. Windows-only regression tests cover these cases for both file and directory analysis.
+
+TruePath 2.0 also rejects Windows inputs such as `\foo`, `C:foo`, and `C:` when constructing an `AbsolutePath`. Toolkit conversion helpers that directly create an `AbsolutePath` inherit that stricter validation; use path analysis when resolution against a root is intended.
 
 ### SimpleExecRunner
 

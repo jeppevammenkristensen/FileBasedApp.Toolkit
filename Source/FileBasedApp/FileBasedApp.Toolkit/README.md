@@ -107,7 +107,7 @@ var isCurrentDirectory = path.IsCurrentDirectory(); // true; Value is "." in Tru
 var segments = path.GetSegments(); // No segments; Traverse() is also empty
 ```
 
-Traversal preserves absolute roots and relative parent markers (`..`). Windows rooted-without-drive and drive-relative traversal/reconstruction remain unresolved; do not assume that segment reconstruction preserves those path forms.
+Traversal preserves absolute roots, Windows roots without a drive, and relative parent markers (`..`). A rooted-without-drive path such as `\foo\bar` has segments `\`, `foo`, and `bar`. Drive-relative prefixes remain attached to the first segment: `C:foo\bar` has segments `C:foo` and `bar`, while `C:` remains a single segment. Combining these segments in root-first order with `/` reconstructs the normalized path without resolving its drive or current-directory dependencies. Windows-only regression tests assert these segment and reconstruction contracts; cross-platform test execution remains unverified.
 
 ### TruePath 2.0 migration notes
 

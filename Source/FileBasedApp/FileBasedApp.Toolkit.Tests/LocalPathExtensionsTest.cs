@@ -31,6 +31,32 @@ public class LocalPathExtensionsTest
     }
 
     [Theory]
+    [InlineData("/", true)]
+    [InlineData("/logs", true)]
+    [InlineData("", false)]
+    [InlineData(".", false)]
+    [InlineData("a/..", false)]
+    [InlineData("..", false)]
+    [InlineData("logs/file.txt", false)]
+    [InlineData("~/logs", false)]
+    public void HasRoot_DistinguishesRootDirectoriesFromRelativePaths(string value, bool expected)
+    {
+        new LocalPath(value).HasRoot().Should().Be(expected);
+    }
+
+    [WindowsTheory]
+    [InlineData(@"C:\", true)]
+    [InlineData(@"C:\logs", true)]
+    [InlineData(@"\", true)]
+    [InlineData(@"\logs", true)]
+    [InlineData("C:", false)]
+    [InlineData("C:logs", false)]
+    public void HasRoot_WindowsPaths_RequireARootDirectory(string value, bool expected)
+    {
+        new LocalPath(value).HasRoot().Should().Be(expected);
+    }
+
+    [Theory]
     [InlineData("~", true)]
     [InlineData("~/", true)]
     [InlineData("~/Documents", false)]
@@ -115,6 +141,52 @@ public class LocalPathExtensionsTest
 
         path.GetSegments().Select(segment => segment.Value).Should().Equal(expected);
         path.Traverse().Select(segment => segment.Value).Should().Equal(expected.Reverse());
+    }
+
+    [WindowsTheory]
+    [InlineData(@"\foo\bar", new[] {@"\", "foo", "bar"})]
+    [InlineData(@"\", new[] {@"\"})]
+    [InlineData(@"\~\file.txt", new[] {@"\", "~", "file.txt"})]
+    [InlineData(@"C:foo\bar", new[] {"C:foo", "bar"})]
+    [InlineData("C:foo", new[] {"C:foo"})]
+    [InlineData("C:", new[] {"C:"})]
+    [InlineData(@"C:..\foo", new[] {"C:..", "foo"})]
+    [InlineData(@"C:~\file.txt", new[] {"C:~", "file.txt"})]
+    [InlineData(@"C:\foo\bar", new[] {@"C:\", "foo", "bar"})]
+    [InlineData(@"C:\", new[] {@"C:\"})]
+    public void Traversal_WindowsPaths_PreserveSegmentsAndAllowReconstruction(string value, string[] expected)
+    {
+        var path = new LocalPath(value);
+        var segments = path.GetSegments().ToArray();
+
+        segments.Select(segment => segment.Value).Should().Equal(expected);
+        path.Traverse().Should().Equal(segments.Reverse());
+        segments.Aggregate((left, right) => left / right).Should().Be(path);
+    }
+
+    [WindowsTheory]
+    [InlineData(@"\~\file.txt")]
+    [InlineData(@"\~")]
+    [InlineData(@"C:~\file.txt")]
+    [InlineData("C:~")]
+    public void HomeHelpers_WindowsRootedAndDriveRelativePaths_LeaveHomeMarkersUnchanged(string value)
+    {
+        var path = new LocalPath(value);
+
+        path.HasHomeDirectoryPrefix().Should().BeFalse();
+        path.ExpandHomeDirectory().Should().Be(path);
+    }
+
+    /// <summary>Skips Windows lexical path cases on platforms with different path semantics.</summary>
+    private sealed class WindowsTheoryAttribute : TheoryAttribute
+    {
+        public WindowsTheoryAttribute()
+        {
+            if (!OperatingSystem.IsWindows())
+            {
+                Skip = "Requires Windows drive-relative and rooted path semantics.";
+            }
+        }
     }
 
     [Fact]

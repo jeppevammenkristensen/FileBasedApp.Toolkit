@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Project>
   <PropertyGroup>
-     <VersionPrefix>1.3.0</VersionPrefix>
-      <VersionSuffix>preview-01</VersionSuffix>
+     <VersionPrefix>1.3.0</VersionPrefix>      
       <PackageReleaseNotes>
           - Updated TruePath to 2.0.0 and TruePath.TestableIO.System.IO to 1.1.0, including changed Windows path resolution and stricter absolute-path validation.
           - Added IsCurrentDirectory() for lexical current-directory detection.

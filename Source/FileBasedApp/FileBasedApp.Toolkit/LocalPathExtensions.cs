@@ -25,6 +25,20 @@ public static class LocalPathExtensions
         }
 
         /// <summary>
+        /// Determines whether the path starts at a root directory rather than the current directory.
+        /// </summary>
+        /// <remarks>
+        /// Includes absolute paths such as <c>/logs</c> on Unix and <c>C:\logs</c> on Windows,
+        /// as well as Windows paths such as <c>\logs</c> whose drive is unspecified.
+        /// Windows drive-relative paths such as <c>C:logs</c> and <c>C:</c> return <see langword="false"/>
+        /// because they depend on that drive's current directory. This check does not access the file system.
+        /// </remarks>
+        public bool HasRoot()
+        {
+            return path.IsAbsolute || (OperatingSystem.IsWindows() && path.Value.StartsWith('\\'));
+        }
+
+        /// <summary>
         /// Determines whether a relative path starts with the home-directory marker (<c>~</c>).
         /// </summary>
         /// <remarks>This will check if the given path is relative and starts with tilde.</remarks>
@@ -76,7 +90,11 @@ public static class LocalPathExtensions
         /// <summary>
         /// Enumerates individual path segments from the final segment to the root-most segment.
         /// </summary>
-        /// <remarks>Absolute roots are preserved. Empty and current-directory paths have no segments; relative parent markers remain individual segments.</remarks>
+        /// <remarks>
+        /// Absolute roots and Windows roots without a drive are preserved as separate segments.
+        /// Windows drive-relative prefixes remain attached to the first segment (for example, <c>C:foo</c>).
+        /// Empty and current-directory paths have no segments; relative parent markers remain individual segments.
+        /// </remarks>
         public IEnumerable<LocalPath> Traverse()
         {
             if (path.IsCurrentDirectory())
@@ -85,10 +103,11 @@ public static class LocalPathExtensions
             }
 
             var root = path;
+            var hasRoot = path.HasRoot();
 
-            // Only when the path is absolute we can use the traversal up
-            // it results in an infinite loop when it's a RelativePath
-            if (path.IsAbsolute)
+            // Rooted paths have a terminating parent chain, even when their drive is unspecified.
+            // Relative paths (including C:foo) can grow parent markers indefinitely.
+            if (hasRoot)
             {
                 while (root.Parent is { } parent)
                 {
@@ -96,7 +115,7 @@ public static class LocalPathExtensions
                 }
             }
 
-            var relativeValue = path.IsAbsolute ? path.Value[root.Value.Length..] : path.Value;
+            var relativeValue = hasRoot ? path.Value[root.Value.Length..] : path.Value;
             var separator = Path.DirectorySeparatorChar;
             var segments = relativeValue.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 
@@ -105,7 +124,7 @@ public static class LocalPathExtensions
                 yield return new LocalPath(segments[index]);
             }
 
-            if (path.IsAbsolute)
+            if (hasRoot)
             {
                 yield return root;
             }

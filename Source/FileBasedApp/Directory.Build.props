@@ -2,9 +2,10 @@
   <PropertyGroup>
      <VersionPrefix>1.2.0</VersionPrefix>      
       <PackageReleaseNotes>
-          - Added LocalPathExtensions helpers to expand a leading ~ to the user profile directory.
-          - Added GetSegments and Traverse to enumerate path segments in root-first or leaf-first order.
-          - Updated Spectre.Console.Cli and TestableIO.System.IO.Abstractions dependencies.
+          - Updated TruePath to 2.0.0 and TruePath.TestableIO.System.IO to 1.1.0, including changed Windows path resolution and stricter absolute-path validation.
+          - Added IsCurrentDirectory() for lexical current-directory detection.
+          - Preserved zero-segment traversal for empty, dot, and normalized current-directory paths.
+          - Added Windows-specific file and directory path-resolution regression coverage.
       </PackageReleaseNotes>
   </PropertyGroup>
 </Project>

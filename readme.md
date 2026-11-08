@@ -23,6 +23,12 @@ It relies heavily (hence opinionated) on [TruePath](https://github.com/ForNeVeR/
 
 `TruePath.TestableIO.System.IO` is maintained in its [own repository](https://github.com/jeppevammenkristensen/TruePath.TestableIO.System.IO) and provides a bridge between `TruePath` and [System.Io.Abstractions](https://github.com/TestableIO/System.IO.Abstractions).
 
+## TruePath 2.0 update
+
+The core toolkit now uses TruePath 2.0.0 and TruePath.TestableIO.System.IO 1.1.0. `IsCurrentDirectory()` detects normalized current-directory markers, and `GetSegments()` / `Traverse()` preserve zero-segment traversal for empty input, `.` and `a/..`.
+
+Windows path resolution and absolute-path validation have changed. Drive-relative inputs remain accepted by path analysis, but cross-drive results depend on process state. See the [migration notes](Source/FileBasedApp/FileBasedApp.Toolkit/README.md#truepath-20-migration-notes) and [changelog](CHANGELOG.md) before upgrading.
+
 ## Scripts
 
 This project uses FileBasedApp.Toolkit itself to power its own CI/CD pipeline. The [Scripts](Scripts/) folder contains `.cs` scripts that reference `FileBasedApp.Toolkit` as a `#:package` dependency and are executed directly with `dotnet run`:

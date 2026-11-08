@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## FileBasedApp
 
+### [Unreleased]
+
+#### FileBasedApp.Toolkit
+
+- Updated TruePath from 1.12.0 to 2.0.0 and TruePath.TestableIO.System.IO from 1.0.1 to 1.1.0
+- Added `LocalPath.IsCurrentDirectory()` for lexical detection of normalized current-directory paths, excluding absolute paths pointing to the working directory
+- Preserved zero-segment `GetSegments()` and `Traverse()` results for empty input, `.` and `a/..`, with regression coverage
+- Added Windows-only `AnalyzeFile` and `AnalyzeDirectory` tests for rooted-without-drive, same-drive relative, bare-drive, absolute, and cross-drive relative inputs
+- Windows compatibility note: drive-relative inputs remain accepted; cross-drive resolution depends on process/per-drive current-directory state rather than the supplied root. Direct `AbsolutePath` conversions now reject Windows inputs such as `\foo`, `C:foo`, and `C:`
+- Windows rooted-without-drive and drive-relative traversal/reconstruction remain unresolved; the dependency upgrade does not imply these path forms are preserved by traversal
+
 ### [1.2.0]
 
 #### FileBasedApp.Toolkit

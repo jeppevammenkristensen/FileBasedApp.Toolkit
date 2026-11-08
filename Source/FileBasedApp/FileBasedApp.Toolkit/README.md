@@ -125,7 +125,43 @@ On Windows, `PathUtil.AnalyzeFile()` and `AnalyzeDirectory()` resolve inputs aga
 
 Drive-relative inputs are currently accepted. Cross-drive relative resolution depends on process/per-drive state, not just the supplied root; use fully qualified paths when deterministic resolution is required. Windows-only regression tests cover these cases for both file and directory analysis.
 
-TruePath 2.0 also rejects Windows inputs such as `\foo`, `C:foo`, and `C:` when constructing an `AbsolutePath`. Toolkit conversion helpers that directly create an `AbsolutePath` inherit that stricter validation; use path analysis when resolution against a root is intended.
+#### Absolute-path conversions require fully qualified input
+
+`AsAbsolutePath()` (string and character-span overloads) and `AsRequiredAbsolutePath()` validate
+fully qualified paths; they do not resolve relative input against the current directory.
+
+On Windows, `C:\foo` is valid, but `\foo` (unspecified drive), `C:foo`, and `C:`
+(relative to a drive's current directory) throw `ArgumentException` under TruePath 2.0.
+On Unix, use an absolute path such as `/foo`. Empty and relative input also throw.
+
+The nullable-string `AsAbsolutePath()` returns null **only for null input**, not for an invalid
+path. `AsRequiredAbsolutePath()` throws `ArgumentNullException` for null. The span overload
+throws for invalid or empty input rather than returning null.
+
+Use `PathUtil.AnalyzeFile()` or `AnalyzeDirectory()` when resolution against a supplied root
+is intended, or keep a relative path as a `LocalPath` instead of converting it.
+
+#### Breaking change in the next minor release: FlexibleFilePath accepts relative paths
+
+This behavioral breaking change will ship in a **minor release**, not a major release.
+`FlexibleFilePath.GetAsLocalPath()` and its implicit conversion to `LocalPath` now construct
+a `LocalPath` directly, selecting `Windows` on Windows and `Unix` elsewhere. Previously they
+constructed an `AbsolutePath`, rejecting ordinary relative input.
+
+Relative paths such as `folder/file.txt` are now accepted and remain relative; they are not
+resolved against the current directory. Empty input and `.` represent the current-directory
+marker. Windows inputs such as `\foo`, `C:foo`, and `C:` are also accepted without resolving
+their drive or current-directory dependencies. Fully qualified paths remain supported.
+
+**Migration:** Do not assume the returned `LocalPath` is absolute or rely on conversion throwing
+for relative input. If an absolute path is required, validate it explicitly with
+`AbsolutePath.Create(localPath.Value)` (which rejects non-fully-qualified input), or use
+`PathUtil.AnalyzeFile()` / `AnalyzeDirectory()` to resolve it against a supplied root.
+
+```csharp
+var configured = new FlexibleFilePath(@"data\file.txt", "data/file.txt");
+LocalPath path = configured; // Relative on either platform; no longer throws
+```
 
 ### SimpleExecRunner
 

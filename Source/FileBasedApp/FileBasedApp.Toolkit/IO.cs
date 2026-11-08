@@ -82,17 +82,24 @@ public static class IO
     }
 
     /// <summary>
-    /// Returns the path or a nullable 
+    /// Converts a fully qualified path to an absolute path, or returns null when the input is null.
     /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
+    /// <remarks>
+    /// Does not resolve relative paths. On Windows, paths such as <c>\foo</c>, <c>C:foo</c>, and <c>C:</c>
+    /// are rejected; use a fully qualified path such as <c>C:\foo</c>.
+    /// </remarks>
+    /// <returns>The absolute path, or null only when <paramref name="path"/> is null.</returns>
+    /// <exception cref="ArgumentException">The non-null input is not a fully qualified path.</exception>
     public static AbsolutePath? AsAbsolutePath(this string? path) => path is null ? null : AbsolutePath.Create(path);
 
     /// <summary>
-    /// Returns a an non nullable path
+    /// Converts a required, fully qualified path to an absolute path without resolving relative input.
     /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
+    /// <remarks>
+    /// On Windows, use a path such as <c>C:\foo</c>; <c>\foo</c>, <c>C:foo</c>, and <c>C:</c> are rejected.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">The input is null.</exception>
+    /// <exception cref="ArgumentException">The input is not a fully qualified path.</exception>
     public static AbsolutePath AsRequiredAbsolutePath(this string path)
     {
         ArgumentNullException.ThrowIfNull(path);
@@ -116,10 +123,15 @@ public static class IO
     public static AbsolutePath? ToNullable(this AbsolutePath path) => path;
 
     /// <summary>
-    /// Converts the provided path, given as a read-only span of characters, to an absolute path.
+    /// Converts a fully qualified path supplied as a character span to an absolute path.
     /// </summary>
     /// <param name="path">The path to be converted, represented as a read-only span of characters.</param>
-    /// <returns>An instance of <see cref="AbsolutePath"/> representing the absolute path, or null if the conversion fails.</returns>
+    /// <returns>The absolute path. Invalid input throws rather than returning null.</returns>
+    /// <remarks>
+    /// Does not resolve relative paths. On Windows, paths such as <c>\foo</c>, <c>C:foo</c>, and <c>C:</c>
+    /// are rejected; use a fully qualified path such as <c>C:\foo</c>.
+    /// </remarks>
+    /// <exception cref="ArgumentException">The input is empty or is not a fully qualified path.</exception>
     public static AbsolutePath? AsAbsolutePath(this ReadOnlySpan<char> path) => AbsolutePath.Create(path.ToString());
 
     /// <summary>
@@ -196,8 +208,8 @@ public static class IO
         path.WriteAllText(newText, fileSystem);
         return path;
     }
-    
-    
+
+
     /// <summary>
     /// Filters a collection of file paths to only those whose contents match the specified regular expression pattern.
     /// </summary>
@@ -241,7 +253,7 @@ public static class IO
         }
     }
 
-/// <summary>
+    /// <summary>
     /// Retrieves all subdirectories within the specified directory that match the given search pattern, including all nested subdirectories.
     /// </summary>
     /// <param name="source">The absolute path of the directory to search.</param>
@@ -252,7 +264,7 @@ public static class IO
     public static AbsolutePath[] GetAllDirectories(this AbsolutePath source, string searchPattern,
         IFileSystem? fileSystem = null)
         => source.GetDirectories(searchPattern, SearchOption.AllDirectories, fileSystem);
-    
+
     /// <summary>
     /// Enumerates all files in the specified directory and its subdirectories that match the given search pattern.
     /// </summary>
@@ -289,7 +301,7 @@ public static class IO
         {
             if (path.DirectoryExists(fileSystem))
             {
-                path.DirectoryDelete(true, fileSystem);    
+                path.DirectoryDelete(true, fileSystem);
             }
         }
         catch (Exception ex)

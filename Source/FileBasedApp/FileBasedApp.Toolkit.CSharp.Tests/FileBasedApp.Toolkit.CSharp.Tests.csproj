@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FileBasedApp.Toolkit.CSharp\FileBasedApp.Toolkit.CSharp.csproj" />
+    <ProjectReference Include="..\FileBasedApp.Toolkit.Spectre\FileBasedApp.Toolkit.Spectre.csproj" />
   </ItemGroup>
 
   <!-- Restore and build the fixture only for .NET 11 tests, without referencing its assembly. -->

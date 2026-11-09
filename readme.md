@@ -3,6 +3,8 @@
 [![FileBasedApp.Toolkit](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.svg?style=flat-square&label=FileBasedApp.Toolkit)](https://www.nuget.org/packages/FileBasedApp.Toolkit)
 [![FileBasedApp.Toolkit.CSharp](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.CSharp.svg?style=flat-square&label=FileBasedApp.Toolkit.CSharp)](https://www.nuget.org/packages/FileBasedApp.Toolkit.CSharp)
 [![FileBasedApp.Toolkit.Dotnet](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.Dotnet.svg?style=flat-square&label=FileBasedApp.Toolkit.Dotnet)](https://www.nuget.org/packages/FileBasedApp.Toolkit.Dotnet)
+[![FileBasedApp.Toolkit.Spectre](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.Spectre.svg?style=flat-square&label=FileBasedApp.Toolkit.Spectre)](https://www.nuget.org/packages/FileBasedApp.Toolkit.Spectre)
+[![FileBasedApp.Toolkit.SimpleExec](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.SimpleExec.svg?style=flat-square&label=FileBasedApp.Toolkit.SimpleExec)](https://www.nuget.org/packages/FileBasedApp.Toolkit.SimpleExec)
 [![FileBasedApp.Toolkit.Template](https://img.shields.io/nuget/v/FileBasedApp.Toolkit.Template.svg?style=flat-square&label=FileBasedApp.Toolkit.Template)](https://www.nuget.org/packages/FileBasedApp.Toolkit.Template)
 
 A toolkit for building file-based applications in .NET.  (see  [more](https://learn.microsoft.com/en-us/dotnet/core/sdk/file-based-apps))
@@ -12,6 +14,8 @@ A toolkit for building file-based applications in .NET.  (see  [more](https://le
 ## Packages
 
 - [FileBasedApp.Toolkit](Source/FileBasedApp/FileBasedApp.Toolkit/README.md) - Core toolkit with helpers and extensions.
+- [FileBasedApp.Toolkit.Spectre](Source/FileBasedApp/FileBasedApp.Toolkit.Spectre/) - Spectre.Console integration, including `AnsiConsoleFactory` and `ExtendedCommandSettings`.
+- [FileBasedApp.Toolkit.SimpleExec](Source/FileBasedApp/FileBasedApp.Toolkit.SimpleExec/) - External command runners and SimpleExec integration.
 - [TruePath.TestableIO.System.IO](https://github.com/jeppevammenkristensen/TruePath.TestableIO.System.IO) - External bridge between TruePath and TestableIO.
 - [FileBasedApp.Toolkit.CSharp](Source/FileBasedApp/FileBasedApp.Toolkit.CSharp/README.md) - Roslyn-based helpers for detecting and working with file-based .NET apps.
 - [FileBasedApp.Toolkit.Dotnet](Source/FileBasedApp/FileBasedApp.Toolkit.Dotnet/README.md) - Fluent builders and recipes for dotnet CLI commands (pack, nuget push, package search).
@@ -19,9 +23,37 @@ A toolkit for building file-based applications in .NET.  (see  [more](https://le
 
 It takes some inspiration based on experiences with brilliant tools like Cake and Nuke. But tries to give some of what those libraries provides but aimed at just using FileBasedApps.
 
-It relies heavily (hence opinionated) on [TruePath](https://github.com/ForNeVeR/TruePath),[SimpleExec](https://github.com/adamralph/simple-exec) and [Spectre.Console and Spectre.Console.Cli](https://spectreconsole.net/). In this library I strive for especially TruePath types to be first class citizens.
+The core toolkit relies heavily (hence opinionated) on [TruePath](https://github.com/ForNeVeR/TruePath). Optional integration packages provide support for [SimpleExec](https://github.com/adamralph/simple-exec) and [Spectre.Console and Spectre.Console.Cli](https://spectreconsole.net/). In this library I strive for especially TruePath types to be first class citizens.
 
 `TruePath.TestableIO.System.IO` is maintained in its [own repository](https://github.com/jeppevammenkristensen/TruePath.TestableIO.System.IO) and provides a bridge between `TruePath` and [System.Io.Abstractions](https://github.com/TestableIO/System.IO.Abstractions).
+
+## Integration package migration
+
+The core `FileBasedApp.Toolkit` package no longer depends on Spectre.Console, Spectre.Console.Cli, or SimpleExec. Add the integration packages your app uses, at the same release version as the core toolkit:
+
+- `FileBasedApp.Toolkit.Spectre` supplies `AnsiConsoleFactory` and `ExtendedCommandSettings`, and brings in Spectre.Console and Spectre.Console.Cli.
+- `FileBasedApp.Toolkit.SimpleExec` supplies the command runners and wrappers, including `SimpleExecRunner`, and brings in SimpleExec.
+
+Use `#:package` directives in file-based apps or package references in project-based apps. Existing namespaces remain unchanged: `FileBasedApp.Toolkit`, `FileBasedApp.Toolkit.CommandCli`, and `FileBasedApp.Toolkit.SimpleExec`. Consumers that previously relied on core's transitive Spectre or SimpleExec dependencies must now reference the relevant integration package or the upstream dependency directly. Path, URI, JSON, and framework-independent command settings helpers remain in core.
+
+The scripts, samples, and generated template declare their integration dependencies explicitly.
+
+For the current preview, keep all toolkit directives in an app aligned:
+
+```csharp
+#:package FileBasedApp.Toolkit@1.4.0-preview-01
+#:package FileBasedApp.Toolkit.Spectre@1.4.0-preview-01
+#:package FileBasedApp.Toolkit.SimpleExec@1.4.0-preview-01
+```
+
+Scripts (including the package publisher and package-reference updater) restore their own dependencies before running. For the first release of the extracted integrations, make the matching packages available in a configured feed first; the updater cannot bootstrap missing packages. For local development, pack the solution into a local feed before running the scripts:
+
+```powershell
+dotnet pack Source/FileBasedApp.Toolkit.slnx -c Release -o ./artifacts/bootstrap
+dotnet nuget add source "$((Resolve-Path ./artifacts/bootstrap).Path)" --name ToolkitBootstrap
+```
+
+CI needs the same package versions published to its configured feed before it can run these package-based scripts. Preview source setup is described below.
 
 ## TruePath 2.0 update
 

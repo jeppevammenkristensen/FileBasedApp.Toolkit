@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 #### FileBasedApp.Toolkit
 
+- Breaking: moved `AnsiConsoleFactory` and `ExtendedCommandSettings` into the optional `FileBasedApp.Toolkit.Spectre` package, and command runners/wrappers/results into `FileBasedApp.Toolkit.SimpleExec`. Namespaces remain unchanged; consumers must add the appropriate package references and recompile.
+- Core no longer depends on Spectre or SimpleExec. Dotnet helpers now reference the SimpleExec integration; CSharp keeps an explicit Spectre.Console dependency without requiring the CLI integration.
+- Added integration-specific test projects and core dependency regression coverage; updated templates, scripts and samples for the split.
 - Updated TruePath from 1.12.0 to 2.0.0 and TruePath.TestableIO.System.IO from 1.0.1 to 1.1.0
 - Added `LocalPath.IsCurrentDirectory()` for lexical detection of normalized current-directory paths, excluding absolute paths pointing to the working directory
 - Preserved zero-segment `GetSegments()` and `Traverse()` results for empty input, `.` and `a/..`, with regression coverage

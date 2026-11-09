@@ -20,6 +20,8 @@ dotnet new filebasedtoolkitapp -n MyFileBasedApp
 
 The generated project will include the basic structure and boilerplate required to build an application that operates on files and directories, leveraging the helpers and utilities provided by the `FileBasedApp.Toolkit`.
 
+The generated file references `FileBasedApp.Toolkit.Spectre` for its Spectre.Console command and settings, and `FileBasedApp.Toolkit.SimpleExec` for running external commands. Both integration packages depend on the core toolkit; their types retain their existing namespaces.
+
 ## Learn More
 
 - [FileBasedApp.Toolkit GitHub Repository](https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit)

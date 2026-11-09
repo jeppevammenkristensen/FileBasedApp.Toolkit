@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using Spectre.Console;
 
 namespace FileBasedApp.Toolkit.CSharp;
 
@@ -17,13 +18,19 @@ public static class BaseAnalysisExtensions
         /// for the protocol stream.
         /// </summary>
         /// <returns>The current instance to enable method chaining.</returns>
-        public TSelf WithQuietConsole() => self.WithAnsiConsole(AnsiConsoleFactory.Quiet());
+        public TSelf WithQuietConsole() => self.WithAnsiConsole(AnsiConsole.Create(new AnsiConsoleSettings
+        {
+            Out = new AnsiConsoleOutput(TextWriter.Null)
+        }));
 
         /// <summary>
         /// Replaces the console with one that writes all output to stderr instead of stdout. Use this to keep
         /// diagnostic output visible while leaving stdout clean, e.g. behind a stdio-based protocol such as MCP.
         /// </summary>
         /// <returns>The current instance to enable method chaining.</returns>
-        public TSelf WithStderrConsole() => self.WithAnsiConsole(AnsiConsoleFactory.Stderr());
+        public TSelf WithStderrConsole() => self.WithAnsiConsole(AnsiConsole.Create(new AnsiConsoleSettings
+        {
+            Out = new AnsiConsoleOutput(System.Console.Error)
+        }));
     }
 }

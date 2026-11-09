@@ -8,6 +8,10 @@
     <Project Path="FileBasedApp/FileBasedApp.Toolkit.CSharp.Tests/FileBasedApp.Toolkit.CSharp.Tests.csproj" />
     <Project Path="FileBasedApp/FileBasedApp.Toolkit.CSharp/FileBasedApp.Toolkit.CSharp.csproj" />
     <Project Path="FileBasedApp/FileBasedApp.Toolkit.Dotnet/FileBasedApp.Toolkit.Dotnet.csproj" />
+    <Project Path="FileBasedApp/FileBasedApp.Toolkit.SimpleExec/FileBasedApp.Toolkit.SimpleExec.csproj" />
+    <Project Path="FileBasedApp/FileBasedApp.Toolkit.SimpleExec.Tests/FileBasedApp.Toolkit.SimpleExec.Tests.csproj" />
+    <Project Path="FileBasedApp/FileBasedApp.Toolkit.Spectre/FileBasedApp.Toolkit.Spectre.csproj" />
+    <Project Path="FileBasedApp/FileBasedApp.Toolkit.Spectre.Tests/FileBasedApp.Toolkit.Spectre.Tests.csproj" />
     <Project Path="FileBasedApp/FileBasedApp.Toolkit.Tests/FileBasedApp.Toolkit.Tests.csproj" />
     <Project Path="FileBasedApp/FileBasedApp.Toolkit/FileBasedApp.Toolkit.csproj" />
   </Folder>

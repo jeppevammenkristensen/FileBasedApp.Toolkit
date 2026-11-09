@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FileBasedApp.Toolkit.CommandCli;
 using FluentAssertions;
 using JetBrains.Annotations;
+using Spectre.Console;
 using TruePath;
 using Xunit;
 
@@ -131,6 +132,48 @@ public class ExtendedCommandSettingsTest : IDisposable
 
         public string? InvokeGetValueOrFromEnvironment(string? originalValue, string environmentKey)
             => GetValueOrFromEnvironment(originalValue, environmentKey);
+    }
+
+    [Fact]
+    public void Validate_DefaultImplementation_ReturnsSuccess()
+    {
+        var result = new TestSettings().Validate();
+
+        result.Successful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Validate_CustomValidation_ReturnsItsResult()
+    {
+        var expected = ValidationResult.Error("invalid settings");
+        var settings = new ValidatingSettings(() => expected);
+
+        settings.Validate().Should().BeSameAs(expected);
+    }
+
+    [Fact]
+    public void Validate_CustomValidationSuccess_ReturnsItsResult()
+    {
+        var expected = ValidationResult.Success();
+        var settings = new ValidatingSettings(() => expected);
+
+        settings.Validate().Should().BeSameAs(expected);
+    }
+
+    [Fact]
+    public void Validate_Exception_ReturnsErrorWithExceptionMessage()
+    {
+        var settings = new ValidatingSettings(() => throw new InvalidOperationException("missing configuration"));
+
+        var result = settings.Validate();
+
+        result.Successful.Should().BeFalse();
+        result.Message.Should().Be("missing configuration");
+    }
+
+    private sealed class ValidatingSettings(Func<ValidationResult> validate) : ExtendedCommandSettings
+    {
+        protected override ValidationResult DoValidate() => validate();
     }
 
     private class TestSettingsWithCustomDeserializer : ExtendedCommandSettings

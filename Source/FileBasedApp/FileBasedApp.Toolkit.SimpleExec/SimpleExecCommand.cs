@@ -12,16 +12,13 @@ namespace FileBasedApp.Toolkit.SimpleExec;
 /// A class that provides functionality to execute system commands
 /// leveraging the capabilities of the SimpleExec library.
 /// </summary>
-public class SimpleExecCommand : ISimpleExecCommandWrapper,
-    IStaticValueSetter<ISimpleExecCommandWrapper>
+public class SimpleExecCommand : ISimpleExecCommandWrapper
 {
     /// <summary>
-    /// Gets or sets the current instance of the object.
-    /// This property provides a reference to the active instance,
-    /// enabling access to shared or singleton behavior.
+    /// Gets the default command wrapper shared by runners without an injected wrapper.
     /// </summary>
-    public static ISimpleExecCommandWrapper Instance { get; private set; } = GetDefault();
-    
+    public static ISimpleExecCommandWrapper Instance { get; } = new SimpleExecCommand();
+
     /// <summary>
     /// Runs a command without redirecting standard output (stdout) and standard error (stderr) and without writing to standard input (stdin).
     /// By default, the command line is echoed to standard output (stdout).
@@ -50,7 +47,13 @@ public class SimpleExecCommand : ISimpleExecCommandWrapper,
     /// By default, the resulting command line and the working directory (if specified) are echoed to standard output (stdout).
     /// To suppress this behavior, provide the <paramref name = "noEcho"/> parameter with a value of <c>true</c>.
     /// </remarks>
-    public void Run(string name, string args = "", string workingDirectory = "", Action<IDictionary<string, string?>>? configureEnvironment = null, IEnumerable<string>? secrets = null, Func<int, bool>? handleExitCode = null, string? echoPrefix = null, bool noEcho = false, bool cancellationIgnoresProcessTree = false, bool createNoWindow = false, Ct ct = default) => Command.Run(name, args, workingDirectory, configureEnvironment, secrets, handleExitCode, echoPrefix, noEcho, cancellationIgnoresProcessTree, createNoWindow, ct);
+    public void Run(string name, string args = "", string workingDirectory = "",
+        Action<IDictionary<string, string?>>? configureEnvironment = null, IEnumerable<string>? secrets = null,
+        Func<int, bool>? handleExitCode = null, string? echoPrefix = null, bool noEcho = false,
+        bool cancellationIgnoresProcessTree = false, bool createNoWindow = false, Ct ct = default) => Command.Run(name,
+        args, workingDirectory, configureEnvironment, secrets, handleExitCode, echoPrefix, noEcho,
+        cancellationIgnoresProcessTree, createNoWindow, ct);
+
     /// <summary>
     /// Runs a command without redirecting standard output (stdout) and standard error (stderr) and without writing to standard input (stdin).
     /// By default, the command line is echoed to standard output (stdout).
@@ -78,7 +81,13 @@ public class SimpleExecCommand : ISimpleExecCommandWrapper,
     /// <param name = "createNoWindow">Whether to run the command in a new window.</param>
     /// <param name = "ct">A <see cref = "Ct"/> to observe while waiting for the command to exit.</param>
     /// <exception cref = "ExitCodeException">The command exited with non-zero exit code.</exception>
-    public void Run(string name, IEnumerable<string> args, string workingDirectory = "", Action<IDictionary<string, string?>>? configureEnvironment = null, IEnumerable<string>? secrets = null, Func<int, bool>? handleExitCode = null, string? echoPrefix = null, bool noEcho = false, bool cancellationIgnoresProcessTree = false, bool createNoWindow = false, Ct ct = default) => Command.Run(name, args, workingDirectory, configureEnvironment, secrets, handleExitCode, echoPrefix, noEcho, cancellationIgnoresProcessTree, createNoWindow, ct);
+    public void Run(string name, IEnumerable<string> args, string workingDirectory = "",
+        Action<IDictionary<string, string?>>? configureEnvironment = null, IEnumerable<string>? secrets = null,
+        Func<int, bool>? handleExitCode = null, string? echoPrefix = null, bool noEcho = false,
+        bool cancellationIgnoresProcessTree = false, bool createNoWindow = false, Ct ct = default) => Command.Run(name,
+        args, workingDirectory, configureEnvironment, secrets, handleExitCode, echoPrefix, noEcho,
+        cancellationIgnoresProcessTree, createNoWindow, ct);
+
     /// <summary>
     /// Runs a command asynchronously without redirecting standard output (stdout) and standard error (stderr) and without writing to standard input (stdin).
     /// By default, the command line is echoed to standard output (stdout).
@@ -108,7 +117,13 @@ public class SimpleExecCommand : ISimpleExecCommandWrapper,
     /// By default, the resulting command line and the working directory (if specified) are echoed to standard output (stdout).
     /// To suppress this behavior, provide the <paramref name = "noEcho"/> parameter with a value of <c>true</c>.
     /// </remarks>
-    public Task RunAsync(string name, string args = "", string workingDirectory = "", Action<IDictionary<string, string?>>? configureEnvironment = null, IEnumerable<string>? secrets = null, Func<int, bool>? handleExitCode = null, string? echoPrefix = null, bool noEcho = false, bool cancellationIgnoresProcessTree = false, bool createNoWindow = false, Ct ct = default) => Command.RunAsync(name, args, workingDirectory, configureEnvironment, secrets, handleExitCode, echoPrefix, noEcho, cancellationIgnoresProcessTree, createNoWindow, ct);
+    public Task RunAsync(string name, string args = "", string workingDirectory = "",
+        Action<IDictionary<string, string?>>? configureEnvironment = null, IEnumerable<string>? secrets = null,
+        Func<int, bool>? handleExitCode = null, string? echoPrefix = null, bool noEcho = false,
+        bool cancellationIgnoresProcessTree = false, bool createNoWindow = false, Ct ct = default) => Command.RunAsync(
+        name, args, workingDirectory, configureEnvironment, secrets, handleExitCode, echoPrefix, noEcho,
+        cancellationIgnoresProcessTree, createNoWindow, ct);
+
     /// <summary>
     /// Runs a command asynchronously without redirecting standard output (stdout) and standard error (stderr) and without writing to standard input (stdin).
     /// By default, the command line is echoed to standard output (stdout).
@@ -137,7 +152,13 @@ public class SimpleExecCommand : ISimpleExecCommandWrapper,
     /// <param name = "ct">A <see cref = "Ct"/> to observe while waiting for the command to exit.</param>
     /// <returns>A <see cref = "Task"/> that represents the asynchronous running of the command.</returns>
     /// <exception cref = "ExitCodeReadException">The command exited with non-zero exit code.</exception>
-    public Task RunAsync(string name, IEnumerable<string> args, string workingDirectory = "", Action<IDictionary<string, string?>>? configureEnvironment = null, IEnumerable<string>? secrets = null, Func<int, bool>? handleExitCode = null, string? echoPrefix = null, bool noEcho = false, bool cancellationIgnoresProcessTree = false, bool createNoWindow = false, Ct ct = default) => Command.RunAsync(name, args, workingDirectory, configureEnvironment, secrets, handleExitCode, echoPrefix, noEcho, cancellationIgnoresProcessTree, createNoWindow, ct);
+    public Task RunAsync(string name, IEnumerable<string> args, string workingDirectory = "",
+        Action<IDictionary<string, string?>>? configureEnvironment = null, IEnumerable<string>? secrets = null,
+        Func<int, bool>? handleExitCode = null, string? echoPrefix = null, bool noEcho = false,
+        bool cancellationIgnoresProcessTree = false, bool createNoWindow = false, Ct ct = default) => Command.RunAsync(
+        name, args, workingDirectory, configureEnvironment, secrets, handleExitCode, echoPrefix, noEcho,
+        cancellationIgnoresProcessTree, createNoWindow, ct);
+
     /// <summary>
     /// Runs a command and reads standard output (stdout) and standard error (stderr) and optionally writes to standard input (stdin).
     /// </summary>
@@ -165,7 +186,12 @@ public class SimpleExecCommand : ISimpleExecCommandWrapper,
     /// <exception cref = "ExitCodeReadException">
     /// The command exited with non-zero exit code. The exception contains the contents of standard output (stdout) and standard error (stderr).
     /// </exception>
-    public Task<(string StandardOutput, string StandardError)> ReadAsync(string name, string args = "", string workingDirectory = "", Action<IDictionary<string, string?>>? configureEnvironment = null, Func<int, bool>? handleExitCode = null, Encoding? encoding = null, string? standardInput = null, bool cancellationIgnoresProcessTree = false, Ct ct = default) => Command.ReadAsync(name, args, workingDirectory, configureEnvironment, handleExitCode, encoding, standardInput, cancellationIgnoresProcessTree, ct);
+    public Task<(string StandardOutput, string StandardError)> ReadAsync(string name, string args = "",
+        string workingDirectory = "", Action<IDictionary<string, string?>>? configureEnvironment = null,
+        Func<int, bool>? handleExitCode = null, Encoding? encoding = null, string? standardInput = null,
+        bool cancellationIgnoresProcessTree = false, Ct ct = default) => Command.ReadAsync(name, args, workingDirectory,
+        configureEnvironment, handleExitCode, encoding, standardInput, cancellationIgnoresProcessTree, ct);
+
     /// <summary>
     /// Runs a command and reads standard output (stdout) and standard error (stderr) and optionally writes to standard input (stdin).
     /// </summary>
@@ -196,32 +222,9 @@ public class SimpleExecCommand : ISimpleExecCommandWrapper,
     /// <exception cref = "ExitCodeReadException">
     /// The command exited with non-zero exit code. The exception contains the contents of standard output (stdout) and standard error (stderr).
     /// </exception>
-    public Task<(string StandardOutput, string StandardError)> ReadAsync(string name, IEnumerable<string> args, string workingDirectory = "", Action<IDictionary<string, string?>>? configureEnvironment = null, Func<int, bool>? handleExitCode = null, Encoding? encoding = null, string? standardInput = null, bool cancellationIgnoresProcessTree = false, Ct ct = default) => Command.ReadAsync(name, args, workingDirectory, configureEnvironment, handleExitCode, encoding, standardInput, cancellationIgnoresProcessTree, ct);
-
-    private static SimpleExecCommand GetDefault()
-    {
-        return new SimpleExecCommand();
-    }
-    
-    /// <summary>
-    /// The default instance
-    /// </summary>
-    /// <returns></returns>
-    static ISimpleExecCommandWrapper IStaticValueSetter<ISimpleExecCommandWrapper>.GetDefault()
-    {
-        return GetDefault();
-    }
-
-    static ISimpleExecCommandWrapper IStaticValueSetter<ISimpleExecCommandWrapper>.GetFileSystem()
-    {
-        return Instance;
-    }
-
-    static void IStaticValueSetter<ISimpleExecCommandWrapper>.SetFileSystem(ISimpleExecCommandWrapper fileSystem)
-    {
-       Instance = fileSystem;
-    }
+    public Task<(string StandardOutput, string StandardError)> ReadAsync(string name, IEnumerable<string> args,
+        string workingDirectory = "", Action<IDictionary<string, string?>>? configureEnvironment = null,
+        Func<int, bool>? handleExitCode = null, Encoding? encoding = null, string? standardInput = null,
+        bool cancellationIgnoresProcessTree = false, Ct ct = default) => Command.ReadAsync(name, args, workingDirectory,
+        configureEnvironment, handleExitCode, encoding, standardInput, cancellationIgnoresProcessTree, ct);
 }
-
-
-

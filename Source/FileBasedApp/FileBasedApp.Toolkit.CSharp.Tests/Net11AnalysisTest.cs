@@ -15,6 +15,36 @@ namespace FileBasedApp.Toolkit.CSharp.Tests;
 /// <summary>Verifies real .NET 11 project and solution loading through the MSBuild BuildHost.</summary>
 public class Net11AnalysisTest
 {
+    /// <summary>Exercises concurrent initialization across both closed analysis base types.</summary>
+    [Fact]
+    public async Task LoadProjectAndSolution_Concurrently_ResolvesNet11FrameworkAndReferences()
+    {
+        await using var projectAnalysis = new CSharpProjectAnalysis(AnsiConsoleFactory.Quiet());
+        await using var solutionAnalysis = new CSharpSolutionAnalysis(AnsiConsoleFactory.Quiet());
+        var fixtureDirectory = FixtureDirectory();
+        var start = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        var projectLoad = Task.Run(async () =>
+        {
+            await start.Task;
+            await projectAnalysis.Load(fixtureDirectory / "Net11AnalysisFixture.csproj");
+        });
+        var solutionLoad = Task.Run(async () =>
+        {
+            await start.Task;
+            await solutionAnalysis.Load(fixtureDirectory / "Net11AnalysisFixture.slnx");
+        });
+
+        start.SetResult(true);
+        await Task.WhenAll(projectLoad, solutionLoad);
+
+        AssertNet11Compilation(projectAnalysis.Project, projectAnalysis.Compilation);
+        var project = solutionAnalysis.Solution.Projects.Should().ContainSingle().Subject;
+        var compilation = await project.GetCompilationAsync();
+        compilation.Should().NotBeNull();
+        AssertNet11Compilation(project, compilation!);
+    }
+
     [Fact]
     public async Task LoadProject_ResolvesNet11FrameworkAndReferences()
     {

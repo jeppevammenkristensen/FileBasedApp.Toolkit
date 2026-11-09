@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -14,6 +13,14 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>floppy-disc.png</PackageIcon>       
         
+    </PropertyGroup>
+
+    <!-- Keep the MSBuild family aligned; versions after 18.9.6 require .NET 11. -->
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
+        <MSBuildPackageVersion>18.9.6</MSBuildPackageVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0'">
+        <MSBuildPackageVersion>18.11.0</MSBuildPackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -47,13 +54,13 @@
         <PackageReference Include="NuGet.Versioning" Version="7.9.0" />
         <PackageReference Include="Roslynator.CSharp" Version="5.0.1" />
 
-        <PackageReference Include="Microsoft.Build" Version="18.9.6" ExcludeAssets="runtime" PrivateAssets="all">
+        <PackageReference Include="Microsoft.Build" Version="$(MSBuildPackageVersion)" ExcludeAssets="runtime" PrivateAssets="all">
           <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Build.Framework" Version="18.9.6" ExcludeAssets="runtime" PrivateAssets="all">
+        <PackageReference Include="Microsoft.Build.Framework" Version="$(MSBuildPackageVersion)" ExcludeAssets="runtime" PrivateAssets="all">
           <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.NET.StringTools" Version="18.11.0" ExcludeAssets="runtime" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.NET.StringTools" Version="$(MSBuildPackageVersion)" ExcludeAssets="runtime" PrivateAssets="all" />
         <PackageReference Include="Microsoft.Build.Locator" Version="1.11.2" />        
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />
         <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.9.0" />

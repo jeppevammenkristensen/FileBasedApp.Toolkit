@@ -154,6 +154,8 @@ public class BuildCodeCommand : BuildCommand<BuildCodeCommand.Settings>
 
         artifact.CreateDirectory();
 
+        bool success = true;
+
         try
         {
             AbsolutePath solutionFile = sourcePath.GetFiles("*.slnx", SearchOption.AllDirectories)
@@ -214,6 +216,7 @@ public class BuildCodeCommand : BuildCommand<BuildCodeCommand.Settings>
                 catch (ExitCodeReadException)
                 {
                     AnsiConsole.MarkupLineInterpolated($"[red]Could not publish {element.Value}[/]");
+                    success = false;
                 }
             }
 
@@ -229,7 +232,7 @@ public class BuildCodeCommand : BuildCommand<BuildCodeCommand.Settings>
             }
         }
 
-        return 0;
+        return success ? 0 : 1;
     }
 
     public class Settings : ExtendedCommandSettings

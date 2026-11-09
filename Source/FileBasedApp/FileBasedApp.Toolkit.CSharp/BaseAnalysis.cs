@@ -1,7 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Abstractions;
-using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis.MSBuild;
 using Spectre.Console;
 using TruePath;
@@ -211,17 +210,7 @@ public abstract class BaseAnalysis<TSelf> : IDisposable, IAsyncDisposable where 
             throw new InvalidOperationException("The project has already been initialized");
         }
 
-        if (!MSBuildLocator.IsRegistered)
-        {
-            if (!MSBuildLocator.QueryVisualStudioInstances().Any())
-            {
-                throw new InvalidOperationException(
-                    "No MSBuild instances were found. Ensure that a .NET SDK or Visual Studio is installed. " +
-                    "If running in a file-based app, make sure the .NET SDK is on the PATH.");
-            }
-
-            MSBuildLocator.RegisterDefaults();
-        }
+        MSBuildRegistration.EnsureRegistered();
        
         InternalMsBuildWorkspace = MSBuildWorkspace.Create(Properties);
     }

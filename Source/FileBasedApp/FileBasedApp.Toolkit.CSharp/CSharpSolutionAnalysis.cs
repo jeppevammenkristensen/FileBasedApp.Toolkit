@@ -35,8 +35,8 @@ public sealed class CSharpSolutionAnalysis : BaseAnalysis<CSharpSolutionAnalysis
     /// </summary>
     /// <param name="console">
     /// The console to write status and diagnostic output to. Use this to avoid writing to stdout when it must stay
-    /// reserved for another purpose, e.g. a stdio-based protocol such as MCP. See <see cref="AnsiConsoleFactory"/>
-    /// for ready-made consoles that avoid stdout.
+    /// reserved for another purpose, e.g. a stdio-based protocol such as MCP. The WithQuietConsole and
+    /// WithStderrConsole helpers also provide consoles that avoid stdout.
     /// </param>
     /// <param name="fileSystem">The file system abstraction to use. Defaults to the real file system.</param>
     public CSharpSolutionAnalysis(IAnsiConsole console, IFileSystem? fileSystem = null)

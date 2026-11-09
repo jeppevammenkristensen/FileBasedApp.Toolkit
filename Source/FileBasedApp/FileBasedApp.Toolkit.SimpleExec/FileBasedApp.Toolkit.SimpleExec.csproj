@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>        
+        <LangVersion>14</LangVersion>
+        <IsPackable>true</IsPackable>
+        <Title>SimpleExec helpers for FileBasedApps</Title>
+        <Description>Fluent command runners and testable SimpleExec wrappers for file-based apps.</Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>floppy-disc.png</PackageIcon>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../FileBasedApp.Toolkit/FileBasedApp.Toolkit.csproj"/>
+        <PackageReference Include="SimpleExec" Version="13.1.0"/>
+        <PackageReference Include="TruePath" Version="2.0.0"/>
+        <PackageReference Include="JetBrains.Annotations" Version="2026.2.0"/>
+        <InternalsVisibleTo Include="FileBasedApp.Toolkit.SimpleExec.Tests"/>
+        <None Include="README.md" Pack="true" PackagePath="/"/>
+        <None Include="../floppy-disc.png" Pack="true" PackagePath="/"/>
+    </ItemGroup>
+</Project>

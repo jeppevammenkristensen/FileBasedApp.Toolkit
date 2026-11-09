@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FileBasedApp.Toolkit\FileBasedApp.Toolkit.csproj" />
+      <ProjectReference Include="../FileBasedApp.Toolkit.SimpleExec/FileBasedApp.Toolkit.SimpleExec.csproj" />
     </ItemGroup>
 
     <ItemGroup>

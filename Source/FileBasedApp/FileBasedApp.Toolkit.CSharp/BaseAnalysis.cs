@@ -152,7 +152,7 @@ public abstract class BaseAnalysis<TSelf> : IDisposable, IAsyncDisposable where 
     /// </summary>
     /// <param name="console"></param>
     /// <returns></returns>
-    /// <remarks>You can use the <see cref="AnsiConsoleFactory"/> to create <see cref="IAnsiConsole"/> targeting different console types</remarks>
+    /// <remarks>Use WithQuietConsole or WithStderrConsole for consoles that avoid stdout.</remarks>
     public TSelf WithAnsiConsole(IAnsiConsole console)
     {
         Console = console;

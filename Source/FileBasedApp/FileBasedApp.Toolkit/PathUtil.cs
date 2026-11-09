@@ -34,10 +34,10 @@ public class PathUtil : IStaticFileSystemSetter
     /// For unit test scenarios 
     /// </summary>
     /// <param name="fileSystem"></param>
-    internal static void SetFileSystem(IFileSystem fileSystem) => _fileSystem = fileSystem;
-    
-    internal static bool DirectoryExist(AbsolutePath path) => path.DirectoryExists(_fileSystem);
-    internal static bool FileExist(AbsolutePath path) => path.FileExists(_fileSystem);
+    private static void SetFileSystem(IFileSystem fileSystem) => _fileSystem = fileSystem;
+
+    private static bool DirectoryExist(AbsolutePath path) => path.DirectoryExists(_fileSystem);
+    private static bool FileExist(AbsolutePath path) => path.FileExists(_fileSystem);
     
     private const string EntrypointFileDirectoryPath = "EntryPointFileDirectoryPath";
     private const string EntrypointFilePath = "EntryPointFilePath";
@@ -73,15 +73,9 @@ public class PathUtil : IStaticFileSystemSetter
     public static AbsolutePath GetExecutionFolder()
     {
         // This is relevant for FileBasedApps
-        var path = AppContext.GetData(EntrypointFileDirectoryPath) as string;
 
         // If that value is not available we use the check below. 
-        if (path is null)
-        {
-            return AbsolutePath.Create(AppDomain.CurrentDomain.BaseDirectory);
-        }
-
-        return AbsolutePath.Create(path);
+        return AbsolutePath.Create(AppContext.GetData(EntrypointFileDirectoryPath) as string ?? AppDomain.CurrentDomain.BaseDirectory);
     }
 
     /// <summary>

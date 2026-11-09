@@ -2,6 +2,27 @@
 
 A collection of opinionated helpers and extensions for building file-based applications in .NET.
 
+The core package remains framework-neutral: Spectre.Console and SimpleExec integrations
+are available as separate, optional packages.
+
+## Package split and migration (1.4.0-preview-01)
+
+If you previously used integration types from `FileBasedApp.Toolkit`, add an explicit
+reference to the corresponding package:
+
+```xml
+<PackageReference Include="FileBasedApp.Toolkit.Spectre" Version="1.4.0-preview-01" />
+<PackageReference Include="FileBasedApp.Toolkit.SimpleExec" Version="1.4.0-preview-01" />
+```
+
+Add only the integrations you use. See [Spectre integration](../FileBasedApp.Toolkit.Spectre/README.md)
+for `AnsiConsoleFactory` and `ExtendedCommandSettings`, and
+[SimpleExec integration](../FileBasedApp.Toolkit.SimpleExec/README.md) for command runners.
+Namespaces remain unchanged, but moving types to new assemblies is a **binary breaking
+change**: recompile existing consumers after adding the package references. Core-only
+consumers do not need either integration package. Deserializers and `FlexibleFilePath`
+remain in core.
+
 ## Features
 
 * Provides a `PathUtil` class for working with paths and validating string paths
@@ -11,51 +32,12 @@ A collection of opinionated helpers and extensions for building file-based appli
   * `Replace` — in-place file text transformation
   * `SafeDeleteDirectory` — safely delete directories with optional exception handling
 * Provides `StringExtensions` with `StringJoin`, `IsNullOrWhitespace`, and `IsNullOrEmpty` convenience methods
-* Provides an extension of the `CommandSettings` from the `Spectre.Console.Cli` providing validation of file and directory paths
-* Provides a `SimpleExecRunner` fluent builder for constructing and executing system commands via the `SimpleExec` library, with support for secrets redaction and `TruePath` integration
 * Includes the following libraries
   * `TruePath` 2.0.0
-  * `SimpleExec`
-  * `Spectre.Console.Cli`
   * `TestableIO.System.IO.Abstractions.Wrappers`
   * `TruePath.TestableIO.System.IO` 1.1.0
 
 ## Example
-
-### Extended settings
-
-The example below shows how to use the `ExtendedCommandSettings` class to validate file and directory paths.
-
-```csharp
-using FileBasedApp.Toolkit;
-using Spectre.Console;
-using Spectre.Console.Cli;
-using TruePath;
-
-public class CustomCommandSettings : ExtendedCommandSettings
-{
-    [CommandArgument(0, "<directory-path>")]
-    public string? Directory { get; set; }
-    
-    [CommandOption("--filePath")]
-    public required string File { get; set; }
-
-    public AbsolutePath DirectoryPath { get; set; }
-    
-    public AbsolutePath FilePath { get; set; }
-    
-    protected override ValidationResult DoValidate()
-    {
-        // Evaluates the directory string.
-        DirectoryPath = TryGetDirectory(Directory,
-            allowEmpty: true,
-            shouldExist: true,
-            PredefinedRootPath.ExecutionFolder);
-        FilePath = TryGetFile(File, true, roots: [PathUtil.GetCurrentWorkingFolder(), PathUtil.GetExecutionFolder()]);
-        return base.DoValidate();
-    }
-}
-```
 
 ### TruePath IO extensions
 
@@ -163,87 +145,12 @@ var configured = new FlexibleFilePath(@"data\file.txt", "data/file.txt");
 LocalPath path = configured; // Relative on either platform; no longer throws
 ```
 
-### SimpleExecRunner
-
-The `SimpleExecRunner` provides a fluent builder API on top of the [SimpleExec](https://github.com/adamralph/simple-exec) library for constructing and executing system commands. It supports `TruePath` types (`AbsolutePath`, `LocalPath`) directly as arguments, and can redact secrets from echoed output.
-
-```csharp
-using FileBasedApp.Toolkit.SimpleExec;
-using Spectre.Console;
-using TruePath;
-
-// Basic command execution
-await new SimpleExecRunner("dotnet")
-    .AddArgument("build")
-    .AddArgument("MyProject.csproj")
-    .RunAsync();
-
-// Using AddArgumentPair for flag + value combinations
-await new SimpleExecRunner("dotnet")
-    .AddArgument("pack")
-    .AddArgumentPair("-c", "Release")
-    .AddArgumentPair("-o", outputPath) // accepts AbsolutePath directly
-    .RunAsync();
-
-// With secrets redaction — the API key value is replaced with "***" in echoed output
-await new SimpleExecRunner("dotnet")
-    .AddArguments("nuget", "push")
-    .AddArgument(packagePath)
-    .AddArgumentPair("--source", "nuget.org")
-    .AddArgumentPair("--api-key", apiKey, isSecret: true)
-    .RunAsync();
-
-// Reading command output
-var (stdout, stderr) = await new SimpleExecRunner("dotnet")
-    .AddArgument("--version")
-    .ReadAsync();
-
-// Working directory and environment variables
-await new SimpleExecRunner("git")
-    .AddArguments("status", "--porcelain")
-    .WithWorkingDirectory(repoRoot)
-    .WithConfigureEnvironment(env => env["GIT_TERMINAL_PROMPT"] = "0")
-    .RunAsync();
-
-// Accept an expected non-zero exit code. `git diff --quiet` returns 1 when
-// differences exist, which is an expected result rather than a command failure.
-await new SimpleExecRunner("git")
-    .AddArguments("diff", "--quiet")
-    .WithAcceptedErrorCodes([1])
-    .RunAsync();
-```
-
-Exit code `0` remains successful by default and does not need to be listed. Other non-zero exit codes still cause the command to throw. Use `WithExitCodeHandler` when you need the lower-level handled-exit-code callback instead of a fixed list of accepted codes.
-
-Use `HandlesAllErrorCodes()` only when every exit code is an expected result; it disables SimpleExec's default non-zero-exit-code failure behavior.
-
-Use the result-returning APIs when the observed exit code or captured output is needed after execution:
-
-```csharp
-var result = await new SimpleExecRunner("git")
-    .AddArguments("diff", "--quiet")
-    .WithAcceptedErrorCodes([1])
-    .ReadEnhancedAsync();
-
-AnsiConsole.WriteLine(result.ExitCode.ToString());
-AnsiConsole.WriteLine(result.StandardOutput);
-AnsiConsole.WriteLine(result.StandardError);
-```
-
-`RunWithExitCode()` and `RunWithExitCodeAsync()` return `SimpleExecRunResult`, which contains `ExitCode`. `ReadEnhancedAsync()` returns `SimpleExecReadResult`, which contains `ExitCode`, `StandardOutput`, and `StandardError`. These methods still honor the configured exit-code policy.
-
-**Key types:**
-* `SimpleExecRunner` — the fluent builder. Create with `new SimpleExecRunner("command-name")`, add arguments, then call `Run()`, `RunAsync()`, `ReadAsync()`, or a result-returning execution method.
-* `SimpleExecRunResult` / `SimpleExecReadResult` — result types returned by the exit-code-aware execution methods.
-* `ISimpleExecCommandWrapper` — an interface wrapping `SimpleExec.Command` to enable unit testing. The default implementation (`SimpleExecCommand`) delegates directly to the static `Command` class.
-
 ### Web URIs (AbsoluteWebUri / RelativeWebUri)
 
 Strongly-typed, immutable wrappers around `System.Uri` for composing web URIs. Path segments, query strings, and fragments are represented as validated value objects (`UriPathSegment`, `UriQueryString`, `UriFragment`) and can be combined fluently via the `/` operator.
 
 ```csharp
 using FileBasedApp.Toolkit;
-using Spectre.Console;
 
 // Build an absolute URI fluently
 var url = AbsoluteWebUri.Create("https://example.com")
@@ -253,7 +160,7 @@ var url = AbsoluteWebUri.Create("https://example.com")
           / UriFragment.From("Fragment");
 
 // https://example.com/first/second?a=1&b=2#Fragment
-AnsiConsole.WriteLine(url.ToString());
+Console.WriteLine(url.ToString());
 
 // Or use method form
 var api = AbsoluteWebUri.Create("https://example.com/api")

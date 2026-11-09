@@ -6,6 +6,21 @@ namespace FileBasedApp.Toolkit.CSharp.Tests;
 public class BaseAnalysisTest
 {
     [Fact]
+    public void Constructor_SetsTargetFrameworkForCompileTarget()
+    {
+        using var dummy = new DummyAnalysis(AnsiConsoleFactory.Quiet());
+
+#if NET11_0
+        const string expectedFramework = "net11.0";
+#else
+        const string expectedFramework = "net10.0";
+#endif
+
+        BaseAnalysis<DummyAnalysis>.DefaultTargetFramework.Should().Be(expectedFramework);
+        dummy.Properties["TargetFramework"].Should().Be(expectedFramework);
+    }
+
+    [Fact]
     public void WithAnsiConsole_SetsConsole()
     {
         var dummy = new DummyAnalysis(AnsiConsoleFactory.Quiet());

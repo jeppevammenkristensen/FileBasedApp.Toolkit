@@ -36,7 +36,7 @@ foreach (var item in githubRootObject)
 
 public class GithubClient
 {
-        public AbsoluteWebUri BaseUrl = AbsoluteWebUri.Create("https://api.github.com/users/jeppevammenkristensen");
+       public AbsoluteWebUri BaseUrl = AbsoluteWebUri.Create("https://api.github.com/users/jeppevammenkristensen");
     
     private readonly HttpClient _client;
 

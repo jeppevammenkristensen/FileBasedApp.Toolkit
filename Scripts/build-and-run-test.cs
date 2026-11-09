@@ -52,6 +52,10 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 				AnsiConsole.MarkupLineInterpolated($"[green]Building filebased app {fileBased.FileName}[/]");
 				var runner = new SimpleExecRunner("dotnet")
 					.AddArgument("build").AddArgument(fileBased);
+				if (!string.IsNullOrWhiteSpace(settings.TargetFramework))
+				{
+					runner.AddArgument($"-p:TargetFrameworks={settings.TargetFramework}");
+				}
 				
 				await runner.RunAsync(token: cancellationToken);
 			}

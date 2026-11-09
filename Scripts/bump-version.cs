@@ -1,4 +1,5 @@
-#:package FileBasedApp.Toolkit@1.3.0
+#:package FileBasedApp.Toolkit@1.4.0-preview-02
+#:package FileBasedApp.Toolkit.Spectre@1.4.0-preview-02
 #:property PublishAot=false
 using System.ComponentModel;
 using Spectre.Console.Cli;

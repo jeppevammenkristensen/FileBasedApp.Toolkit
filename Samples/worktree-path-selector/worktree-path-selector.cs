@@ -1,4 +1,6 @@
-#:package FileBasedApp.Toolkit@1.3.0
+#:package FileBasedApp.Toolkit@1.4.0-preview-02
+#:package FileBasedApp.Toolkit.Spectre@1.4.0-preview-02
+#:package FileBasedApp.Toolkit.SimpleExec@1.4.0-preview-02
 #:package TextCopy@6.2.1
 #:property PublishAot=false
 #:property PackAsTool=true

@@ -1,6 +1,4 @@
-#:package FileBasedApp.Toolkit@1.4.0-preview-01
-#:package FileBasedApp.Toolkit.Spectre@1.4.0-preview-01
-#:package FileBasedApp.Toolkit.SimpleExec@1.4.0-preview-01
+#:package FileBasedApp.Toolkit@1.3.0
 #:property PublishAot=false 
 using Spectre.Console.Cli;
 using TruePath;

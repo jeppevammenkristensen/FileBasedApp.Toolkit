@@ -19,13 +19,15 @@ jobs:
         include:
           - sdk: 10.0.x
             quality: ga
+            target-arguments: --target-framework net10.0
           - sdk: 11.0.x
             quality: preview
+            target-arguments: ""
     permissions:
       packages: read
     steps:
     - uses: actions/checkout@v7
-    # Both test projects still target net10.0 and need the .NET 10 runtime.
+    # Multi-target tests need the .NET 10 runtime even when building with SDK 11.
     - name: Setup .NET 10
       uses: actions/setup-dotnet@v6
       with:
@@ -57,7 +59,7 @@ jobs:
       run: dotnet nuget add source "https://nuget.pkg.github.com/jeppevammenkristensen/index.json" --name "github" --username jeppevammenkristensen --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
     - name: Test
       shell: pwsh
-      run: dotnet run (Join-Path Scripts build-and-run-test.cs) --run-all-test
+      run: dotnet run (Join-Path Scripts build-and-run-test.cs) --run-all-test ${{ matrix.target-arguments }}
     - name: Upload build artifact
       if: failure()
       uses: actions/upload-artifact@v7

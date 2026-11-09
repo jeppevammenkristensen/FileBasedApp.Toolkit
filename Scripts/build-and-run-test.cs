@@ -61,8 +61,12 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 			}
 		}
 		
-		await new SimpleExecRunner("dotnet").AddArgument("build").AddArgument(solutionFile)
-			.RunAsync(token: cancellationToken);
+		var solutionBuild = new SimpleExecRunner("dotnet").AddArgument("build").AddArgument(solutionFile);
+		if (!string.IsNullOrWhiteSpace(settings.TargetFramework))
+		{
+			solutionBuild.AddArgument($"-p:TargetFrameworks={settings.TargetFramework}");
+		}
+		await solutionBuild.RunAsync(token: cancellationToken);
 
 		var testReports = settings.ParentFolder / "test-reports";
 		testReports.CreateDirectory();
@@ -74,6 +78,11 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 			var runner = new SimpleExecRunner("dotnet")
 				.AddArgument("test").AddArgument(absolutePath)
 				.AddArgument($"--logger:trx;LogFileName={(testReports / (absolutePath.GetFilenameWithoutExtension() + ".trx")).Value}");
+
+			if (!string.IsNullOrWhiteSpace(settings.TargetFramework))
+			{
+				runner.AddArgument($"-p:TargetFrameworks={settings.TargetFramework}");
+			}
 
 			if (!settings.RunAllTest)
 			{
@@ -89,6 +98,14 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 
 	public class Settings : ExtendedCommandSettings
 	{
+		/// <summary>
+		/// Gets or sets the sole multi-target framework to restore, build, and test.
+		/// When omitted, all declared target frameworks are used.
+		/// </summary>
+		[CommandOption("--target-framework")]
+		[Description("Restrict multi-target projects during restore, build, and test (for example, net10.0).")]
+		public string? TargetFramework { get; set; }
+
 		[CommandOption("--run-all-test")]
 		[Description("If not set. Tests with trait slow are not fun")]
 		[DefaultValue(false)]

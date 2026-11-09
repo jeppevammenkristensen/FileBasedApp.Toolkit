@@ -28,10 +28,15 @@ public abstract class BaseAnalysis<TSelf> : IDisposable, IAsyncDisposable where 
     /// Specifies the default target framework version used when loading C# projects.
     /// </summary>
     /// <value>
-    /// A string constant representing the target framework identifier. The default value is "net10.0".
+    /// A string constant representing the target framework identifier: "net11.0" when compiled
+    /// for .NET 11, otherwise "net10.0".
     /// This value is automatically assigned to the "TargetFramework" MSBuild property during loader initialization.
     /// </value>
-    public const string  DefaultTargetFramework = "net10.0";
+#if NET11_0
+    public const string DefaultTargetFramework = "net11.0";
+#else
+    public const string DefaultTargetFramework = "net10.0";
+#endif
     
     /// <summary>
     /// Gets the console instance used for outputting diagnostic and status information during project operations.

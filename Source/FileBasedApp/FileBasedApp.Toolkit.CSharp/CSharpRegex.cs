@@ -12,7 +12,7 @@ public static partial class CSharpRegex
     /// </summary>
 
 
-#if NET10_0
+#if NET10_0_OR_GREATER
     [GeneratedRegex("^(package|property|sdk|project)")]
         public static partial Regex HasFileBasedDirectiveRegex { get; }
 #else

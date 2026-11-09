@@ -77,7 +77,9 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 			
 			var runner = new SimpleExecRunner("dotnet")
 				.AddArgument("test").AddArgument(absolutePath)
-				.AddArgument($"--logger:trx;LogFileName={(testReports / (absolutePath.GetFilenameWithoutExtension() + ".trx")).Value}");
+				// The TRX logger appends the target framework to LogFilePrefix for multi-target runs.
+				.AddArgument($"--logger:trx;LogFilePrefix={absolutePath.GetFilenameWithoutExtension()}")
+				.AddArgumentPair("--results-directory", testReports);
 
 			if (!string.IsNullOrWhiteSpace(settings.TargetFramework))
 			{

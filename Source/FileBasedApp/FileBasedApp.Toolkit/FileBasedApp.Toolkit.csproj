@@ -11,8 +11,8 @@
     <TargetFrameworks>net11.0;net10.0;net8.0</TargetFrameworks>
     <RepositoryUrl>https://github.com/jeppevammenkristensen/FileBasedApp.Toolkit/tree/main/Source/FileBasedApp/FileBasedApp.Toolkit</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>floppy-disc.png</PackageIcon>    
-    <LangVersion>14</LangVersion>    
+    <PackageIcon>floppy-disc.png</PackageIcon>   
+        
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">

@@ -55,6 +55,15 @@ dotnet nuget add source "$((Resolve-Path ./artifacts/bootstrap).Path)" --name To
 
 CI needs the same package versions published to its configured feed before it can run these package-based scripts. Preview source setup is described below.
 
+## Batch command-settings path validation
+
+`ExtendedCommandSettings` in `FileBasedApp.Toolkit.Spectre` provides `TryGetFiles` and
+`TryGetDirectories` for resolving multiple candidates into `AbsolutePath[]` results on
+.NET 10 and .NET 11. Forwarding overloads accept a `PredefinedRootPath` or a single
+`AbsolutePath` root. Validation failures for multiple candidates are aggregated.
+See the [Spectre package README](Source/FileBasedApp/FileBasedApp.Toolkit.Spectre/README.md#batch-path-validation)
+for examples and empty-input behavior.
+
 ## TruePath 2.0 update
 
 The core toolkit now uses TruePath 2.0.0 and TruePath.TestableIO.System.IO 1.1.0. `IsCurrentDirectory()` detects normalized current-directory markers, and `GetSegments()` / `Traverse()` preserve zero-segment traversal for empty input, `.` and `a/..`.

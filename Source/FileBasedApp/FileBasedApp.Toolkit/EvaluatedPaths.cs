@@ -1,5 +1,7 @@
 ﻿using System.Collections.Immutable;
+#if !NET11_0_OR_GREATER
 using TruePath;
+#endif
 
 namespace FileBasedApp.Toolkit;
 
@@ -12,6 +14,24 @@ namespace FileBasedApp.Toolkit;
 /// </param>
 internal record EvaluatedPaths(ImmutableArray<EvaluatedPath> Paths) : IEvaluatedPath
 {
+#if NET11_0_OR_GREATER
+    public PathOrError GetPath(bool shouldExist, bool originalPathCanBeNull)
+    {
+        if (!shouldExist)
+        {
+            return Paths[0].GetPath(shouldExist, originalPathCanBeNull);
+        }
+
+        var results = Paths.Select(x => x.GetPath(shouldExist, originalPathCanBeNull))
+            .ToList();
+
+        var result = results
+            .FirstOrDefault(x => x.Valid, "No valid match");
+
+        return result;
+    }
+#else
+    
     public (AbsolutePath path, string? errorMessage) GetPath(bool shouldExist, bool originalPathCanBeNull)
     {
         if (!shouldExist)
@@ -28,4 +48,7 @@ internal record EvaluatedPaths(ImmutableArray<EvaluatedPath> Paths) : IEvaluated
             
         return (result.path, result.errorMessage);
     }
+    
+#endif
+    
 }

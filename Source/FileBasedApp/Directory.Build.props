@@ -4,7 +4,11 @@
       <VersionSuffix>preview-02</VersionSuffix>
       <PackageReleaseNotes>
           - Update with support for .net sdk 11
+          - Spectre integration: add ExtendedCommandSettings.TryGetFiles and TryGetDirectories batch validation for .NET 10 and .NET 11, returning absolute path arrays and aggregating validation errors for multiple candidates.
+          - Add predefined-root and single-absolute-root forwarding overloads for batch path validation, with XML documentation.
       </PackageReleaseNotes>
-      <TargetFrameworks>net11.0;net10.0</TargetFrameworks>
+       <TargetFrameworks>net11.0;net10.0</TargetFrameworks>
+       <LangVersion Condition="'$(TargetFramework)' == 'net11.0'">15.0</LangVersion>
+      <LangVersion Condition="'$(TargetFramework)' != 'net11.0'">14.0</LangVersion>
   </PropertyGroup>
 </Project>

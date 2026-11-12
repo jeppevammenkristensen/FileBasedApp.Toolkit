@@ -22,6 +22,12 @@
     <ProjectReference Include="..\FileBasedApp.Toolkit.Spectre\FileBasedApp.Toolkit.Spectre.csproj" />
   </ItemGroup>
 
+  <!-- Restore and build the fixture for all test frameworks, without referencing its assembly. -->
+  <ItemGroup>
+    <ProjectReference Include="../../../Playground/Test.Project/Test.Project.csproj"
+                      ReferenceOutputAssembly="false" PrivateAssets="all" />
+  </ItemGroup>
+
   <!-- Restore and build the fixture only for .NET 11 tests, without referencing its assembly. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
     <ProjectReference Include="../../../Playground/Net11AnalysisFixture/Net11AnalysisFixture.csproj"

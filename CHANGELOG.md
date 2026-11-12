@@ -20,6 +20,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Windows compatibility note: drive-relative inputs remain accepted; cross-drive resolution depends on process/per-drive current-directory state rather than the supplied root. Direct `AbsolutePath` conversions now reject Windows inputs such as `\foo`, `C:foo`, and `C:`
 - Windows rooted-without-drive and drive-relative traversal/reconstruction remain unresolved; the dependency upgrade does not imply these path forms are preserved by traversal
 
+#### FileBasedApp.Toolkit.Spectre
+
+- Added `ExtendedCommandSettings.TryGetFiles` and `TryGetDirectories` batch path validation with `AbsolutePath[]` results and aggregated validation errors for multiple candidates, supporting .NET 10 and .NET 11.
+- Added forwarding overloads accepting `PredefinedRootPath` or a single `AbsolutePath` root, preserving caller argument names in validation errors.
+- Documented the new batch methods and .NET 11 path-result helpers. An empty directory candidate array is evaluated as a single empty candidate, respecting `allowEmpty`; null arrays and empty file candidate arrays are rejected.
+
 ### [1.2.0]
 
 #### FileBasedApp.Toolkit

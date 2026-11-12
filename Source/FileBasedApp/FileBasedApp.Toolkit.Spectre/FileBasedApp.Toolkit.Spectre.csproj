@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>        
-        <LangVersion>14</LangVersion>
+    <PropertyGroup>
         <IsPackable>true</IsPackable>
         <Title>Spectre helpers for FileBasedApps</Title>
         <Description>Spectre.Console output factories and Spectre.Console.Cli settings helpers for file-based apps.</Description>

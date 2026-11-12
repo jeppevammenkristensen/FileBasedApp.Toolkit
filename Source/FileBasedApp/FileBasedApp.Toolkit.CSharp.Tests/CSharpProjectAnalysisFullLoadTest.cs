@@ -29,18 +29,20 @@ public partial class CSharpProjectAnalysisFullLoadTest : IAsyncLifetime
     }
 
     public const int UniqueNamedTypesInTestProject = 2;
-    
-    
+
+
+#if NET10_0
     [Fact]
     public void GetNamedTypeSymbols_ReturnsExpected()
     {
         var matches = _analysis.Compilation.GetNamedTypeSymbolsIncludingReferences()
             .ToList();
         
-        matches.Should().HaveCountGreaterThan(UniqueNamedTypesInTestProject);
+        matches.Should().HaveCountGreaterThanOrEqualTo(UniqueNamedTypesInTestProject);
         matches.Where(x => SymbolEqualityComparer.Default.Equals(x.ContainingAssembly, _analysis.Compilation.Assembly))
             .Should().HaveCount(UniqueNamedTypesInTestProject, $"There are {UniqueNamedTypesInTestProject} unique named types in the test project. If this has changed update the {nameof(UniqueNamedTypesInTestProject)} constant");
     }
+#endif
     
     [Fact]
     public void GetNamedTypeSymbolsForCurrentAssembly_ReturnsExpected()

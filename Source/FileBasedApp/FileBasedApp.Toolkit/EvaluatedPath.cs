@@ -16,6 +16,7 @@ namespace FileBasedApp.Toolkit;
 /// </param>
 internal record EvaluatedPath(string? OriginalPath, AbsolutePath? Path, bool Exists) : IEvaluatedPath
 {
+#if !NET11_0_OR_GREATER
     /// <summary>
     /// Return a tuple with the Path and string representing an error message if the path is not valid or does not exist. The parameters allow for flexible validation based on the context in which the path is being used.
     /// </summary>
@@ -42,4 +43,28 @@ internal record EvaluatedPath(string? OriginalPath, AbsolutePath? Path, bool Exi
         return (Path.Value, null);
 
     }
+#else
+    public PathOrError GetPath(bool shouldExist, bool originalPathCanBeNull)
+    {
+        if (!originalPathCanBeNull && string.IsNullOrWhiteSpace(OriginalPath))
+        {
+            return "OriginalPath cannot be null";
+        }
+
+        if (shouldExist && !Exists)
+        {
+            return $"Path {OriginalPath} translated to {Path} does not exist";
+        }
+        
+        if (Path is null)
+        {
+            return $"Path {OriginalPath} could not be translated to an AbsolutePath";
+        }
+
+        return Path.Value;
+    }    
+    
+#endif
+  
 }
+

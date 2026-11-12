@@ -31,10 +31,7 @@ public class PathUtilTest
                 ? PathUtil.AnalyzeDirectory(candidate, root)
                 : PathUtil.AnalyzeFile(candidate, root);
 
-            var (path, errorMessage) = result.GetPath(shouldExist: false, originalPathCanBeNull: false);
-
-            errorMessage.Should().BeNull();
-            path.Should().Be(new AbsolutePath(expected));
+            AssertPath(result, false, false, new AbsolutePath(expected));
         }
     }
 
@@ -43,7 +40,8 @@ public class PathUtilTest
     [InlineData(true, "D:logs")]
     [InlineData(false, "D:")]
     [InlineData(true, "D:")]
-    public void AnalyzePath_CrossDriveRelativeInput_UsesProcessDriveDirectoryInsteadOfSuppliedRoot(bool directory, string candidate)
+    public void AnalyzePath_CrossDriveRelativeInput_UsesProcessDriveDirectoryInsteadOfSuppliedRoot(bool directory,
+        string candidate)
     {
         // TruePath uses real process drive-directory state, not the mock file system's current directory.
         var processFileSystem = new System.IO.Abstractions.FileSystem();
@@ -51,17 +49,14 @@ public class PathUtilTest
         var fileSystem = new MockFileSystem();
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
-            foreach (var rootValue in new[] { @"C:\base", @"C:\other" })
+            foreach (var rootValue in new[] {@"C:\base", @"C:\other"})
             {
                 var root = new AbsolutePath(rootValue);
                 var result = directory
                     ? PathUtil.AnalyzeDirectory(candidate, root)
                     : PathUtil.AnalyzeFile(candidate, root);
 
-                var (path, errorMessage) = result.GetPath(shouldExist: false, originalPathCanBeNull: false);
-
-                errorMessage.Should().BeNull();
-                path.Should().Be(expected);
+                AssertPath(result, false, false, expected);
             }
         }
     }
@@ -83,17 +78,20 @@ public class PathUtilTest
     public void AnalyzeFilePath_MultipleRootsNoMatch_FileShouldNotExist()
     {
         var fileSystem = new MockFileSystem();
-        
+
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
-            var analyzeDirectory = PathUtil.AnalyzeFile("test.file", AbsolutePath.CurrentWorkingDirectory / "first", AbsolutePath.CurrentWorkingDirectory / "second");
-            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
-            errorMessage.Should().NotBeNull();
-            path.Should().BeEquivalentTo(default(AbsolutePath));
+            var analyzeDirectory = PathUtil.AnalyzeFile("test.file", AbsolutePath.CurrentWorkingDirectory / "first",
+                AbsolutePath.CurrentWorkingDirectory / "second");
+            var errorMessage = AssertError(analyzeDirectory, true, false);
+#if NET11_0_OR_GREATER
+            errorMessage.Should().Be("No valid match");
+#else
+            errorMessage.Should().Contain("does not exist");
+#endif
         }
-        
     }
-    
+
     [Fact]
     public void AnalyzeFilePath_MultipleRootsSecondMatch_FileShouldNotExist()
     {
@@ -101,16 +99,38 @@ public class PathUtilTest
         {
             {(AbsolutePath.CurrentWorkingDirectory / "second" / "test.file").Value, new MockFileData("test")}
         });
-        
+
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
-            var analyzeDirectory = PathUtil.AnalyzeFile("test.file", AbsolutePath.CurrentWorkingDirectory / "first", AbsolutePath.CurrentWorkingDirectory / "second");
-            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
-            errorMessage.Should().BeNull();
-            path.Should().BeEquivalentTo(AbsolutePath.CurrentWorkingDirectory / "second" / "test.file");
+            var analyzeDirectory = PathUtil.AnalyzeFile("test.file", AbsolutePath.CurrentWorkingDirectory / "first",
+                AbsolutePath.CurrentWorkingDirectory / "second");
+            AssertPath(analyzeDirectory, true, false, AbsolutePath.CurrentWorkingDirectory / "second" / "test.file");
         }
     }
-    
+
+    [Theory]
+    [InlineData(false, false, "first")]
+    [InlineData(true, false, "second")]
+    [InlineData(true, true, "first")]
+    public void AnalyzeFilePath_MultipleRoots_SelectsFirstEligiblePath(bool shouldExist, bool firstExists,
+        string expectedRoot)
+    {
+        var root = AbsolutePath.CurrentWorkingDirectory;
+        var fileSystem = new MockFileSystem();
+        fileSystem.AddFile((root / "second" / "test.file").Value, new MockFileData("test"));
+        if (firstExists)
+        {
+            fileSystem.AddFile((root / "first" / "test.file").Value, new MockFileData("test"));
+        }
+
+        using (new FileSystemSetter<PathUtil>(fileSystem))
+        {
+            var evaluated = PathUtil.AnalyzeFile("test.file", root / "first", root / "second");
+
+            AssertPath(evaluated, shouldExist, false, root / expectedRoot / "test.file");
+        }
+    }
+
     [Fact]
     public void AnalyzeFilePath_NoRoots_FileShouldExists()
     {
@@ -122,9 +142,7 @@ public class PathUtilTest
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeFile("test.file");
-            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
-            errorMessage.Should().BeNull();
-            path.Should().BeEquivalentTo(AbsolutePath.CurrentWorkingDirectory / "test.file");
+            AssertPath(analyzeDirectory, true, false, AbsolutePath.CurrentWorkingDirectory / "test.file");
         }
     }
 
@@ -136,9 +154,7 @@ public class PathUtilTest
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeFile("nonexistent.file");
-            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: false, false);
-            errorMessage.Should().BeNull();
-            path.Should().NotBeNull();
+            AssertPath(analyzeDirectory, false, false, AbsolutePath.CurrentWorkingDirectory / "nonexistent.file");
         }
     }
 
@@ -150,9 +166,7 @@ public class PathUtilTest
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeFile(null);
-            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: false, false);
-            errorMessage.Should().NotBeNull();
-            path.Should().BeEquivalentTo(default(AbsolutePath));
+            AssertError(analyzeDirectory, false, false).Should().Be("OriginalPath cannot be null");
         }
     }
 
@@ -163,16 +177,14 @@ public class PathUtilTest
 
         var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
         {
-            { testdirectory.Value, new MockFileData("") }
+            {testdirectory.Value, new MockFileData("")}
         });
         fileSystem.AddDirectory(testdirectory.Value);
 
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeDirectory("existing", AbsolutePath.CurrentWorkingDirectory);
-            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
-            errorMessage.Should().BeNull();
-            path.Should().BeEquivalentTo(testdirectory);
+            AssertPath(analyzeDirectory, true, false, testdirectory);
         }
     }
 
@@ -183,10 +195,14 @@ public class PathUtilTest
 
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
-            var analyzeDirectory = PathUtil.AnalyzeDirectory("nonexistent",AbsolutePath.CurrentWorkingDirectory / "test");
-            (_, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: true, false);
-            errorMessage.Should().NotBeNull();
+            var analyzeDirectory =
+                PathUtil.AnalyzeDirectory("nonexistent", AbsolutePath.CurrentWorkingDirectory / "test");
+            var errorMessage = AssertError(analyzeDirectory, true, false);
+#if NET11_0_OR_GREATER
+            errorMessage.Should().Be("No valid match");
+#else
             errorMessage.Should().Contain("does not exist");
+#endif
         }
     }
 
@@ -198,10 +214,41 @@ public class PathUtilTest
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
             var analyzeDirectory = PathUtil.AnalyzeDirectory("", AbsolutePath.CurrentWorkingDirectory / "test");
-            (AbsolutePath path, string? errorMessage) = analyzeDirectory.GetPath(shouldExist: false, true);
-            errorMessage.Should().BeNull();
-            path.Should().BeEquivalentTo(AbsolutePath.CurrentWorkingDirectory / "test");
+            AssertPath(analyzeDirectory, false, true, AbsolutePath.CurrentWorkingDirectory / "test");
         }
+    }
+
+    /// <summary>Checks the success contract for both union and tuple target frameworks.</summary>
+    private static void AssertPath(IEvaluatedPath evaluated, bool shouldExist, bool originalPathCanBeNull,
+        AbsolutePath expected)
+    {
+        var result = evaluated.GetPath(shouldExist, originalPathCanBeNull);
+#if NET11_0_OR_GREATER
+        result.Valid.Should().BeTrue();
+        Assert.True(result is AbsolutePath);
+        result.GetPathOrThrow(message => new InvalidOperationException(message)).Should().Be(expected);
+#else
+        result.errorMessage.Should().BeNull();
+        result.path.Should().Be(expected);
+#endif
+    }
+
+    /// <summary>Checks the error contract and returns its message for scenario-specific assertions.</summary>
+    private static string AssertError(IEvaluatedPath evaluated, bool shouldExist, bool originalPathCanBeNull)
+    {
+        var result = evaluated.GetPath(shouldExist, originalPathCanBeNull);
+#if NET11_0_OR_GREATER
+        result.Valid.Should().BeFalse();
+        Assert.True(result is string);
+        return result switch
+        {
+            string message => message,
+            AbsolutePath _ => throw new InvalidOperationException("Expected a path evaluation error.")
+        };
+#else
+        result.path.Should().Be(default(AbsolutePath));
+        return Assert.IsType<string>(result.errorMessage);
+#endif
     }
 
     [Fact]
@@ -223,7 +270,7 @@ public class PathUtilTest
 
         using (new FileSystemSetter<PathUtil>(fileSystem))
         {
-            var act = () => PathUtil.GetRootFolder((PredefinedRootPath)999);
+            var act = () => PathUtil.GetRootFolder((PredefinedRootPath) 999);
             act.Should().Throw<ArgumentOutOfRangeException>();
         }
     }

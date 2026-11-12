@@ -21,7 +21,7 @@ jobs:
             quality: ga
             target-arguments: --target-framework net10.0
           - sdk: 11.0.x
-            quality: preview
+            quality: ga
             target-arguments: ""
     permissions:
       packages: read

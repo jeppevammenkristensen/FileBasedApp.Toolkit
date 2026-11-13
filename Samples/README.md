@@ -10,7 +10,7 @@ Use a .NET SDK that supports file-based apps. Run a command with `--help` to see
 
 Samples using Spectre.Console commands reference `FileBasedApp.Toolkit.Spectre`; those using external command runners also reference `FileBasedApp.Toolkit.SimpleExec`. These optional integrations depend on the core toolkit and preserve the existing namespaces. The HTTP-only `website-opener.cs` sample needs neither integration.
 
-Integration samples align all toolkit packages to `1.4.0-preview-01`. Configure a feed containing that preview before running them; see the root README's [migration and bootstrap instructions](../readme.md#integration-package-migration).
+Keep all toolkit package directives in each sample aligned to the same release version. Configure a feed containing the referenced versions before running them; see the root README's [migration and bootstrap instructions](../readme.md#integration-package-migration).
 
 ## Scripts
 

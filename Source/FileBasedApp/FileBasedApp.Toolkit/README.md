@@ -5,14 +5,14 @@ A collection of opinionated helpers and extensions for building file-based appli
 The core package remains framework-neutral: Spectre.Console and SimpleExec integrations
 are available as separate, optional packages.
 
-## Package split and migration (1.4.0-preview-01)
+## Package split and migration (1.4.0)
 
 If you previously used integration types from `FileBasedApp.Toolkit`, add an explicit
 reference to the corresponding package:
 
 ```xml
-<PackageReference Include="FileBasedApp.Toolkit.Spectre" Version="1.4.0-preview-01" />
-<PackageReference Include="FileBasedApp.Toolkit.SimpleExec" Version="1.4.0-preview-01" />
+<PackageReference Include="FileBasedApp.Toolkit.Spectre" Version="1.4.0" />
+<PackageReference Include="FileBasedApp.Toolkit.SimpleExec" Version="1.4.0" />
 ```
 
 Add only the integrations you use. See [Spectre integration](../FileBasedApp.Toolkit.Spectre/README.md)

@@ -119,10 +119,22 @@ public class ExtendedCommandSettingsTest : IDisposable
             .Should().Be("provided-value");
     }
 
+    [Fact]
+    public void TryGetFile_CompatibilityWrapper_PreservesCallerArgumentExpression()
+    {
+        var settings = new TestSettings();
+        var act = () => settings.InvokeTryGetEmptyFile();
+
+        act.Should().Throw<InvalidOperationException>().WithMessage("candidate: Candidate path cannot be empty");
+    }
+
     private class TestSettings : ExtendedCommandSettings
     {
         public T? InvokeLoadSetting<T>(string? path) where T : class
             => LoadSetting<T>(path);
+
+        public string? InvokeGetValueOrFromEnvironment(string? originalValue, string environmentKey)
+            => GetValueOrFromEnvironment(originalValue, environmentKey);
 
         public AbsolutePath InvokeTryGetDirectory(string? candidatePath, bool allowEmpty, bool shouldExist, AbsolutePath root)
             => TryGetDirectory(candidatePath, allowEmpty, shouldExist, root);
@@ -130,8 +142,11 @@ public class ExtendedCommandSettingsTest : IDisposable
         public AbsolutePath InvokeTryGetFile(string candidatePath, bool shouldExist, AbsolutePath root)
             => TryGetFile(candidatePath, shouldExist, root);
 
-        public string? InvokeGetValueOrFromEnvironment(string? originalValue, string environmentKey)
-            => GetValueOrFromEnvironment(originalValue, environmentKey);
+        public AbsolutePath InvokeTryGetEmptyFile()
+        {
+            var candidate = "";
+            return TryGetFile(candidate, false);
+        }
     }
 
     [Fact]

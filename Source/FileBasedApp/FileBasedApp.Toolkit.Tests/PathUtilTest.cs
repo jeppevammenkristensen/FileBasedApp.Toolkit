@@ -12,6 +12,60 @@ namespace FileBasedApp.Toolkit.Tests;
 [TestSubject(typeof(PathUtil))]
 public class PathUtilTest
 {
+    [Fact]
+    public void TryGetPaths_ResolveCandidatesAgainstSuppliedRoot()
+    {
+        var root = AbsolutePath.CurrentWorkingDirectory / "helpers";
+        var fileSystem = new MockFileSystem();
+        fileSystem.AddDirectory(root.Value);
+        fileSystem.AddFile((root / "test.json").Value, new MockFileData("{}"));
+
+        using (new FileSystemSetter<PathUtil>(fileSystem))
+        {
+            PathUtil.TryGetDirectory(".", false, true, root).Should().Be(root);
+            PathUtil.TryGetDirectories([".", "."], false, true, root).Should().Equal(root, root);
+            PathUtil.TryGetFile((root / "test.json").Value, true, root).Should().Be(root / "test.json");
+            PathUtil.TryGetFiles([(root / "test.json").Value], true, root).Should().Equal(root / "test.json");
+        }
+    }
+
+    [Fact]
+    public void TryGetDirectories_EmptyCandidatesResolveToRootWhenAllowed()
+    {
+        var root = AbsolutePath.CurrentWorkingDirectory / "helpers";
+
+        PathUtil.TryGetDirectories([], true, false, root).Should().Equal(root);
+    }
+
+    [Fact]
+    public void TryGetFiles_EmptyCandidatesThrow()
+    {
+        var act = () => PathUtil.TryGetFiles([], false);
+
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [Fact]
+    public void TryGetDirectories_MultipleInvalidCandidatesAggregateErrors()
+    {
+        using (new FileSystemSetter<PathUtil>(new MockFileSystem()))
+        {
+            var act = () => PathUtil.TryGetDirectories(["missing-one", "missing-two"], false, true,
+                paramName: "directories");
+
+            act.Should().Throw<InvalidOperationException>().WithMessage("directories: 2 directories: *");
+        }
+    }
+
+    [Fact]
+    public void TryGetFile_EmptyCandidateIncludesCallerExpressionInError()
+    {
+        var candidate = "";
+        var act = () => PathUtil.TryGetFile(candidate, false);
+
+        act.Should().Throw<InvalidOperationException>().WithMessage("candidate: Candidate path cannot be empty");
+    }
+
     [WindowsTheory]
     [InlineData(false, @"\logs", @"C:\logs")]
     [InlineData(true, @"\logs", @"C:\logs")]

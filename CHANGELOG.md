@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## FileBasedApp
 
-### [Unreleased]
+### [1.4.0]
 
 #### FileBasedApp.Toolkit
 
@@ -24,11 +24,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 #### FileBasedApp.Toolkit.Spectre
 
+- Introduced `FileBasedApp.Toolkit.Spectre` as a separate, optional library for Spectre.Console integration, containing `AnsiConsoleFactory` and `ExtendedCommandSettings` extracted from core. Consumers using these APIs must reference the new package; existing namespaces remain unchanged.
 - Retained all protected `ExtendedCommandSettings.TryGet*` overloads as backward-compatible wrappers forwarding to `PathUtil`, preserving signatures and caller-argument expressions. Existing subclass calls remain supported; Spectre-specific validation stays in the integration package.
 - Added a compatibility regression test for forwarding caller-argument expressions in file-validation errors.
 - Added `ExtendedCommandSettings.TryGetFiles` and `TryGetDirectories` batch path validation with `AbsolutePath[]` results and aggregated validation errors for multiple candidates, supporting .NET 10 and .NET 11.
 - Added forwarding overloads accepting `PredefinedRootPath` or a single `AbsolutePath` root, preserving caller argument names in validation errors.
 - Documented the new batch methods and .NET 11 path-result helpers. An empty directory candidate array is evaluated as a single empty candidate, respecting `allowEmpty`; null arrays and empty file candidate arrays are rejected.
+
+#### FileBasedApp.Toolkit.SimpleExec
+
+- Introduced `FileBasedApp.Toolkit.SimpleExec` as a separate, optional library for SimpleExec integration, containing command runners, wrappers, and results extracted from core. Consumers using these APIs must reference the new package; existing namespaces remain unchanged.
 
 ### [1.2.0]
 

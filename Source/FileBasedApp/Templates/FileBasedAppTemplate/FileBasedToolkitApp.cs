@@ -58,7 +58,7 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
             // PredefinedRootPath.ExecutionFolder => The folder where this .cs file live in. Good if you scripts like (Run tests, Build something etc)
             // PredefinedRootPath.CurrentDirectory => The folder where this is executed from. Good for published scripts.
             
-            DirectoryAbsolute = this.TryGetDirectory(Directory, allowEmpty: true, shouldExist: true, root: PredefinedRootPath.ExecutionFolder);
+            DirectoryAbsolute = PathUtil.TryGetDirectory(Directory, allowEmpty: true, shouldExist: true, root: PredefinedRootPath.ExecutionFolder);
             return base.DoValidate();
         }
     }

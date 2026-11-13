@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 #### FileBasedApp.Toolkit
 
+- Exposed `TryGetFile`, `TryGetFiles`, `TryGetDirectory`, and `TryGetDirectories` as public static `PathUtil` helpers in core, making single and batch path validation available without Spectre or a command-settings subclass.
+- Added core path-helper regression coverage for resolution, empty candidates, aggregated directory errors, and caller-argument expressions; updated the file-based app template to call `PathUtil` directly.
 - Breaking: moved `AnsiConsoleFactory` and `ExtendedCommandSettings` into the optional `FileBasedApp.Toolkit.Spectre` package, and command runners/wrappers/results into `FileBasedApp.Toolkit.SimpleExec`. Namespaces remain unchanged; consumers must add the appropriate package references and recompile.
 - Core no longer depends on Spectre or SimpleExec. Dotnet helpers now reference the SimpleExec integration; CSharp keeps an explicit Spectre.Console dependency without requiring the CLI integration.
 - Added integration-specific test projects and core dependency regression coverage; updated templates, scripts and samples for the split.
@@ -22,6 +24,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 #### FileBasedApp.Toolkit.Spectre
 
+- Retained all protected `ExtendedCommandSettings.TryGet*` overloads as backward-compatible wrappers forwarding to `PathUtil`, preserving signatures and caller-argument expressions. Existing subclass calls remain supported; Spectre-specific validation stays in the integration package.
+- Added a compatibility regression test for forwarding caller-argument expressions in file-validation errors.
 - Added `ExtendedCommandSettings.TryGetFiles` and `TryGetDirectories` batch path validation with `AbsolutePath[]` results and aggregated validation errors for multiple candidates, supporting .NET 10 and .NET 11.
 - Added forwarding overloads accepting `PredefinedRootPath` or a single `AbsolutePath` root, preserving caller argument names in validation errors.
 - Documented the new batch methods and .NET 11 path-result helpers. An empty directory candidate array is evaluated as a single empty candidate, respecting `allowEmpty`; null arrays and empty file candidate arrays are rejected.

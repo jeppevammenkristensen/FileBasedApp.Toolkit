@@ -25,7 +25,7 @@ remain in core.
 
 ## Features
 
-* Provides a `PathUtil` class for working with paths and validating string paths
+* Provides a `PathUtil` class for working with paths and validating string paths, including public static `TryGetFile`, `TryGetFiles`, `TryGetDirectory`, and `TryGetDirectories` helpers without a Spectre dependency
 * Provides `LocalPathExtensions` with `IsHome`, `HasHomeDirectoryPrefix()`, and `ExpandHomeDirectory()` for home-directory expansion, `IsCurrentDirectory()` for lexical current-directory detection, plus `GetSegments()` and `Traverse()` for lexical path traversal
 * Provides an IO class to provide methods and extension methods for `TruePath`
   * `FindInFiles` — filter files by stream predicate or regex (with `ByLine` / `AllText` strategies)
@@ -38,6 +38,42 @@ remain in core.
   * `TruePath.TestableIO.System.IO` 1.1.0
 
 ## Example
+
+### Path resolution and validation
+
+Use `PathUtil.TryGetFile` / `TryGetDirectory` for a single `AbsolutePath`, or
+`TryGetFiles` / `TryGetDirectories` for an `AbsolutePath[]`. These helpers are in the
+core package and do not require `ExtendedCommandSettings` or Spectre.Console.
+
+```csharp
+using FileBasedApp.Toolkit;
+using TruePath;
+
+AbsolutePath directory = PathUtil.TryGetDirectory(
+    "input", allowEmpty: false, shouldExist: true,
+    root: PredefinedRootPath.CurrentDirectory);
+
+AbsolutePath[] files = PathUtil.TryGetFiles(
+    ["settings.json", "defaults.json"], shouldExist: true);
+
+AbsolutePath[] directories = PathUtil.TryGetDirectories(
+    ["input", "output"], allowEmpty: false, shouldExist: true,
+    root: PathUtil.GetCurrentWorkingFolder());
+```
+
+Directory overloads and batch file overloads accept a predefined root or a single
+absolute root. The `params` overloads accept multiple roots; omitted roots default
+to the current working directory. `shouldExist` controls existence validation.
+
+Despite their `TryGet` names, these methods throw on invalid input rather than
+returning a Boolean. Null candidate arrays are rejected, as are empty file arrays.
+An empty directory array is treated as a single empty candidate: `allowEmpty`
+controls whether it may resolve to a root. Validation errors for multiple candidates
+are aggregated into an `InvalidOperationException`.
+
+The protected `TryGet*` methods in `ExtendedCommandSettings` remain backward-compatible
+wrappers over these helpers, including their caller-argument expressions. Spectre's
+`Validate()` error conversion remains in the optional integration package.
 
 ### TruePath IO extensions
 

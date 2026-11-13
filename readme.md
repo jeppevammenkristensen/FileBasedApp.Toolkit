@@ -41,9 +41,9 @@ The scripts, samples, and generated template declare their integration dependenc
 For the current preview, keep all toolkit directives in an app aligned:
 
 ```csharp
-#:package FileBasedApp.Toolkit@1.4.0-preview-01
-#:package FileBasedApp.Toolkit.Spectre@1.4.0-preview-01
-#:package FileBasedApp.Toolkit.SimpleExec@1.4.0-preview-01
+#:package FileBasedApp.Toolkit@1.4.0-preview-04
+#:package FileBasedApp.Toolkit.Spectre@1.4.0-preview-04
+#:package FileBasedApp.Toolkit.SimpleExec@1.4.0-preview-04
 ```
 
 Scripts (including the package publisher and package-reference updater) restore their own dependencies before running. For the first release of the extracted integrations, make the matching packages available in a configured feed first; the updater cannot bootstrap missing packages. For local development, pack the solution into a local feed before running the scripts:
@@ -55,14 +55,20 @@ dotnet nuget add source "$((Resolve-Path ./artifacts/bootstrap).Path)" --name To
 
 CI needs the same package versions published to its configured feed before it can run these package-based scripts. Preview source setup is described below.
 
-## Batch command-settings path validation
+## Path resolution and validation
 
-`ExtendedCommandSettings` in `FileBasedApp.Toolkit.Spectre` provides `TryGetFiles` and
-`TryGetDirectories` for resolving multiple candidates into `AbsolutePath[]` results on
-.NET 10 and .NET 11. Forwarding overloads accept a `PredefinedRootPath` or a single
-`AbsolutePath` root. Validation failures for multiple candidates are aggregated.
-See the [Spectre package README](Source/FileBasedApp/FileBasedApp.Toolkit.Spectre/README.md#batch-path-validation)
+The core `FileBasedApp.Toolkit` package provides public static `PathUtil.TryGetFile`,
+`TryGetFiles`, `TryGetDirectory`, and `TryGetDirectories` helpers, with no Spectre
+dependency or command-settings subclass required. The batch methods return
+`AbsolutePath[]` on .NET 10 and .NET 11 and aggregate validation failures for multiple
+candidates. See the [core package README](Source/FileBasedApp/FileBasedApp.Toolkit/README.md#path-resolution-and-validation)
 for examples and empty-input behavior.
+
+Existing protected `TryGet*` overloads on `ExtendedCommandSettings` remain available
+for backward compatibility and forward to `PathUtil`, preserving their signatures
+and caller-argument expressions. Existing subclasses do not need to change their
+calls. Spectre-specific validation stays in the integration package; see the
+[Spectre package README](Source/FileBasedApp/FileBasedApp.Toolkit.Spectre/README.md#batch-path-validation).
 
 ## TruePath 2.0 update
 

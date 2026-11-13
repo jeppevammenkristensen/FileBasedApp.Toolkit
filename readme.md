@@ -38,12 +38,12 @@ Use `#:package` directives in file-based apps or package references in project-b
 
 The scripts, samples, and generated template declare their integration dependencies explicitly.
 
-For the current preview, keep all toolkit directives in an app aligned:
+For 1.4.0, keep all toolkit directives in an app aligned:
 
 ```csharp
-#:package FileBasedApp.Toolkit@1.4.0-preview-04
-#:package FileBasedApp.Toolkit.Spectre@1.4.0-preview-04
-#:package FileBasedApp.Toolkit.SimpleExec@1.4.0-preview-04
+#:package FileBasedApp.Toolkit@1.4.0
+#:package FileBasedApp.Toolkit.Spectre@1.4.0
+#:package FileBasedApp.Toolkit.SimpleExec@1.4.0
 ```
 
 Scripts (including the package publisher and package-reference updater) restore their own dependencies before running. For the first release of the extracted integrations, make the matching packages available in a configured feed first; the updater cannot bootstrap missing packages. For local development, pack the solution into a local feed before running the scripts:

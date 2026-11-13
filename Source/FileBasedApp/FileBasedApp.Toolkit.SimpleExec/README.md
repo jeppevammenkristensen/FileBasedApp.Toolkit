@@ -6,12 +6,12 @@ exit-code handling, JSON output parsing and testable command wrappers.
 Use the existing `FileBasedApp.Toolkit.SimpleExec` namespace. This package references
 FileBasedApp.Toolkit and SimpleExec, but does not depend on Spectre.
 
-## Migration (1.4.0-preview-01)
+## Migration (1.4.0)
 
 These types moved from FileBasedApp.Toolkit into this optional package. Add an explicit reference:
 
 ```xml
-<PackageReference Include="FileBasedApp.Toolkit.SimpleExec" Version="1.4.0-preview-01" />
+<PackageReference Include="FileBasedApp.Toolkit.SimpleExec" Version="1.4.0" />
 ```
 
 Namespaces remain unchanged, but the assembly move is a **binary breaking change**.

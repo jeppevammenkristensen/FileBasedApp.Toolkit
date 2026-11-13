@@ -9,12 +9,12 @@ Optional Spectre.Console and Spectre.Console.Cli integration.
 This package references FileBasedApp.Toolkit, Spectre.Console and Spectre.Console.Cli,
 but does not depend on SimpleExec. Deserializers and FlexibleFilePath remain in core.
 
-## Migration (1.4.0-preview-01)
+## Migration (1.4.0)
 
 These types moved from FileBasedApp.Toolkit into this optional package. Add an explicit reference:
 
 ```xml
-<PackageReference Include="FileBasedApp.Toolkit.Spectre" Version="1.4.0-preview-01" />
+<PackageReference Include="FileBasedApp.Toolkit.Spectre" Version="1.4.0" />
 ```
 
 Namespaces remain unchanged, but the assembly move is a **binary breaking change**.

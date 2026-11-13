@@ -1,5 +1,5 @@
-#:package FileBasedApp.Toolkit@1.4.0-preview-02
-#:package FileBasedApp.Toolkit.Spectre@1.4.0-preview-02
+#:package FileBasedApp.Toolkit@1.4.0
+#:package FileBasedApp.Toolkit.Spectre@1.4.0
 #:package Microsoft.CodeAnalysis.CSharp@*
 #:package TextCopy@*
 #:property PublishAot=false 

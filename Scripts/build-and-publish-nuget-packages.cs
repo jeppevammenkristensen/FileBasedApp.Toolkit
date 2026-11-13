@@ -1,5 +1,5 @@
-#:package FileBasedApp.Toolkit.Spectre@1.4.0-preview-02
-#:package FileBasedApp.Toolkit.SimpleExec@1.4.0-preview-02
+#:package FileBasedApp.Toolkit.Spectre@1.4.0
+#:package FileBasedApp.Toolkit.SimpleExec@1.4.0
 #:property PublishAot=false
 
 using FileBasedApp.Toolkit;

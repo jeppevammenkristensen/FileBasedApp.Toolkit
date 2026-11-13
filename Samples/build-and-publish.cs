@@ -1,8 +1,8 @@
-#:package FileBasedApp.Toolkit@1.4.0-preview-02
-#:package FileBasedApp.Toolkit.Spectre@1.4.0-preview-02
-#:package FileBasedApp.Toolkit.SimpleExec@1.4.0-preview-02
-#:package FileBasedApp.Toolkit.CSharp@1.4.0-preview-02
-#:package FileBasedApp.Toolkit.Dotnet@1.4.0-preview-02
+#:package FileBasedApp.Toolkit@1.4.0
+#:package FileBasedApp.Toolkit.Spectre@1.4.0
+#:package FileBasedApp.Toolkit.SimpleExec@1.4.0
+#:package FileBasedApp.Toolkit.CSharp@1.4.0
+#:package FileBasedApp.Toolkit.Dotnet@1.4.0
 #:property PublishAot=false
 #:property VersionPrefix=0.0.8
 #:property PackageId=FileBasedApp.BuildAndPublish
@@ -189,7 +189,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 		{
 			// Exceptions here will bubble up and outputted as validation
 			var evaluatedPath = PathUtil.AnalyzeFile(PathCandidate, PathUtil.GetCurrentWorkingFolder());
-			if (evaluatedPath.GetPath(shouldExist: true, false) is {errorMessage: null, path: { } filePath})
+			if (evaluatedPath.GetPath(shouldExist: true, false) is AbsolutePath filePath)
 			{
 				if (_directlyBuildableTypes.Contains(filePath.GetExtensionWithoutDot()))
 				{
@@ -215,7 +215,7 @@ public partial class RunCommand : AsyncCommand<RunCommand.Settings> // For sync 
 			}
 
 			var evaulatedDirectory = PathUtil.AnalyzeDirectory(PathCandidate, PathUtil.GetCurrentWorkingFolder());
-			if (evaulatedDirectory.GetPath(true, true) is {errorMessage: null, path: { } directoryPath})
+			if (evaulatedDirectory.GetPath(true, true) is AbsolutePath directoryPath)
 			{
 				var buildablePaths = directoryPath.EnumerateFiles().Where(path =>
 				{

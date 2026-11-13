@@ -1,6 +1,6 @@
-#:package FileBasedApp.Toolkit@1.4.0-preview-02
-#:package FileBasedApp.Toolkit.Spectre@1.4.0-preview-02
-#:package FileBasedApp.Toolkit.SimpleExec@1.4.0-preview-02
+#:package FileBasedApp.Toolkit@1.4.0
+#:package FileBasedApp.Toolkit.Spectre@1.4.0
+#:package FileBasedApp.Toolkit.SimpleExec@1.4.0
 #:package AutoSpectre@0.12.0
 
 using AutoSpectre;

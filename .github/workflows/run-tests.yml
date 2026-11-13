@@ -10,6 +10,24 @@ on:
         default: 'Build and test'
 
 jobs:
+  result:
+    # Keep the required check name stable when the SDK matrix changes.
+    name: ${{ inputs.display-name }}
+    needs: build
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+    - name: Check all SDK results
+      shell: bash
+      env:
+        BUILD_RESULT: ${{ needs.build.result }}
+      run: |
+        if [[ "$BUILD_RESULT" != "success" ]]; then
+          echo "::error::SDK build and test jobs did not all succeed (result: $BUILD_RESULT)"
+          exit 1
+        fi
+
   build:
     name: ${{ inputs.display-name }} (SDK ${{ matrix.sdk }})
     runs-on: ubuntu-latest

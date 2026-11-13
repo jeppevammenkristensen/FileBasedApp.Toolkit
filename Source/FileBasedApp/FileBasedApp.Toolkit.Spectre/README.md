@@ -23,6 +23,13 @@ framework-neutral; it no longer brings in Spectre.Console or Spectre.Console.Cli
 
 ## Batch path validation
 
+All protected `TryGetFile`, `TryGetFiles`, `TryGetDirectory`, and `TryGetDirectories`
+overloads remain available for backward compatibility. They now forward to the public
+static helpers on `PathUtil` in the core package, preserving their signatures and
+caller-argument expressions. Existing subclass calls need no changes. For use outside
+command settings, call `PathUtil` directly without adding a Spectre dependency; see
+the [core path-validation examples](../FileBasedApp.Toolkit/README.md#path-resolution-and-validation).
+
 Inside an `ExtendedCommandSettings` subclass, use `TryGetFiles` and
 `TryGetDirectories` to resolve arrays of candidate paths. Both return
 `AbsolutePath[]` and support .NET 10 and .NET 11. Overloads accept predefined roots,

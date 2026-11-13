@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Project>
   <PropertyGroup>
      <VersionPrefix>1.4.0</VersionPrefix>
-      <VersionSuffix>preview-02</VersionSuffix>
+     
       <PackageReleaseNotes>
           - Update with support for .net sdk 11
           - Spectre integration: add ExtendedCommandSettings.TryGetFiles and TryGetDirectories batch validation for .NET 10 and .NET 11, returning absolute path arrays and aggregating validation errors for multiple candidates.
           - Add predefined-root and single-absolute-root forwarding overloads for batch path validation, with XML documentation.
+          - Expose TryGetFile, TryGetFiles, TryGetDirectory, and TryGetDirectories as public static PathUtil helpers in the core package without Spectre dependencies.
+          - Retain the protected ExtendedCommandSettings TryGet overloads as backward-compatible wrappers over PathUtil, preserving signatures and caller-argument expressions.
+          - Update the file-based app template to call PathUtil directly; add core path-helper and compatibility regression coverage.
       </PackageReleaseNotes>
        <TargetFrameworks>net11.0;net10.0</TargetFrameworks>
        <LangVersion Condition="'$(TargetFramework)' == 'net11.0'">15.0</LangVersion>

@@ -6,7 +6,8 @@
 #:property PackAsTool=true
 #:property ToolCommandName=worktree-path-selector
 #:property PackageId=worktree-path-selector
-#:property Version=1.0.1
+#:property Version=1.1.0
+using System.Globalization;
 using Spectre.Console.Cli;
 using TruePath;
 using Spectre.Console;
@@ -18,7 +19,9 @@ using System.Text.RegularExpressions;
 using FileBasedApp.Toolkit.CommandCli;
   
 
-var commandApp = new CommandApp<RunCommand>().WithDescription("Presents a select prompt to navigate worktrees");
+var commandApp = new CommandApp<RunCommand>()
+    .WithDescription("Presents a select prompt to navigate worktrees");
+
 commandApp.Configure(ctx =>
 {
     ctx.PropagateExceptions();
@@ -40,7 +43,9 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
         
         AnsiConsole.MarkupLineInterpolated($"[green]Found worktree candidate [bold]{match}[/][/]");
 
-        var result = await SimpleExecRunner.Init("git").AddArguments("worktree", "list").AddArgument("--porcelain")
+        var result = await SimpleExecRunner
+            .Init("git").AddArguments("worktree", "list")
+            .AddArgument("--porcelain")
             .WithWorkingDirectory(match)
             .WithNoEcho()
             .ReadAsync(token: cancellationToken);
@@ -58,25 +63,30 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
         var promptResult = await AnsiConsole.PromptAsync(new SelectionPrompt<Worktree>()
             .EnableSearch()
             .Title("Select worktree")
-            .AddChoices(parsedWorktrees.OrderBy(Worktree.Order))
-            .UseConverter(x =>
-                $"[bold]{x.Name.EscapeMarkup()}[/] {x.Path.Value.EscapeMarkup()} [dim]{x.Head.EscapeMarkup()}[/]"), cancellationToken);
+            .AddChoices(parsedWorktrees.OrderByDescending(Worktree.Order))
+            .UseConverter(WorktreeChoiceConverter), cancellationToken);
         
         AnsiConsole.MarkupLineInterpolated($"[green]Selected worktree [bold]{promptResult.Path.Value}[/][/]");
         await TextCopy.ClipboardService.SetTextAsync(promptResult.Path.Value, cancellationToken);
         return 0; // 0 for success
     }
-    
-    public record Worktree(AbsolutePath Path, string Name, string Head)
+
+    private static string WorktreeChoiceConverter(Worktree worktree)
     {
-        public static AbsolutePath Order(Worktree arg)
+        return $"[bold]{worktree.Name.EscapeMarkup()}[/] {worktree.Path.Value.EscapeMarkup()} [dim]{worktree.Head.EscapeMarkup()} [green]{worktree.LastCommit}[/][/]";
+    }
+
+    public record Worktree(AbsolutePath Path, string Name, string Head, DateTimeOffset? LastCommit)
+    {
+        public static DateTimeOffset? Order(Worktree arg)
         {
             if (arg.Name == "main" || arg.Name == "master")
             {
-                return default;
+                return DateTimeOffset.MaxValue;
             }
 
-            return arg.Path;
+            return arg.LastCommit ?? DateTimeOffset.MinValue;
+            
         }
     }
 
@@ -93,9 +103,24 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
         while (stringReader.Peek() > -1)
         {
             var currentLine = await stringReader.ReadLineAsync(cancellationToken) ?? string.Empty;
-
+            
             if (regex.Match(currentLine) is not {Success: true} match) continue;
             var path = AbsolutePath.Create(match.Groups["path"].Value);
+
+            Error? error = null;
+
+
+            DateTimeOffset? HandleError(Error error)
+            {
+                AnsiConsole.MarkupLineInterpolated($"[red]Could not get last commit date for {path}. [bold]{error.ErrorText}[/][/]");
+                return null;
+            }
+
+            DateTimeOffset? lastChange = await GitUtil.GetLastCommitTime(path) switch
+            {
+                DateTimeOffset d => d,
+                Error e => HandleError(e)
+            };
             
             currentLine = await stringReader.ReadLineAsync(cancellationToken) ?? string.Empty;
 
@@ -105,7 +130,7 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
             
             if (branch.Match(currentLine) is not {Success: true} branchMatch) continue;
             var branchMatchValue = branchMatch.Groups["branch"].Value;
-            yield return new Worktree(path, branchMatchValue, headMatchValue);
+            yield return new Worktree(path, branchMatchValue, headMatchValue, lastChange);
         }
     }
 
@@ -161,5 +186,31 @@ public class RunCommand : AsyncCommand<RunCommand.Settings> // For sync only you
             DirectoryAbsolute = this.TryGetDirectory(Directory, allowEmpty: true, shouldExist: true, root: PredefinedRootPath.CurrentDirectory);
             return base.DoValidate();
         }
+    }
+}
+
+public sealed record Error(string ErrorText);
+
+public union MatchOrError<T>(T, Error);
+
+public static class GitUtil
+{
+    public static async Task<MatchOrError<DateTimeOffset>> GetLastCommitTime(AbsolutePath path)
+    {
+        var (standardOutput, standardError) = await SimpleExecRunner.Init("git")
+            .AddArgumentPair("-C", path) // Run from the given folder
+            .AddArgumentPair("log", "-1") // Retrieve 1
+            .AddArgument("--format=%cI")
+            .ReadAsync();
+
+        if (!string.IsNullOrWhiteSpace(standardError))
+        {
+            return new Error(standardError);
+        }
+        
+        return DateTimeOffset.TryParse(
+            standardOutput.TrimEnd("\n"),
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.AdjustToUniversal, out var result) ? result : new Error($"Could not parse {standardOutput}");
     }
 }

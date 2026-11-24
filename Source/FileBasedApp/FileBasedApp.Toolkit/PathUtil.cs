@@ -9,7 +9,7 @@ namespace FileBasedApp.Toolkit;
 /// <summary>
 /// Provides utility methods for handling and evaluating file and directory paths.
 /// </summary>
-public class PathUtil : IStaticFileSystemSetter
+public partial class PathUtil : IStaticFileSystemSetter
 {
     /// <summary>
     /// Tries to get a directory from a string

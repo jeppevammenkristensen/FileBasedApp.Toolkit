@@ -51,6 +51,20 @@ public union PathOrError(AbsolutePath, string)
             string s => throw onError(s)
         };
     }
+
+    /// <summary>
+    /// Converts the path or error message to the corresponding case of a general result.
+    /// </summary>
+    /// <param name="pathOrError">The path evaluation outcome to convert.</param>
+    /// <returns>The same absolute path or error message, wrapped in the general result.</returns>
+    public static implicit operator Result<AbsolutePath, ErrorString>(PathOrError pathOrError)
+    {
+        return pathOrError switch
+        {
+            string error => new ErrorString(error),
+            AbsolutePath absolutePath => absolutePath
+        };
+    }
     
 }
 #endif

@@ -75,6 +75,55 @@ The protected `TryGet*` methods in `ExtendedCommandSettings` remain backward-com
 wrappers over these helpers, including their caller-argument expressions. Spectre's
 `Validate()` error conversion remains in the optional integration package.
 
+### Result-based path validation (.NET 11)
+
+Starting in 1.5.0, if you target .NET 11, you can use `PathUtil.GetFileResult` and
+`GetDirectoryResult` for a single path, or `GetFilesResult` and
+`GetDirectoriesResult` for an array. You get an `AbsolutePath` or
+`AbsolutePath[]` on success, or an `ErrorString` on validation failure.
+
+```csharp
+using System;
+using FileBasedApp.Toolkit;
+using TruePath;
+
+Result<AbsolutePath[], ErrorString> result = PathUtil.GetFilesResult(
+    ["settings.json", "defaults.json"], shouldExist: true,
+    root: PredefinedRootPath.CurrentDirectory);
+
+switch (result)
+{
+    case AbsolutePath[] paths:
+        foreach (var path in paths)
+            Console.WriteLine(path);
+        break;
+    case ErrorString error:
+        Console.Error.WriteLine(error.Error);
+        break;
+}
+```
+
+Pass a predefined root or one or more absolute roots. If no root is supplied,
+resolution uses the current working directory. Batch results preserve candidate
+order on success and combine validation failures into one error without returning
+partial paths. Both batch methods reject null arrays. An empty file array or a
+blank file candidate is invalid. An empty directory array is treated as one
+empty candidate, which can resolve to a root only when `allowEmpty` is true.
+
+On .NET 11, the `PathOrError` returned by `IEvaluatedPath.GetPath` also converts
+implicitly to `Result<AbsolutePath, ErrorString>`. The exception-based `TryGet*`
+helpers remain available on both .NET 10 and .NET 11.
+
+### Composing results (.NET 11)
+
+`Result<TResult, TError>` represents a success value or an error.
+`Result<TError>` uses `Success` for operations without a return value. To chain
+operations that produce a value on success, use `Bind` for a synchronous
+result-returning step, or `BindToMatchAsync` for an asynchronous result-returning
+step. `BindToValueAsync` instead wraps the next asynchronous step's plain value
+as a success. All three skip the next operation and return the original error
+when the input is an error.
+
 ### TruePath IO extensions
 
 ```csharp

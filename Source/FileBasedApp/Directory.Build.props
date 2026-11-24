@@ -1,14 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Project>
   <PropertyGroup>
-     <VersionPrefix>1.4.0</VersionPrefix>
+     <VersionPrefix>1.5.0</VersionPrefix>
      
       <PackageReleaseNotes>
-          - Update with support for .net sdk 11
-          - Spectre integration: add ExtendedCommandSettings.TryGetFiles and TryGetDirectories batch validation for .NET 10 and .NET 11, returning absolute path arrays and aggregating validation errors for multiple candidates.
-          - Add predefined-root and single-absolute-root forwarding overloads for batch path validation, with XML documentation.
-          - Expose TryGetFile, TryGetFiles, TryGetDirectory, and TryGetDirectories as public static PathUtil helpers in the core package without Spectre dependencies.
-          - Retain the protected ExtendedCommandSettings TryGet overloads as backward-compatible wrappers over PathUtil, preserving signatures and caller-argument expressions.
-          - Update the file-based app template to call PathUtil directly; add core path-helper and compatibility regression coverage.
+          - On .NET 11, you can validate files and directories with PathUtil.GetFileResult, GetFilesResult, GetDirectoryResult, and GetDirectoriesResult and handle validation failures as values rather than exceptions. When you validate a batch, you get all the resolved paths in order or one error listing every failure, with no partial results.
+          - On .NET 11, you can use the Result unions to represent success or failure and chain steps with Bind, BindToMatchAsync, or BindToValueAsync. If a step returns an error, you get that error back unchanged.
+          - On .NET 11, you can use PathOrError as a typed result through implicit conversion. You can still use the exception-based TryGet helpers on both .NET 10 and .NET 11.
       </PackageReleaseNotes>
        <TargetFrameworks>net11.0;net10.0</TargetFrameworks>
        <LangVersion Condition="'$(TargetFramework)' == 'net11.0'">15.0</LangVersion>

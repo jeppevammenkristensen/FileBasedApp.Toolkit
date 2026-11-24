@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## FileBasedApp
 
+### [1.5.0]
+
+#### FileBasedApp.Toolkit
+
+- On .NET 11, you can validate files and directories with `PathUtil.GetFileResult`, `GetFilesResult`, `GetDirectoryResult`, and `GetDirectoriesResult` and handle validation failures as values rather than exceptions. When you validate a batch, you get either every resolved path in input order or one `ErrorString` with all validation failures, with no partial results.
+- You can use `Result<TResult, TError>` when an operation returns a value on success, or `Result<TError>` with `Success` when it doesn't. You can chain steps with `Bind`, `BindToMatchAsync`, or `BindToValueAsync` and get the first error back unchanged. These APIs require .NET 11.
+- On .NET 11, you can assign a `PathOrError` directly to a `Result<AbsolutePath, ErrorString>`. You can still use the exception-based `TryGet*` methods and their Spectre wrappers on both .NET 10 and .NET 11.
+
 ### [1.4.0]
 
 #### FileBasedApp.Toolkit

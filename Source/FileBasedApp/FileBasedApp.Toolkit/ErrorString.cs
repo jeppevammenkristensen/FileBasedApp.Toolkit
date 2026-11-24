@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a typed instance of an error
 /// </summary>
-/// <param name="Error">The error</param>
+/// <param name="Error">The error</param>]
 public record ErrorString(string Error)
 {
     /// <summary>

@@ -52,6 +52,10 @@ controls whether it can resolve to a root directory. For multiple candidates,
 validation errors are collected into one `InvalidOperationException`; the base
 `Validate()` method converts the exception message into a validation error.
 
+On .NET 11, use the core [result-based path helpers](../FileBasedApp.Toolkit/README.md#result-based-path-validation-net-11)
+if you want to handle validation failures as values. The protected `TryGet*`
+wrappers continue to use exception-based validation.
+
 ## Extended settings
 
 The example below shows how to use the `ExtendedCommandSettings` class to validate file and directory paths.

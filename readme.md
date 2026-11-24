@@ -38,12 +38,12 @@ Use `#:package` directives in file-based apps or package references in project-b
 
 The scripts, samples, and generated template declare their integration dependencies explicitly.
 
-For 1.4.0, keep all toolkit directives in an app aligned:
+Keep toolkit package versions aligned. For example, with 1.5.0:
 
 ```csharp
-#:package FileBasedApp.Toolkit@1.4.0
-#:package FileBasedApp.Toolkit.Spectre@1.4.0
-#:package FileBasedApp.Toolkit.SimpleExec@1.4.0
+#:package FileBasedApp.Toolkit@1.5.0
+#:package FileBasedApp.Toolkit.Spectre@1.5.0
+#:package FileBasedApp.Toolkit.SimpleExec@1.5.0
 ```
 
 Scripts (including the package publisher and package-reference updater) restore their own dependencies before running. For the first release of the extracted integrations, make the matching packages available in a configured feed first; the updater cannot bootstrap missing packages. For local development, pack the solution into a local feed before running the scripts:
@@ -63,6 +63,12 @@ dependency or command-settings subclass required. The batch methods return
 `AbsolutePath[]` on .NET 10 and .NET 11 and aggregate validation failures for multiple
 candidates. See the [core package README](Source/FileBasedApp/FileBasedApp.Toolkit/README.md#path-resolution-and-validation)
 for examples and empty-input behavior.
+
+On .NET 11, version 1.5.0 adds `PathUtil.GetFileResult`, `GetFilesResult`,
+`GetDirectoryResult`, and `GetDirectoriesResult` for handling validation failures
+as values rather than exceptions. Batch results report all validation errors
+without returning partial paths. See the [result-based path examples](Source/FileBasedApp/FileBasedApp.Toolkit/README.md#result-based-path-validation-net-11)
+and [result composition helpers](Source/FileBasedApp/FileBasedApp.Toolkit/README.md#composing-results-net-11).
 
 Existing protected `TryGet*` overloads on `ExtendedCommandSettings` remain available
 for backward compatibility and forward to `PathUtil`, preserving their signatures

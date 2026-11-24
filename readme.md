@@ -95,6 +95,8 @@ The scripts in the [Samples](Samples/) folder are file-based .NET apps that refe
 - [build-and-publish.cs](Samples/build-and-publish.cs) - Builds, packs, and publishes NuGet packages for file-based app projects. Uses `FileBasedApp.Toolkit`, `FileBasedApp.Toolkit.CSharp`, and `FileBasedApp.Toolkit.Dotnet`.
 - [filebased-app-finder.cs](Samples/filebased-app-finder.cs) - Discovers file-based .NET apps in a directory and retrieves the latest package versions for their dependencies. Uses `FileBasedApp.Toolkit.CSharp` and `FileBasedApp.Toolkit.Dotnet`.
 - [website-opener.cs](Samples/website-opener.cs) - Fetches JSON from a web endpoint using `AbsoluteWebUri` and deserializes the response with a source-generated `JsonSerializerContext`. Uses `FileBasedApp.Toolkit`.
+- [Worktree path selector](Samples/README.md#worktree-path-selector) - Shows Git worktrees with their latest commit dates and copies the selected path to the clipboard. The optional `Push-Worktree` PowerShell function enters that directory.
+- [Worktree cleanup](Samples/README.md#worktree-cleanup) - Prompts for linked worktrees to delete, then runs `git worktree prune` from the primary worktree.
 
 ## Preview packages
 

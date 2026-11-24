@@ -40,6 +40,7 @@ if (($env:PATH -split [System.IO.Path]::PathSeparator) -notcontains $dotnetTools
 The required files are in the same folder as this document:
 
 - `worktree-path-selector.cs`
+- `Shared.cs` (compiled into both file-based apps; keep it beside their entry-point files)
 - `install.ps1`
 - `push-worktree.ps1`
 
@@ -49,7 +50,9 @@ Choose the applicable case.
 
 Download the contents of this folder to a persistent local directory. Do not use a temporary directory because `$PROFILE` will contain the installed function.
 
-Prefer cloning the repository at the branch or commit currently shown on GitHub, then use the local `Samples\worktree-path-selector` folder. If a full clone is not appropriate, download the repository ZIP for that same branch or commit and extract it. Verify that all three required files listed above exist together before continuing.
+Prefer cloning the repository at the branch or commit currently shown on GitHub, then use the local
+`Samples\worktree-path-selector` folder. If a full clone is not appropriate, download the repository ZIP for that same
+branch or commit and extract it. Verify that all required files listed above exist together before continuing.
 
 Do not download only `instructions.md`, and do not execute a script directly from a remote URL.
 
@@ -64,7 +67,7 @@ $ToolDirectory = Split-Path -Parent (Resolve-Path -LiteralPath '.\instructions.m
 If the current directory is elsewhere, set `$ToolDirectory` to the absolute path of the cloned `Samples\worktree-path-selector` directory instead. Confirm the inputs:
 
 ```powershell
-@('worktree-path-selector.cs', 'install.ps1', 'push-worktree.ps1') | ForEach-Object {
+@('worktree-path-selector.cs', 'Shared.cs', 'install.ps1', 'push-worktree.ps1') | ForEach-Object {
     $path = Join-Path $ToolDirectory $_
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
         throw "Required file is missing: $path"

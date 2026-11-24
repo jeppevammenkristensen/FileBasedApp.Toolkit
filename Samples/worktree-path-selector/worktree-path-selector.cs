@@ -2,7 +2,7 @@
 #:package FileBasedApp.Toolkit.Spectre@1.4.0
 #:package FileBasedApp.Toolkit.SimpleExec@1.4.0
 #:package TextCopy@6.2.1
-#:project Worktree.Utils/Worktree.Utils.csproj
+#:include Shared.cs
 #:property PublishAot=false
 #:property PackAsTool=true
 #:property ToolCommandName=worktree-path-selector

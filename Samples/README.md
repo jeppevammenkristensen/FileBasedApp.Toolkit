@@ -50,26 +50,30 @@ dotnet run wrapper.cs -- --className ServiceAdapter --interfaceName IServiceAdap
 
 All wrapped methods in the selected class must be either static or instance methods; mixed classes are rejected.
 
-## Worktree Path Selector
+## Git Worktree Samples
 
-The nested [`worktree-path-selector`](worktree-path-selector/) sample provides an interactive Git worktree picker. The C# app finds a repository, lists its worktrees, and copies the selected path to the clipboard. `push-worktree.ps1` adds a PowerShell `Push-Worktree` function that runs the picker and changes to the selected directory while preserving the previous location for `Pop-Location`.
+Both apps require Git and a .NET 11 SDK that supports C# 15 unions. Keep [`Shared.cs`](worktree-path-selector/Shared.cs) beside the two entry points: both include it for worktree discovery and commit metadata. Each app accepts an optional starting directory (default: the current directory). It checks that directory first, then its immediate subdirectories, and uses the first repository found.
 
-See the [installation instructions](worktree-path-selector/instructions.md) to install the app as a global .NET tool and configure PowerShell on Windows, Linux, or macOS. These are is aimed to be picked up by AI.
+### Worktree Path Selector
 
-### Example
+[`worktree-path-selector.cs`](worktree-path-selector/worktree-path-selector.cs) opens a searchable picker with each worktree's branch, path, HEAD commit, and latest commit date when available. It lists the primary worktree first, then sorts the others by newest commit first. Selecting a worktree copies its path to the clipboard.
 
-Run `Push-Worktree` from a repository or a directory containing its worktrees:
+From the `Samples` directory:
 
-```text
-PS D:\code\filebased-app> Push-Worktree
-Found worktree candidate D:\code\filebased-app\feature
-Select worktree
-
-> main                D:\code\filebased-app\_main                    da8bb2a55c8f3798118387310e96e83a94656d7e
-  feature/echo-flanger D:\code\filebased-app\feature                 47b1da8a8c608e0433609ff0a28e7ebdb0205c53
-  feature/first-major D:\code\filebased-app\feature\first-major     2ecb040a70a56059a0002f31b49b6e852d60870c
-  task/add-scripts     D:\code\filebased-app\task\add-scripts        f41cf796aff665921f43cc4aaf4d995599109077
-  task/fix-issue       D:\code\filebased-app\task\fix-issue          dd96e260c4a5662fb4257ceb54dc33c226a2fdae
+```powershell
+dotnet run ./worktree-path-selector/worktree-path-selector.cs -- /path/to/repository
 ```
 
-Choose a worktree to push its directory onto PowerShell's location stack. Use `Pop-Location` to return to the previous directory.
+See the [installation instructions](worktree-path-selector/instructions.md) for clipboard requirements and how to install the selector as a global .NET tool and configure `Push-Worktree` in PowerShell 7 on Windows, Linux, or macOS. The function enters the selected directory; `Pop-Location` returns to the previous one.
+
+### Worktree Cleanup
+
+[`worktree-cleanup.cs`](worktree-path-selector/worktree-cleanup.cs) lists linked worktrees from oldest to newest by latest commit date and leaves the primary worktree out of the list. Select one or more worktrees and confirm to recursively delete their directories. The script then runs `git worktree prune` from the primary worktree.
+
+From the `Samples` directory:
+
+```powershell
+dotnet run ./worktree-path-selector/worktree-cleanup.cs -- /path/to/repository
+```
+
+**Check for uncommitted and untracked files before confirming.** Cleanup deletes directories directly, bypassing the dirty-worktree checks in `git worktree remove`. The selector installer does not install the cleanup app.
